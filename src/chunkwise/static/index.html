@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3f5ef">
+    <link rel="icon" href="data:,">
+    <title>ChunkWise | Storage</title>
+    <link rel="stylesheet" href="/static/app.css">
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="ChunkWise home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>chunkwise</span>
+      </a>
+      <div class="topbar-right">
+        <span class="connection" id="connectionStatus" aria-live="polite"><span class="connection-dot"></span><span id="connectionLabel">Connecting</span></span>
+        <button class="icon-button" id="refreshButton" type="button" title="Refresh data" aria-label="Refresh data">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">CONTENT-ADDRESSED STORAGE</p>
+          <h1>Storage overview</h1>
+          <p class="subheading">A clear view of your files and the space they occupy.</p>
+        </div>
+        <span class="local-badge"><span aria-hidden="true">●</span> Local vault</span>
+      </section>
+
+      <section class="stats-grid" id="statsGrid" aria-label="Storage statistics" aria-busy="true">
+        <article class="stat-card stat-primary">
+          <div class="stat-label">Space recovered <span class="stat-icon" aria-hidden="true">↘</span></div>
+          <div class="stat-value" id="statSaved">—</div>
+          <div class="stat-foot" id="statSavedDetail">Loading storage totals</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Logical data</div>
+          <div class="stat-value" id="statLogical">—</div>
+          <div class="stat-foot">Original file contents</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Physical data</div>
+          <div class="stat-value" id="statPhysical">—</div>
+          <div class="stat-foot">Unique chunk bytes stored</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Deduplication ratio</div>
+          <div class="stat-value" id="statRatio">—</div>
+          <div class="stat-foot">Logical bytes per stored byte</div>
+        </article>
+        <article class="stat-card stat-compact">
+          <div class="stat-label">Files</div>
+          <div class="stat-value" id="statFiles">—</div>
+          <div class="stat-foot">Committed records</div>
+        </article>
+        <article class="stat-card stat-compact">
+          <div class="stat-label">Unique chunks</div>
+          <div class="stat-value" id="statChunks">—</div>
+          <div class="stat-foot">Content-addressed objects</div>
+        </article>
+      </section>
+
+      <section class="workspace-grid">
+        <section class="panel upload-panel" aria-labelledby="uploadHeading">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">ADD DATA</p>
+              <h2 id="uploadHeading">Upload a file</h2>
+            </div>
+            <span class="step-number">01</span>
+          </div>
+          <div id="dropZone" class="drop-zone">
+            <input id="fileInput" type="file" hidden>
+            <div class="upload-glyph" aria-hidden="true">
+              <svg viewBox="0 0 32 32"><path d="M16 21V5m0 0L9.5 11.5M16 5l6.5 6.5M6 20v6h20v-6"/></svg>
+            </div>
+            <p class="drop-title">Drop a file here</p>
+            <p class="drop-copy">or <button class="text-button" id="chooseFile" type="button">browse files</button></p>
+            <p class="drop-limit" id="uploadLimit">Maximum upload size: loading</p>
+            <div id="selectedFile" class="selected-file" hidden></div>
+          </div>
+          <div class="upload-controls">
+            <fieldset class="chunker-choice">
+              <legend>Chunking method</legend>
+              <label><input type="radio" name="chunker" value="cdc" checked><span>Content-defined <small>CDC</small></span></label>
+              <label><input type="radio" name="chunker" value="fixed"><span>Fixed-size <small>FIXED</small></span></label>
+            </fieldset>
+            <button class="button button-primary" id="uploadButton" type="button" disabled>
+              <span>Upload file</span><span aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <div id="uploadProgress" class="progress-block" hidden aria-live="polite">
+            <div class="progress-meta"><span id="progressLabel">Uploading</span><span id="progressPercent">0%</span></div>
+            <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+          </div>
+          <div id="uploadMessage" class="inline-message" hidden role="status"></div>
+        </section>
+
+        <section class="panel storage-panel" aria-labelledby="storageHeading">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">AT A GLANCE</p>
+              <h2 id="storageHeading">Storage composition</h2>
+            </div>
+            <span class="step-number">02</span>
+          </div>
+          <div class="composition-total"><span id="compositionLogical">—</span><span>logical</span></div>
+          <div class="composition-track" role="img" aria-label="Physical storage as a proportion of logical data">
+            <div id="compositionBar" class="composition-physical"></div>
+          </div>
+          <div class="composition-legend">
+            <div><span class="legend-mark legend-stored"></span><span>Stored</span><strong id="compositionPhysical">—</strong></div>
+            <div><span class="legend-mark legend-recovered"></span><span>Recovered</span><strong id="compositionSaved">—</strong></div>
+          </div>
+          <div class="composition-note" id="compositionNote">Storage totals will appear when data is available.</div>
+        </section>
+      </section>
+
+      <section class="panel files-panel" aria-labelledby="filesHeading">
+        <div class="files-heading">
+          <div>
+            <p class="eyebrow">YOUR VAULT</p>
+            <h2 id="filesHeading">Stored files <span class="count-pill" id="fileCount">—</span></h2>
+          </div>
+          <button class="button button-secondary" id="filesRefreshButton" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
+            Refresh list
+          </button>
+        </div>
+        <div id="filesError" class="error-banner" hidden role="alert"></div>
+        <div id="filesLoading" class="table-loading" aria-live="polite">Loading stored files…</div>
+        <div id="filesEmpty" class="empty-state" hidden>
+          <div class="empty-mark" aria-hidden="true">∅</div>
+          <h3>No files stored yet</h3>
+          <p>Choose a file above to create your first verified backup.</p>
+        </div>
+        <div id="filesTableWrap" class="table-wrap" hidden>
+          <table>
+            <thead><tr><th scope="col">File</th><th scope="col">Size</th><th scope="col">Method</th><th scope="col">Added</th><th scope="col">File ID</th><th scope="col" aria-label="Actions"></th></tr></thead>
+            <tbody id="filesBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div id="globalError" class="global-error" hidden role="alert"></div>
+      <footer class="page-footer"><span>ChunkWise</span><span>Content verified on restore</span></footer>
+    </main>
+  </body>
+</html>

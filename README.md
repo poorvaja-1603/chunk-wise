@@ -29,6 +29,22 @@ Omit `--idempotency-key` for a new logical file record each time. The default lo
 
 The prototype is a local, single-process teaching implementation. It demonstrates the core content addressing and commit ordering, but it does not implement a distributed KV service, conditional writes/CAS, real concurrent-writer coordination, API authentication, cloud durability, file deletion, or executable GC/recovery workers. The design document describes those production-system components. Breakscale is for relative service-capacity experiments; it does not calculate real file-level dedupe savings.
 
+## Storage dashboard
+
+Run the same-origin dashboard and HTTP API with `chunkwise-web`. The dashboard
+uses the local ChunkWise engine for live statistics, file uploads, listing,
+verified restore, and file verification. Upload retries use a persistent
+idempotency key stored transactionally with the file record.
+
+```sh
+pip install -e .
+CHUNKWISE_HOME="$PWD/.chunkwise" PORT=8080 chunkwise-web
+```
+
+See [docs/deployment.md](docs/deployment.md) for environment variables,
+persistent-volume requirements, and the Docker deployment instructions. The
+service is single-process/single-writer; run one replica with durable storage.
+
 ## Breakscale file
 
 Breakscale's native project file must be exported from its canvas as `.breakscale`. The guide provides the node/link plan. Save the native file in `lab` and add its path or link to the experiment workbook; embed it there if your instructor requires an attachment.

@@ -33,6 +33,11 @@ CREATE TABLE IF NOT EXISTS manifest (
     length INTEGER NOT NULL,
     PRIMARY KEY (file_id, seq)
 );
+CREATE TABLE IF NOT EXISTS upload_idempotency (
+    idempotency_key TEXT PRIMARY KEY,
+    file_id TEXT NOT NULL,
+    sha256 TEXT NOT NULL
+);
 """
 
 
@@ -83,6 +88,7 @@ class Index:
         manifest: Sequence[tuple[int, str, int, int]],
         refs: dict[str, int],
         sizes: dict[str, int],
+        idempotency_key: str | None = None,
     ) -> None:
         expected_refs: dict[str, int] = {}
         expected_sizes: dict[str, int] = {}
@@ -120,6 +126,25 @@ class Index:
                 [(row.file_id, seq, digest, byte_offset, length)
                  for seq, digest, byte_offset, length in manifest],
             )
+            if idempotency_key is not None:
+                connection.execute(
+                    "INSERT INTO upload_idempotency(idempotency_key, file_id, sha256) VALUES (?, ?, ?)",
+                    (idempotency_key, row.file_id, row.sha256),
+                )
+
+    def list_files(self) -> list[FileRow]:
+        rows = self.conn.execute(
+            "SELECT file_id, name, size, sha256, chunker, avg_size, created_at "
+            "FROM files ORDER BY created_at DESC, file_id DESC"
+        ).fetchall()
+        return [FileRow(*row) for row in rows]
+
+    def idempotent_upload(self, key: str) -> tuple[str, str] | None:
+        row = self.conn.execute(
+            "SELECT file_id, sha256 FROM upload_idempotency WHERE idempotency_key = ?",
+            (key,),
+        ).fetchone()
+        return None if row is None else (row[0], row[1])
 
     def get_file(self, file_id: str) -> FileRow:
         result = self.conn.execute(

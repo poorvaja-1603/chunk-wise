@@ -15,9 +15,13 @@ bench = ["matplotlib>=3.8"]
 
 [project.scripts]
 chunkwise = "chunkwise.cli:main"
+chunkwise-web = "chunkwise.http_api:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+chunkwise = ["static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import sqlite3
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -10,7 +11,7 @@ from pathlib import Path
 from typing import BinaryIO
 
 from .chunker import ChunkParams, iter_chunks
-from .errors import IntegrityError
+from .errors import IdempotencyConflictError, IntegrityError
 from .index import FileRow, Index
 from .store import ChunkStore
 
@@ -64,6 +65,57 @@ class Engine:
         self.close()
 
     def put(self, stream: BinaryIO, name: str, chunker: str = "cdc") -> PutResult:
+        return self._put(stream, name, chunker)
+
+    def put_idempotent_bytes(
+        self,
+        data: bytes,
+        name: str,
+        idempotency_key: str,
+        chunker: str = "cdc",
+    ) -> PutResult:
+        if not idempotency_key or len(idempotency_key) > 200:
+            raise ValueError("idempotency key must contain 1 to 200 characters")
+        digest = hashlib.sha256(data).hexdigest()
+        existing = self.index.idempotent_upload(idempotency_key)
+        if existing is not None:
+            return self._existing_idempotent_result(existing, digest)
+        try:
+            return self._put(io.BytesIO(data), name, chunker, idempotency_key)
+        except sqlite3.IntegrityError:
+            existing = self.index.idempotent_upload(idempotency_key)
+            if existing is None:
+                raise
+            return self._existing_idempotent_result(existing, digest)
+
+    def _existing_idempotent_result(
+        self,
+        existing: tuple[str, str],
+        digest: str,
+    ) -> PutResult:
+        file_id, existing_digest = existing
+        if digest != existing_digest:
+            raise IdempotencyConflictError(
+                "idempotency key was already used for different file content"
+            )
+        file_row = self.index.get_file(file_id)
+        return PutResult(
+            file_id=file_row.file_id,
+            name=file_row.name,
+            size=file_row.size,
+            chunks=len(self.index.manifest(file_id)),
+            new_chunks=0,
+            new_bytes=0,
+            chunker=file_row.chunker,
+        )
+
+    def _put(
+        self,
+        stream: BinaryIO,
+        name: str,
+        chunker: str = "cdc",
+        idempotency_key: str | None = None,
+    ) -> PutResult:
         file_id = "f-" + uuid.uuid4().hex[:12]
         whole_hash = hashlib.sha256()
         manifest: list[tuple[int, str, int, int]] = []
@@ -93,7 +145,7 @@ class Engine:
             avg_size=self.params.avg_size,
             created_at=datetime.now(timezone.utc).isoformat(),
         )
-        self.index.commit_file(row, manifest, refs, sizes)
+        self.index.commit_file(row, manifest, refs, sizes, idempotency_key)
         return PutResult(file_id, name, offset, len(manifest), new_chunks, new_bytes, chunker)
 
     def put_path(self, path: str | Path, chunker: str = "cdc") -> PutResult:

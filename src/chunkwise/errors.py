@@ -12,3 +12,7 @@ class ChunkMissingError(ChunkWiseError):
 
 class FileNotFoundInIndexError(ChunkWiseError):
     """No committed file record exists for the requested file ID."""
+
+
+class IdempotencyConflictError(ChunkWiseError):
+    """An upload idempotency key was reused for different content."""
