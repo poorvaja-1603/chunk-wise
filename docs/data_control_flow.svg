@@ -1,0 +1,325 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2340" width="2000" height="2340" font-family="Helvetica, Arial, sans-serif" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo3MjU1YTBjMy01YjRkLTRmMTYtYWVlZS1lODVkYWU0ZTJlNTkAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaI7d3qei5LQM0H08QOkjMwgAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDowNjk0NjdhOC04NWE0LTRmN2QtYjAzYS1lNDUyM2Y2OTJjOWRscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoNiwP+HSjemN4oJmo09aspgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgga+nXqw4eD+gIGQrya9uDAJMHJd2b6rMEVvVfgWEDmHSkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaPzQ8a7NP2nvoOo5Uzba9mEAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCDW12LdmWYOOuB/PUCgABw76jjUTMaRt1Le6niGMNK8hGRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBjFZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjcyNTVhMGMzLTViNGQtNGYxNi1hZWVlLWU4NWRhZTRlMmU1OS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmY2M2FiY2E1LWYwZTEtNGYzNC1hMWEzLTc4M2Y2ZDgxNDFiOXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBr6derDh4P6AgZCvJr24MAkwcl3ZvqswRW9V+BYQOYdKJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggxteDSpoCySoBncQCd+lW8IAZ0R8rl7jpF9xX+QStyx+iY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggZA9YoO0CRGzT+Tlsgn+gVVAokzZcRuTJc5N7Bezw+2h0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQHjOfdnrQm6dzrOPtgm8BHhnypjWbpj5GQdSNPuGW+z+4SpCR+OpdWLWn0U0u7RRp7JU6CeTDIB75W2a3paxRsY=</c2pa:manifest></metadata>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#137a80"/>
+    </marker>
+    <style>
+      .band { fill: #eef8f8; stroke: #3aa3a8; stroke-width: 1.5; stroke-dasharray: 8 5; }
+      .hdr { fill: #0f5f66; }
+      .hdrtxt { fill: #ffffff; font-weight: bold; font-size: 16px; }
+      .box { fill: #ffffff; stroke: #137a80; stroke-width: 1.8; }
+      .dec { fill: #f2fbfb; stroke: #137a80; stroke-width: 1.8; }
+      .lane { fill: #fbfefe; stroke: #3aa3a8; stroke-dasharray: 5 4; stroke-width: 1.3; }
+      .t { font-size: 15px; font-weight: 600; fill: #0b3d40; text-anchor: middle; }
+      .s { font-size: 13px; fill: #0b3d40; text-anchor: middle; }
+      .ttl { font-size: 15px; font-weight: bold; fill: #0f5f66; }
+      .ln { stroke: #137a80; stroke-width: 1.8; fill: none; marker-end: url(#arr); }
+      .dot { stroke: #137a80; stroke-width: 1.8; stroke-dasharray: 3 4; fill: none; marker-end: url(#arr); }
+      .bg { stroke: #0f5f66; stroke-width: 1.8; stroke-dasharray: 8 5; fill: none; marker-end: url(#arr); }
+      .lbl { font-size: 13px; font-weight: 600; fill: #0f5f66; text-anchor: middle; }
+      .leg { font-size: 14px; fill: #0b3d40; }
+    </style>
+  </defs>
+
+  <text x="20" y="32" font-size="24" font-weight="bold" fill="#0b3d40">Chunk-Level Storage Deduplication Engine: Corrected Data and Control Flow</text>
+
+  <!-- ================= UPLOAD / WRITE FLOW ================= -->
+  <rect class="band" x="20" y="50" width="1960" height="1190" rx="10"/>
+  <rect class="hdr" x="80" y="62" width="240" height="30" rx="5"/>
+  <text class="hdrtxt" x="95" y="83">Upload / Write Flow</text>
+
+  <!-- Row 1 -->
+  <rect class="box" x="60" y="135" width="190" height="70" rx="8"/>
+  <text class="t" x="155" y="164">Client</text>
+  <text class="s" x="155" y="184">Web / Mobile / CLI</text>
+
+  <rect class="box" x="330" y="135" width="190" height="70" rx="8"/>
+  <text class="t" x="425" y="164">API Gateway</text>
+  <text class="s" x="425" y="184">auth stub, validation</text>
+
+  <polygon class="dec" points="625,130 685,170 625,210 565,170"/>
+  <text class="s" x="625" y="166">Valid</text>
+  <text class="s" x="625" y="182">request?</text>
+
+  <rect class="box" x="540" y="267" width="170" height="46" rx="8"/>
+  <text class="t" x="625" y="296">Return 400 / 409</text>
+
+  <rect class="box" x="760" y="135" width="190" height="70" rx="8"/>
+  <text class="t" x="855" y="160">Upload Manager</text>
+  <text class="s" x="855" y="178">init or resume by</text>
+  <text class="s" x="855" y="194">Idempotency-Key</text>
+
+  <rect class="box" x="1000" y="135" width="190" height="70" rx="8"/>
+  <text class="t" x="1095" y="160">CDC chunker (Rabin)</text>
+  <text class="s" x="1095" y="178">min 2KB / avg 8KB</text>
+  <text class="s" x="1095" y="194">max 64KB / window 48B</text>
+
+  <rect class="box" x="1240" y="135" width="190" height="70" rx="8"/>
+  <text class="t" x="1335" y="164">SHA-256</text>
+  <text class="s" x="1335" y="184">per chunk content ID</text>
+
+  <!-- Row 2 -->
+  <polygon class="dec" points="1335,320 1395,360 1335,400 1275,360"/>
+  <text class="s" x="1335" y="356">chunk:hash</text>
+  <text class="s" x="1335" y="372">exists?</text>
+
+  <polygon class="dec" points="1560,320 1620,360 1560,400 1500,360"/>
+  <text class="s" x="1560" y="364">status?</text>
+
+  <rect class="box" x="1720" y="325" width="180" height="70" rx="8"/>
+  <text class="t" x="1810" y="354">Increment</text>
+  <text class="s" x="1810" y="374">ref_count +1 (reuse)</text>
+
+  <!-- Row 3 -->
+  <polygon class="dec" points="1335,490 1395,530 1335,570 1275,530"/>
+  <text class="s" x="1335" y="526">CAS claim</text>
+  <text class="s" x="1335" y="542">IF NOT EXISTS</text>
+
+  <rect class="box" x="1000" y="495" width="210" height="70" rx="8"/>
+  <text class="t" x="1105" y="524">PUT chunks/hash</text>
+  <text class="s" x="1105" y="544">to Object Storage</text>
+
+  <rect class="box" x="1475" y="500" width="170" height="60" rx="8"/>
+  <text class="t" x="1560" y="524">Backoff and poll</text>
+  <text class="s" x="1560" y="544">until committed</text>
+
+  <!-- Row 4 -->
+  <rect class="box" x="1000" y="655" width="210" height="70" rx="8"/>
+  <text class="t" x="1105" y="684">KV: status=committed</text>
+  <text class="s" x="1105" y="704">ref_count = 1</text>
+
+  <rect class="box" x="1460" y="655" width="200" height="70" rx="8"/>
+  <text class="t" x="1560" y="684">KV: append chunk_list</text>
+  <text class="s" x="1560" y="704">(resume checkpoint)</text>
+
+  <polygon class="dec" points="1560,790 1620,830 1560,870 1500,830"/>
+  <text class="s" x="1560" y="826">More</text>
+  <text class="s" x="1560" y="842">chunks?</text>
+
+  <!-- Row 5 -->
+  <polygon class="dec" points="1560,940 1620,980 1560,1020 1500,980"/>
+  <text class="s" x="1560" y="976">All chunks</text>
+  <text class="s" x="1560" y="992">committed?</text>
+
+  <rect class="box" x="1230" y="950" width="180" height="60" rx="8"/>
+  <text class="t" x="1320" y="974">Keep session</text>
+  <text class="s" x="1320" y="992">in_progress, resumable</text>
+
+  <rect class="box" x="1690" y="940" width="220" height="80" rx="8"/>
+  <text class="t" x="1800" y="966">KV: write file:{id}</text>
+  <text class="s" x="1800" y="984">status = committed</text>
+  <text class="s" x="1800" y="1002">(single atomic write)</text>
+
+  <!-- Row 6 -->
+  <rect class="box" x="1690" y="1080" width="220" height="60" rx="8"/>
+  <text class="t" x="1800" y="1104">KV: session</text>
+  <text class="s" x="1800" y="1124">status = completed</text>
+
+  <rect class="box" x="1420" y="1080" width="180" height="60" rx="8"/>
+  <text class="t" x="1510" y="1104">201 Created</text>
+  <text class="s" x="1510" y="1124">file id, status</text>
+
+  <!-- Upload connectors -->
+  <line class="ln" x1="250" y1="170" x2="330" y2="170"/>
+  <line class="ln" x1="520" y1="170" x2="565" y2="170"/>
+  <line class="dot" x1="685" y1="170" x2="760" y2="170"/>
+  <text class="lbl" x="722" y="160">Yes</text>
+  <line class="dot" x1="625" y1="210" x2="625" y2="267"/>
+  <text class="lbl" x="645" y="244">No</text>
+  <line class="ln" x1="950" y1="170" x2="1000" y2="170"/>
+  <line class="ln" x1="1190" y1="170" x2="1240" y2="170"/>
+  <line class="ln" x1="1335" y1="205" x2="1335" y2="320"/>
+  <line class="dot" x1="1395" y1="360" x2="1500" y2="360"/>
+  <text class="lbl" x="1447" y="350">exists</text>
+  <line class="dot" x1="1620" y1="360" x2="1720" y2="360"/>
+  <text class="lbl" x="1670" y="350">committed</text>
+  <line class="dot" x1="1560" y1="400" x2="1560" y2="500"/>
+  <text class="lbl" x="1602" y="455">pending</text>
+  <polyline class="ln" points="1645,530 1700,530 1700,385 1720,385"/>
+  <line class="dot" x1="1335" y1="400" x2="1335" y2="490"/>
+  <text class="lbl" x="1395" y="450">new chunk</text>
+  <line class="dot" x1="1275" y1="530" x2="1210" y2="530"/>
+  <text class="lbl" x="1243" y="520">won</text>
+  <line class="dot" x1="1395" y1="530" x2="1475" y2="530"/>
+  <text class="lbl" x="1435" y="520">lost</text>
+  <line class="ln" x1="1105" y1="565" x2="1105" y2="655"/>
+  <line class="ln" x1="1210" y1="690" x2="1460" y2="690"/>
+  <polyline class="ln" points="1810,395 1810,690 1660,690"/>
+  <line class="ln" x1="1560" y1="725" x2="1560" y2="790"/>
+  <polyline class="dot" points="1500,830 975,830 975,170 1000,170"/>
+  <text class="lbl" x="1240" y="822">Yes: next chunk</text>
+  <line class="dot" x1="1560" y1="870" x2="1560" y2="940"/>
+  <text class="lbl" x="1590" y="912">No</text>
+  <line class="dot" x1="1500" y1="980" x2="1410" y2="980"/>
+  <text class="lbl" x="1455" y="972">No</text>
+  <line class="dot" x1="1620" y1="980" x2="1690" y2="980"/>
+  <text class="lbl" x="1655" y="972">Yes</text>
+  <line class="ln" x1="1800" y1="1020" x2="1800" y2="1080"/>
+  <line class="ln" x1="1690" y1="1110" x2="1600" y2="1110"/>
+  <polyline class="ln" points="1510,1140 1510,1200 40,1200 40,170 60,170"/>
+  <text class="lbl" x="620" y="1192">201 response: file id, status, metadata</text>
+
+  <!-- ================= DOWNLOAD / READ FLOW ================= -->
+  <rect class="band" x="20" y="1270" width="1960" height="490" rx="10"/>
+  <rect class="hdr" x="80" y="1282" width="280" height="30" rx="5"/>
+  <text class="hdrtxt" x="95" y="1303">Download / Read Flow</text>
+
+  <rect class="box" x="60" y="1345" width="190" height="70" rx="8"/>
+  <text class="t" x="155" y="1374">Client</text>
+  <text class="s" x="155" y="1394">GET /files/{id}</text>
+
+  <rect class="box" x="330" y="1345" width="190" height="70" rx="8"/>
+  <text class="t" x="425" y="1374">API Gateway</text>
+  <text class="s" x="425" y="1394">auth, ownership check</text>
+
+  <rect class="box" x="600" y="1345" width="190" height="70" rx="8"/>
+  <text class="t" x="695" y="1374">KV: read</text>
+  <text class="s" x="695" y="1394">file:{id} record</text>
+
+  <polygon class="dec" points="885,1340 945,1380 885,1420 825,1380"/>
+  <text class="s" x="885" y="1384">committed?</text>
+
+  <rect class="box" x="1010" y="1345" width="220" height="70" rx="8"/>
+  <text class="t" x="1120" y="1366">Ordered chunk_list</text>
+  <text class="s" x="1120" y="1383">GET chunks in parallel</text>
+  <text class="s" x="1120" y="1400">retry with backoff</text>
+
+  <rect class="box" x="825" y="1480" width="120" height="40" rx="8"/>
+  <text class="t" x="885" y="1505">Return 404</text>
+
+  <polygon class="dec" points="1120,1520 1180,1560 1120,1600 1060,1560"/>
+  <text class="s" x="1120" y="1556">SHA-256</text>
+  <text class="s" x="1120" y="1572">matches?</text>
+
+  <rect class="box" x="1040" y="1630" width="160" height="50" rx="8"/>
+  <text class="t" x="1120" y="1651">Fail read</text>
+  <text class="s" x="1120" y="1668">flag for reconciliation</text>
+
+  <rect class="box" x="1270" y="1525" width="180" height="70" rx="8"/>
+  <text class="t" x="1360" y="1554">Reconstruct file</text>
+  <text class="s" x="1360" y="1574">in seq order</text>
+
+  <polygon class="dec" points="1560,1520 1620,1560 1560,1600 1500,1560"/>
+  <text class="s" x="1560" y="1556">checksum</text>
+  <text class="s" x="1560" y="1572">matches?</text>
+
+  <rect class="box" x="1480" y="1630" width="160" height="50" rx="8"/>
+  <text class="t" x="1560" y="1651">Fail read</text>
+  <text class="s" x="1560" y="1668">flag for reconciliation</text>
+
+  <rect class="box" x="1700" y="1525" width="200" height="70" rx="8"/>
+  <text class="t" x="1800" y="1554">Stream file</text>
+  <text class="s" x="1800" y="1574">to client (HTTPS)</text>
+
+  <!-- Download connectors -->
+  <line class="ln" x1="250" y1="1380" x2="330" y2="1380"/>
+  <text class="lbl" x="290" y="1368">HTTPS</text>
+  <line class="ln" x1="520" y1="1380" x2="600" y2="1380"/>
+  <line class="ln" x1="790" y1="1380" x2="825" y2="1380"/>
+  <line class="dot" x1="945" y1="1380" x2="1010" y2="1380"/>
+  <text class="lbl" x="977" y="1370">Yes</text>
+  <line class="dot" x1="885" y1="1420" x2="885" y2="1480"/>
+  <text class="lbl" x="910" y="1456">No</text>
+  <line class="ln" x1="1120" y1="1415" x2="1120" y2="1520"/>
+  <line class="dot" x1="1120" y1="1600" x2="1120" y2="1630"/>
+  <text class="lbl" x="1140" y="1620">No</text>
+  <line class="dot" x1="1180" y1="1560" x2="1270" y2="1560"/>
+  <text class="lbl" x="1225" y="1550">Yes</text>
+  <line class="ln" x1="1450" y1="1560" x2="1500" y2="1560"/>
+  <line class="dot" x1="1560" y1="1600" x2="1560" y2="1630"/>
+  <text class="lbl" x="1580" y="1620">No</text>
+  <line class="dot" x1="1620" y1="1560" x2="1700" y2="1560"/>
+  <text class="lbl" x="1660" y="1550">Yes</text>
+  <polyline class="ln" points="1800,1595 1800,1725 40,1725 40,1380 60,1380"/>
+  <text class="lbl" x="900" y="1716">Return file to client</text>
+
+  <!-- ================= BACKGROUND MAINTENANCE ================= -->
+  <rect class="band" x="20" y="1790" width="1960" height="450" rx="10"/>
+  <rect class="hdr" x="80" y="1800" width="300" height="30" rx="5"/>
+  <text class="hdrtxt" x="95" y="1821">Background Maintenance</text>
+
+  <!-- GC lane -->
+  <rect class="lane" x="40" y="1845" width="900" height="260" rx="8"/>
+  <text class="ttl" x="60" y="1875">Garbage Collector (every N min)</text>
+
+  <rect class="box" x="80" y="1930" width="180" height="60" rx="8"/>
+  <text class="t" x="170" y="1956">Scan chunk:*</text>
+  <text class="s" x="170" y="1974">in KV</text>
+
+  <polygon class="dec" points="420,1915 495,1960 420,2005 345,1960"/>
+  <text class="s" x="420" y="1956">ref_count=0?</text>
+  <text class="s" x="420" y="1972">past grace?</text>
+
+  <rect class="box" x="570" y="1935" width="160" height="50" rx="8"/>
+  <text class="t" x="650" y="1965">Retain chunk</text>
+
+  <rect class="box" x="340" y="2040" width="160" height="50" rx="8"/>
+  <text class="t" x="420" y="2058">DELETE object</text>
+  <text class="s" x="420" y="2075">(idempotent)</text>
+
+  <rect class="box" x="570" y="2040" width="160" height="50" rx="8"/>
+  <text class="t" x="650" y="2058">KV: status</text>
+  <text class="s" x="650" y="2075">tombstoned</text>
+
+  <line class="ln" x1="260" y1="1960" x2="345" y2="1960"/>
+  <line class="dot" x1="495" y1="1960" x2="570" y2="1960"/>
+  <text class="lbl" x="530" y="1950">No</text>
+  <line class="dot" x1="420" y1="2005" x2="420" y2="2040"/>
+  <text class="lbl" x="440" y="2028">Yes</text>
+  <line class="ln" x1="500" y1="2065" x2="570" y2="2065"/>
+
+  <!-- Recovery lane -->
+  <rect class="lane" x="980" y="1845" width="630" height="260" rx="8"/>
+  <text class="ttl" x="1000" y="1875">Recovery / Reconciliation (stateless, idempotent)</text>
+
+  <rect class="box" x="1000" y="1930" width="200" height="60" rx="8"/>
+  <text class="t" x="1100" y="1956">Scan KV and</text>
+  <text class="s" x="1100" y="1974">Object Storage</text>
+
+  <polygon class="dec" points="1330,1915 1405,1960 1330,2005 1255,1960"/>
+  <text class="s" x="1330" y="1965">Inconsistent?</text>
+
+  <rect class="box" x="1435" y="1935" width="160" height="50" rx="8"/>
+  <text class="t" x="1515" y="1965">Record success</text>
+
+  <rect class="box" x="1250" y="2040" width="160" height="50" rx="8"/>
+  <text class="t" x="1330" y="2058">Repair or flag</text>
+  <text class="s" x="1330" y="2075">orphan or stale state</text>
+
+  <line class="ln" x1="1200" y1="1960" x2="1255" y2="1960"/>
+  <line class="dot" x1="1405" y1="1960" x2="1435" y2="1960"/>
+  <text class="lbl" x="1420" y="1950">No</text>
+  <line class="dot" x1="1330" y1="2005" x2="1330" y2="2040"/>
+  <text class="lbl" x="1350" y="2028">Yes</text>
+
+  <!-- Monitoring -->
+  <rect class="box" x="1650" y="1845" width="250" height="250" rx="10"/>
+  <text class="ttl" x="1775" y="1905">Monitoring and</text>
+  <text class="ttl" x="1775" y="1925">Observability</text>
+  <text class="s" x="1775" y="1968">Inputs: GC, Recovery Worker,</text>
+  <text class="s" x="1775" y="1986">Session sweeper</text>
+  <text class="s" x="1775" y="2014">Outputs: metrics, logs,</text>
+  <text class="s" x="1775" y="2032">dedup statistics</text>
+
+  <!-- Session sweeper -->
+  <rect class="box" x="980" y="2140" width="920" height="55" rx="8"/>
+  <text class="t" x="1440" y="2164">Session sweeper (hourly): abort sessions idle over 24h</text>
+  <text class="s" x="1440" y="2183">decrement refs for their committed chunks</text>
+
+  <!-- Background connectors -->
+  <line class="bg" x1="1595" y1="1960" x2="1650" y2="1960"/>
+  <line class="bg" x1="1410" y1="2065" x2="1650" y2="2065"/>
+  <polyline class="bg" points="650,2090 650,2125 1700,2125 1700,2095"/>
+  <text class="lbl" x="1000" y="2118">GC metrics and logs</text>
+  <line class="bg" x1="1775" y1="2140" x2="1775" y2="2095"/>
+
+  <!-- ================= LEGEND ================= -->
+  <rect class="band" x="20" y="2270" width="1960" height="50" rx="10"/>
+  <text class="leg" x="50" y="2301" font-weight="bold">Legend:</text>
+  <line class="ln" x1="140" y1="2296" x2="200" y2="2296"/>
+  <text class="leg" x="215" y="2301">Data flow (file / chunk bytes)</text>
+  <line class="dot" x1="560" y1="2296" x2="620" y2="2296"/>
+  <text class="leg" x="635" y="2301">Control flow (validation / decision)</text>
+  <line class="bg" x1="1100" y1="2296" x2="1160" y2="2296"/>
+  <text class="leg" x="1175" y="2301">Background flow (GC / Recovery)</text>
+</svg>

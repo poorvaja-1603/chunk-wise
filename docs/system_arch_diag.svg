@@ -1,0 +1,381 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2230" width="2000" height="2230" font-family="Helvetica, Arial, sans-serif" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTowMGM4ZjgyNS0yOGRmLTQ3NTctOWRkNy01NTRmOTdhYjQ4YWMAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaFCbxDr0A7cojqZ/0JGsbRIAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDphMThmZWY2MC01NjZhLTQ4YmItOTRlYy0zZTU0MDJhNzFhMWRscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoGMctb5VWgGOZg8qA/BT7kAAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg7bK7vtuCB8l05Df0Qs8htubALx3AK0LwEB6F0mDHphukZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaNn+D6+d5PBuooCDCaEUIYEAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCBU2TDTWhiLK2UKns1ta0R/s5coC9DU2aEmUZbxyiHSHWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBjFZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjAwYzhmODI1LTI4ZGYtNDc1Ny05ZGQ3LTU1NGY5N2FiNDhhYy9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmRiYzk5ZDNlLTAwMWEtNDE5Mi1hOGZmLWU0MTU5ZTI2ZmZlMXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDtsru+24IHyXTkN/RCzyG25sAvHcArQvAQHoXSYMemG6JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggLIX/irRpIIP9nX0yJJbvTLluIU7OGyg1BghBCCLmtnmiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggYZdjyXuUI0sKBB2RAs+q3/arS3RRgsjL31mgJ9QWg2Z0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQOur/tF023IpnrbGD9a38gdSb+ywJ/ebEsrttSS1XHvCZYZ8JTUuVNAQaIhd+0cfXAFYN+7Yr9lTBJ8SSyl3amY=</c2pa:manifest></metadata>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#137a80"/>
+    </marker>
+    <marker id="arrRev" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#137a80"/>
+    </marker>
+    <marker id="arrP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b3fa0"/>
+    </marker>
+    <style>
+      .layer { fill: #f5fbfb; stroke: #137a80; stroke-width: 2; }
+      .hdr { fill: #0f5f66; }
+      .mod { fill: #ffffff; stroke: #3aa3a8; stroke-width: 1.5; stroke-dasharray: 6 4; }
+      .box { fill: #ffffff; stroke: #137a80; stroke-width: 1.8; }
+      .gapbox { fill: #fff7ed; stroke: #b45309; stroke-width: 2; }
+      .note { fill: #eef8f8; stroke: #3aa3a8; stroke-width: 1.3; }
+      .dec { fill: #f2fbfb; stroke: #137a80; stroke-width: 1.8; }
+      .band { fill: #ffffff; stroke: #3aa3a8; stroke-width: 1.3; }
+      .wh { fill: #ffffff; }
+      .whb { fill: #ffffff; font-weight: bold; }
+      .title { font-size: 32px; font-weight: bold; fill: #0b3d40; text-anchor: middle; }
+      .sub { font-size: 17px; fill: #0f5f66; text-anchor: middle; letter-spacing: 6px; }
+      .mt { font-size: 15px; font-weight: bold; fill: #0f5f66; }
+      .t { font-size: 14px; font-weight: 600; fill: #0b3d40; text-anchor: middle; }
+      .s { font-size: 13px; fill: #0b3d40; text-anchor: middle; }
+      .tl { font-size: 16px; font-weight: 600; fill: #0b3d40; }
+      .sl { font-size: 13px; fill: #0b3d40; }
+      .itl { font-size: 14px; font-weight: bold; fill: #0b3d40; }
+      .bdy { font-size: 12.5px; fill: #1f3f42; }
+      .ttl18 { font-size: 18px; font-weight: bold; fill: #0b3d40; }
+      .leg { font-size: 14px; fill: #0b3d40; }
+      .lbl { font-size: 13px; font-weight: 600; fill: #0f5f66; text-anchor: middle; }
+      .lblL { font-size: 13px; font-weight: 600; fill: #0f5f66; }
+      .ln { stroke: #137a80; stroke-width: 1.8; fill: none; marker-end: url(#arr); }
+      .dot { stroke: #137a80; stroke-width: 1.8; stroke-dasharray: 3 4; fill: none; marker-end: url(#arr); }
+      .bi { stroke: #137a80; stroke-width: 1.8; fill: none; marker-start: url(#arrRev); marker-end: url(#arr); }
+      .bg { stroke: #6b3fa0; stroke-width: 1.8; stroke-dasharray: 8 5; fill: none; marker-end: url(#arrP); }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text class="title" x="1000" y="50">Chunk-Level Storage Deduplication Engine</text>
+  <text class="sub" x="1000" y="84">SYSTEM ARCHITECTURE</text>
+
+  <!-- ================= LAYER 1: CLIENT ================= -->
+  <rect class="layer" x="20" y="100" width="1960" height="110" rx="10"/>
+  <rect class="hdr" x="20" y="100" width="200" height="110" rx="10"/>
+  <text class="whb" x="40" y="150" font-size="18">LAYER 1</text>
+  <text class="wh" x="40" y="176" font-size="14">Client / Application</text>
+
+  <rect class="box" x="320" y="120" width="460" height="80" rx="8"/>
+  <text class="tl" x="340" y="150">Client Application / User</text>
+  <text class="sl" x="340" y="172">Web / Mobile / CLI</text>
+
+  <rect class="box" x="1180" y="120" width="460" height="80" rx="8"/>
+  <text class="tl" x="1200" y="150">HTTPS / REST API</text>
+  <text class="sl" x="1200" y="172">Idempotency-Key, auth stub, ownership check</text>
+
+  <line class="ln" x1="780" y1="140" x2="1180" y2="140"/>
+  <text class="lbl" x="980" y="132">Upload request</text>
+  <line class="ln" x1="1180" y1="172" x2="780" y2="172"/>
+  <text class="lbl" x="980" y="194">Download response</text>
+
+  <line class="ln" x1="550" y1="200" x2="550" y2="280"/>
+  <text class="lblL" x="566" y="246">Upload bytes</text>
+  <line class="ln" x1="1410" y1="250" x2="1410" y2="200"/>
+  <text class="lblL" x="1426" y="236">Download bytes</text>
+
+  <!-- ================= LAYER 2: ENGINE ================= -->
+  <rect class="layer" x="20" y="250" width="1960" height="780" rx="10"/>
+  <rect class="hdr" x="40" y="270" width="160" height="740" rx="8"/>
+  <text class="whb" x="56" y="305" font-size="18">LAYER 2</text>
+  <text class="wh" x="56" y="335" font-size="14">Custom Chunk-Level</text>
+  <text class="wh" x="56" y="355" font-size="14">Storage Deduplication</text>
+  <text class="wh" x="56" y="375" font-size="14">Engine</text>
+
+  <!-- Module A -->
+  <rect class="mod" x="240" y="280" width="560" height="240" rx="8"/>
+  <text class="mt" x="255" y="305">A. API &amp; Request Management</text>
+  <rect class="box" x="260" y="320" width="160" height="110" rx="8"/>
+  <text class="t" x="340" y="360">API Gateway /</text>
+  <text class="s" x="340" y="378">Request Handler</text>
+  <text class="s" x="340" y="396">+ auth stub</text>
+  <rect class="box" x="440" y="320" width="160" height="110" rx="8"/>
+  <text class="t" x="520" y="360">Upload / Download</text>
+  <text class="s" x="520" y="378">Request Manager</text>
+  <text class="s" x="520" y="396">Routes to session</text>
+  <rect class="box" x="620" y="320" width="160" height="110" rx="8"/>
+  <text class="t" x="700" y="360">Upload Session &amp;</text>
+  <text class="s" x="700" y="378">Idempotency</text>
+  <text class="s" x="700" y="396">(Idempotency-Key)</text>
+
+  <!-- Module B -->
+  <rect class="mod" x="800" y="280" width="380" height="240" rx="8"/>
+  <text class="mt" x="815" y="305">B. Content-Defined Chunking</text>
+  <rect class="box" x="810" y="330" width="100" height="80" rx="8"/>
+  <text class="t" x="860" y="362">File</text>
+  <text class="s" x="860" y="380">Stream</text>
+  <rect class="box" x="940" y="330" width="100" height="80" rx="8"/>
+  <text class="t" x="990" y="362">Rabin CDC</text>
+  <text class="s" x="990" y="380">Chunker</text>
+  <rect class="box" x="1070" y="330" width="100" height="80" rx="8"/>
+  <text class="t" x="1120" y="362">Chunk</text>
+  <text class="s" x="1120" y="380">Buffer</text>
+  <line class="ln" x1="910" y1="370" x2="940" y2="370"/>
+  <line class="ln" x1="1040" y1="370" x2="1070" y2="370"/>
+  <text class="s" x="990" y="440">min 2KB / avg 8KB / max 64KB</text>
+  <text class="s" x="990" y="460">rolling window 48 bytes</text>
+
+  <!-- Module C -->
+  <rect class="mod" x="1200" y="280" width="740" height="240" rx="8"/>
+  <text class="mt" x="1215" y="305">C. Chunk Identification &amp; Deduplication</text>
+  <rect class="box" x="1215" y="340" width="80" height="60" rx="8"/>
+  <text class="t" x="1255" y="375">Chunk</text>
+  <rect class="box" x="1325" y="340" width="90" height="60" rx="8"/>
+  <text class="t" x="1370" y="368">SHA-256</text>
+  <text class="s" x="1370" y="385">Hash</text>
+  <rect class="box" x="1445" y="340" width="90" height="60" rx="8"/>
+  <text class="t" x="1490" y="368">KV Index</text>
+  <text class="s" x="1490" y="385">Lookup</text>
+  <polygon class="dec" points="1620,340 1675,370 1620,400 1565,370"/>
+  <text class="s" x="1620" y="375">Duplicate?</text>
+  <rect class="box" x="1705" y="340" width="100" height="60" rx="8"/>
+  <text class="t" x="1755" y="368">Reuse</text>
+  <text class="s" x="1755" y="385">Chunk</text>
+  <rect class="box" x="1835" y="340" width="90" height="60" rx="8"/>
+  <text class="t" x="1880" y="368">Increment</text>
+  <text class="s" x="1880" y="385">Ref Count</text>
+
+  <rect class="note" x="1215" y="440" width="330" height="60" rx="6"/>
+  <text class="s" x="1380" y="462">Pending state is written before the bytes;</text>
+  <text class="s" x="1380" y="480">losing claimants poll until committed.</text>
+  <rect class="box" x="1565" y="440" width="110" height="60" rx="8"/>
+  <text class="t" x="1620" y="465">Conditional</text>
+  <text class="s" x="1620" y="483">Claim (KV)</text>
+  <rect class="box" x="1705" y="440" width="110" height="60" rx="8"/>
+  <text class="t" x="1760" y="465">Store Chunk</text>
+  <text class="s" x="1760" y="483">Bytes (S3)</text>
+  <rect class="box" x="1835" y="440" width="90" height="60" rx="8"/>
+  <text class="t" x="1880" y="465">Commit</text>
+  <text class="s" x="1880" y="483">Metadata</text>
+
+  <line class="ln" x1="1295" y1="370" x2="1325" y2="370"/>
+  <line class="ln" x1="1415" y1="370" x2="1445" y2="370"/>
+  <line class="ln" x1="1535" y1="370" x2="1565" y2="370"/>
+  <line class="dot" x1="1675" y1="370" x2="1705" y2="370"/>
+  <text class="lbl" x="1690" y="332">Existing</text>
+  <line class="ln" x1="1805" y1="370" x2="1835" y2="370"/>
+  <line class="dot" x1="1620" y1="400" x2="1620" y2="440"/>
+  <text class="lblL" x="1632" y="428">New chunk</text>
+  <line class="ln" x1="1675" y1="470" x2="1705" y2="470"/>
+  <line class="ln" x1="1815" y1="470" x2="1835" y2="470"/>
+
+  <!-- Module D -->
+  <rect class="mod" x="240" y="540" width="560" height="225" rx="8"/>
+  <text class="mt" x="255" y="565">D. Metadata &amp; Consistency Management</text>
+  <rect class="box" x="255" y="590" width="125" height="100" rx="8"/>
+  <text class="t" x="317" y="645">File Manifest</text>
+  <rect class="box" x="390" y="590" width="125" height="100" rx="8"/>
+  <text class="t" x="452" y="636">File-to-Chunk</text>
+  <text class="s" x="452" y="654">Mapping</text>
+  <rect class="box" x="525" y="590" width="125" height="100" rx="8"/>
+  <text class="t" x="587" y="626">Chunk</text>
+  <text class="t" x="587" y="644">Reference</text>
+  <text class="s" x="587" y="660">Counts</text>
+  <rect class="box" x="660" y="590" width="125" height="100" rx="8"/>
+  <text class="t" x="722" y="636">Upload Session</text>
+  <text class="s" x="722" y="654">Commit State</text>
+  <rect class="note" x="255" y="705" width="530" height="38" rx="6"/>
+  <text class="s" x="520" y="729">Manifest readable only after all chunks are committed</text>
+
+  <!-- Module E -->
+  <rect class="mod" x="820" y="540" width="1120" height="225" rx="8"/>
+  <text class="mt" x="835" y="565">E. Storage Management</text>
+  <rect class="box" x="850" y="590" width="220" height="100" rx="8"/>
+  <text class="t" x="960" y="626">Chunk Upload</text>
+  <text class="t" x="960" y="644">Manager</text>
+  <text class="s" x="960" y="664">PUT, then mark committed</text>
+  <rect class="box" x="1130" y="590" width="220" height="100" rx="8"/>
+  <text class="t" x="1240" y="626">Chunk Retrieval</text>
+  <text class="t" x="1240" y="644">Manager</text>
+  <text class="s" x="1240" y="664">GET in parallel, retry</text>
+  <rect class="box" x="1410" y="590" width="220" height="100" rx="8"/>
+  <text class="t" x="1520" y="626">SHA-256 Integrity</text>
+  <text class="t" x="1520" y="644">Verification</text>
+  <text class="s" x="1520" y="664">re-hash each chunk</text>
+  <rect class="box" x="1690" y="590" width="220" height="100" rx="8"/>
+  <text class="t" x="1800" y="626">File Reconstruction</text>
+  <text class="s" x="1800" y="646">in seq order</text>
+  <text class="s" x="1800" y="664">whole-file checksum</text>
+
+  <line class="ln" x1="785" y1="640" x2="850" y2="640"/>
+  <line class="ln" x1="1070" y1="640" x2="1130" y2="640"/>
+  <line class="ln" x1="1350" y1="640" x2="1410" y2="640"/>
+  <line class="ln" x1="1630" y1="640" x2="1690" y2="640"/>
+
+  <!-- Module F -->
+  <rect class="mod" x="240" y="785" width="1260" height="235" rx="8"/>
+  <text class="mt" x="255" y="810">F. Background Recovery &amp; Maintenance</text>
+  <rect class="box" x="260" y="835" width="280" height="120" rx="8"/>
+  <text class="t" x="400" y="866">Garbage Collection</text>
+  <text class="s" x="400" y="888">ref_count = 0 and past grace</text>
+  <text class="s" x="400" y="906">delete object, then tombstone</text>
+  <rect class="box" x="573" y="835" width="280" height="120" rx="8"/>
+  <text class="t" x="713" y="866">Recovery / Reconciliation</text>
+  <text class="s" x="713" y="888">stale pending claims, orphans</text>
+  <text class="s" x="713" y="906">repair or flag, stateless</text>
+  <rect class="box" x="886" y="835" width="280" height="120" rx="8"/>
+  <text class="t" x="1026" y="866">Orphan Chunk Detection</text>
+  <text class="s" x="1026" y="888">reverse scan: objects vs KV</text>
+  <text class="s" x="1026" y="906">delete after grace period</text>
+  <rect class="box" x="1199" y="835" width="280" height="120" rx="8"/>
+  <text class="t" x="1339" y="866">Integrity Checks</text>
+  <text class="s" x="1339" y="888">re-hash on read and write</text>
+  <text class="s" x="1339" y="906">flag and quarantine corrupt chunks</text>
+
+  <!-- Module G -->
+  <rect class="mod" x="1520" y="785" width="420" height="235" rx="8"/>
+  <text class="mt" x="1535" y="810">G. Monitoring &amp; Observability</text>
+  <rect class="box" x="1540" y="835" width="380" height="50" rx="8"/>
+  <text class="t" x="1730" y="865">Metrics</text>
+  <rect class="box" x="1540" y="900" width="380" height="50" rx="8"/>
+  <text class="t" x="1730" y="930">Operation / Error Logs</text>
+  <rect class="box" x="1540" y="965" width="380" height="50" rx="8"/>
+  <text class="t" x="1730" y="995">Deduplication Statistics</text>
+
+  <!-- ================= LAYER 3: CLOUD PRIMITIVES ================= -->
+  <rect class="layer" x="20" y="1130" width="1960" height="290" rx="10"/>
+  <rect class="hdr" x="40" y="1150" width="160" height="250" rx="8"/>
+  <text class="whb" x="56" y="1185" font-size="18">LAYER 3</text>
+  <text class="wh" x="56" y="1215" font-size="14">Cloud Storage</text>
+  <text class="wh" x="56" y="1235" font-size="14">Primitives</text>
+
+  <rect class="box" x="240" y="1160" width="780" height="230" rx="10"/>
+  <text class="ttl18" x="265" y="1198">Object Storage (S3)</text>
+  <text class="leg" x="275" y="1236">• Immutable chunk bytes</text>
+  <text class="leg" x="275" y="1262">• Key: chunks/{sha256}, content-addressed</text>
+  <text class="leg" x="275" y="1288">• Chunk data only, no metadata</text>
+  <text class="leg" x="275" y="1314">• Written before KV marks the chunk committed</text>
+
+  <rect class="box" x="1100" y="1160" width="820" height="230" rx="10"/>
+  <text class="ttl18" x="1125" y="1198">Distributed Key-Value Store (DynamoDB)</text>
+  <text class="leg" x="1135" y="1236">• Chunk index: pending / committed / tombstoned</text>
+  <text class="leg" x="1135" y="1262">• File manifests (chunk_list), set once on commit</text>
+  <text class="leg" x="1135" y="1288">• Reference counts (atomic increments)</text>
+  <text class="leg" x="1135" y="1314">• Upload sessions, claims, and recovery state</text>
+
+  <!-- L2 to L3 connectors -->
+  <line class="bi" x1="870" y1="690" x2="870" y2="1160"/>
+  <text class="lbl" x="880" y="1090">Store / get chunk bytes (immutable)</text>
+  <line class="bi" x1="1500" y1="690" x2="1500" y2="1160"/>
+  <text class="lblL" x="1512" y="1090">Read / write metadata (mutable)</text>
+  <line class="bg" x1="400" y1="955" x2="400" y2="1160"/>
+  <text class="lblL" x="410" y="1110" style="fill:#6b3fa0">GC and recovery scans</text>
+  <line class="bg" x1="713" y1="955" x2="713" y2="1160"/>
+  <line class="bg" x1="1120" y1="955" x2="1120" y2="1160"/>
+  <text class="lblL" x="1132" y="1135" style="fill:#6b3fa0">Orphan / reconciliation scan</text>
+
+  <!-- ================= LAYER 4: FAILURE & EDGE CASES ================= -->
+  <rect class="layer" x="20" y="1450" width="1960" height="670" rx="10"/>
+  <rect class="hdr" x="40" y="1470" width="160" height="630" rx="8"/>
+  <text class="whb" x="56" y="1505" font-size="18">LAYER 4</text>
+  <text class="wh" x="56" y="1535" font-size="14">Failure &amp;</text>
+  <text class="wh" x="56" y="1555" font-size="14">Edge Case</text>
+  <text class="wh" x="56" y="1575" font-size="14">Strategy</text>
+
+  <!-- Column headers -->
+  <rect class="hdr" x="240" y="1470" width="550" height="40" rx="6"/>
+  <text class="whb" x="515" y="1496" font-size="16" text-anchor="middle">Component crash behavior</text>
+  <rect class="hdr" x="815" y="1470" width="550" height="40" rx="6"/>
+  <text class="whb" x="1090" y="1496" font-size="16" text-anchor="middle">Network partitions</text>
+  <rect class="hdr" x="1390" y="1470" width="550" height="40" rx="6"/>
+  <text class="whb" x="1665" y="1496" font-size="16" text-anchor="middle">Data recovery steps</text>
+
+  <!-- Column 1: crash behavior (x=250) -->
+  <rect class="box" x="250" y="1525" width="530" height="84" rx="6"/>
+  <text class="itl" x="262" y="1549">API gateway or upload worker crash</text>
+  <text class="bdy" x="262" y="1571">Gateway is stateless: any replica serves. Session state lives in KV.</text>
+  <text class="bdy" x="262" y="1590">Client retries with the same Idempotency-Key and resumes at its checkpoint.</text>
+
+  <rect class="box" x="250" y="1619" width="530" height="84" rx="6"/>
+  <text class="itl" x="262" y="1643">Crash after object PUT, before KV commit</text>
+  <text class="bdy" x="262" y="1665">Object exists, KV does not reference it: an orphan, not a dangling link.</text>
+  <text class="bdy" x="262" y="1684">Recovery worker deletes it after the grace period.</text>
+
+  <rect class="box" x="250" y="1713" width="530" height="84" rx="6"/>
+  <text class="itl" x="262" y="1737">Crash while a chunk is pending</text>
+  <text class="bdy" x="262" y="1759">Claim stays pending; waiters time out and get a retryable error.</text>
+  <text class="bdy" x="262" y="1778">Stale claims past the lease are reclaimed by the recovery worker.</text>
+
+  <rect class="box" x="250" y="1807" width="530" height="84" rx="6"/>
+  <text class="itl" x="262" y="1831">Crash after checkpoint, before file commit</text>
+  <text class="bdy" x="262" y="1853">Committed chunks are skipped on retry; the file stays invisible.</text>
+  <text class="bdy" x="262" y="1872">Finalize write is conditional (IF NOT EXISTS), so a replay cannot duplicate.</text>
+
+  <rect class="box" x="250" y="1901" width="530" height="84" rx="6"/>
+  <text class="itl" x="262" y="1925">Crash during GC or recovery scan</text>
+  <text class="bdy" x="262" y="1947">Both are stateless and idempotent: deleting a missing key is a no-op.</text>
+  <text class="bdy" x="262" y="1966">Tombstone only after the object delete, so a restart re-runs safely.</text>
+
+  <rect class="gapbox" x="250" y="1995" width="530" height="84" rx="6"/>
+  <text class="itl" x="262" y="2019" style="fill:#92400e">GAP: ref_count increment and checkpoint not atomic</text>
+  <text class="bdy" x="262" y="2041">A crash between them makes a replay increment the count twice.</text>
+  <text class="bdy" x="262" y="2060">Fix: TransactWriteItems for both, or recompute refs from manifests.</text>
+
+  <!-- Column 2: network partitions (x=825) -->
+  <rect class="box" x="825" y="1525" width="530" height="84" rx="6"/>
+  <text class="itl" x="837" y="1549">Client to API partition</text>
+  <text class="bdy" x="837" y="1571">Client retries with the same Idempotency-Key after the timeout.</text>
+  <text class="bdy" x="837" y="1590">Server returns the existing session or file: no duplicate record.</text>
+
+  <rect class="box" x="825" y="1619" width="530" height="84" rx="6"/>
+  <text class="itl" x="837" y="1643">API to KV partition</text>
+  <text class="bdy" x="837" y="1665">Claims and commits fail, so no chunk is written and the upload gets 503.</text>
+  <text class="bdy" x="837" y="1684">Reads that need a manifest also fail. Partial data is never returned.</text>
+
+  <rect class="box" x="825" y="1713" width="530" height="84" rx="6"/>
+  <text class="itl" x="837" y="1737">API to object storage partition</text>
+  <text class="bdy" x="837" y="1759">A PUT can succeed while its ACK is lost. Retry is safe: same key, same bytes.</text>
+  <text class="bdy" x="837" y="1778">If the claim holder gives up, the claim goes stale and is reclaimed.</text>
+
+  <rect class="box" x="825" y="1807" width="530" height="84" rx="6"/>
+  <text class="itl" x="837" y="1831">Worker to KV partition during commit</text>
+  <text class="bdy" x="837" y="1853">Chunk stays pending. Waiters time out at 30s and get a retryable error.</text>
+  <text class="bdy" x="837" y="1872">No committed state is written without a KV acknowledgment.</text>
+
+  <rect class="box" x="825" y="1901" width="530" height="84" rx="6"/>
+  <text class="itl" x="837" y="1925">Visibility guarantee under any partition</text>
+  <text class="bdy" x="837" y="1947">Reads return 404 until the manifest is committed, so partial files</text>
+  <text class="bdy" x="837" y="1966">are never visible. Every write either commits fully or can be retried.</text>
+
+  <rect class="box" x="825" y="1995" width="530" height="84" rx="6"/>
+  <text class="itl" x="837" y="2019">Assumption (stated, not silent)</text>
+  <text class="bdy" x="837" y="2041">KV gives conditional writes and strongly consistent reads per key</text>
+  <text class="bdy" x="837" y="2060">(DynamoDB ConsistentRead). Partitions are treated as failures, not success.</text>
+
+  <!-- Column 3: recovery steps (x=1400) -->
+  <rect class="box" x="1400" y="1525" width="530" height="84" rx="6"/>
+  <text class="itl" x="1412" y="1549">Step 1: Resume the upload</text>
+  <text class="bdy" x="1412" y="1571">Client retries POST with the same key. Server loads the session and</text>
+  <text class="bdy" x="1412" y="1590">replays from chunks_committed. Committed chunks are not re-uploaded.</text>
+
+  <rect class="box" x="1400" y="1619" width="530" height="84" rx="6"/>
+  <text class="itl" x="1412" y="1643">Step 2: Reclaim stale pending chunks</text>
+  <text class="bdy" x="1412" y="1665">Recovery finds claims past the lease and checks the object's hash:</text>
+  <text class="bdy" x="1412" y="1684">matching bytes mean commit; missing or mismatched means reset the claim.</text>
+
+  <rect class="box" x="1400" y="1713" width="530" height="84" rx="6"/>
+  <text class="itl" x="1412" y="1737">Step 3: Clean orphans and abandoned sessions</text>
+  <text class="bdy" x="1412" y="1759">Reverse scan finds objects with no committed KV entry; delete after grace.</text>
+  <text class="bdy" x="1412" y="1778">Sweeper aborts sessions idle over 24h and decrements their committed refs.</text>
+
+  <rect class="box" x="1400" y="1807" width="530" height="84" rx="6"/>
+  <text class="itl" x="1412" y="1831">Step 4: Repair refcount drift</text>
+  <text class="bdy" x="1412" y="1853">Recompute ref_count from committed file manifests, then correct KV.</text>
+  <text class="bdy" x="1412" y="1872">Manifests are the source of truth; GC runs only after the repair.</text>
+
+  <rect class="box" x="1400" y="1901" width="530" height="84" rx="6"/>
+  <text class="itl" x="1412" y="1925">Step 5: Corrupt or missing chunk</text>
+  <text class="bdy" x="1412" y="1947">Hash mismatch or missing object: read fails with an explicit error.</text>
+  <text class="bdy" x="1412" y="1966">Quarantine the chunk, flag the file, restore from a replica or backup.</text>
+
+  <rect class="box" x="1400" y="1995" width="530" height="84" rx="6"/>
+  <text class="itl" x="1412" y="2019">Step 6: Verify and alert</text>
+  <text class="bdy" x="1412" y="2041">Each repair is logged with a metric: count and time to detect.</text>
+  <text class="bdy" x="1412" y="2060">Recovery time is measured per injected fault (Section 9 scenarios).</text>
+
+  <!-- ================= LEGEND ================= -->
+  <rect class="band" x="20" y="2150" width="1960" height="50" rx="8"/>
+  <text class="leg" x="50" y="2181" font-weight="bold">Legend:</text>
+  <line class="ln" x1="140" y1="2176" x2="200" y2="2176"/>
+  <text class="leg" x="215" y="2181">Data / metadata flow</text>
+  <line class="bg" x1="460" y1="2176" x2="520" y2="2176"/>
+  <text class="leg" x="535" y="2181">Background / GC / recovery scan</text>
+  <line x1="880" y1="2176" x2="940" y2="2176" stroke="#3aa3a8" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text class="leg" x="955" y="2181">Module boundary</text>
+  <rect x="1200" y="2164" width="30" height="20" rx="3" fill="#fff7ed" stroke="#b45309" stroke-width="2"/>
+  <text class="leg" x="1240" y="2181">Design gap to fix</text>
+</svg>
