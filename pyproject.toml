@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chunkwise"
+version = "0.1.0"
+description = "Content-defined chunk-level storage deduplication prototype"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+bench = ["matplotlib>=3.8"]
+
+[project.scripts]
+chunkwise = "chunkwise.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
