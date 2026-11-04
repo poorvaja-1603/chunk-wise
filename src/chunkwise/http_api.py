@@ -4,25 +4,110 @@ from __future__ import annotations
 import json
 import os
 import re
+import sqlite3
 import sys
+import threading
+import uuid
 from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit
 
+try:
+    from botocore.exceptions import BotoCoreError, ClientError
+except ImportError:
+    class BotoCoreError(Exception): pass
+    class ClientError(Exception): pass
+
 from . import Engine
 from .errors import ChunkWiseError, IdempotencyConflictError
+from .simulation import HybridRunner
 from .ui import STATIC_FILES, STATIC_DIR
 
 FILE_ID_PATTERN = re.compile(r"^f-[a-f0-9]{12}$")
+SIMULATION_ID_PATTERN = re.compile(r"^[a-f0-9]{12}$")
 CHUNKERS = {"cdc", "fixed"}
 DEFAULT_MAX_UPLOAD_BYTES = 100 * 1024 * 1024
+
+
+class SimulationJobManager:
+    def __init__(self, home: Path) -> None:
+        self.home = Path(home)
+        self._lock = threading.Lock()
+        self._jobs: dict[str, dict] = {}
+
+    def start(
+        self,
+        stage_seconds: int,
+        duplicate_ratio: float,
+        seed: int,
+        source_file_id: str | None,
+    ) -> str | None:
+        with self._lock:
+            if any(job["status"] == "running" for job in self._jobs.values()):
+                return None
+            job_id = uuid.uuid4().hex[:12]
+            self._jobs[job_id] = {
+                "status": "running",
+                "stage_seconds": stage_seconds,
+                "duplicate_ratio": duplicate_ratio,
+                "seed": seed,
+                "source_file_id": source_file_id,
+                "rows": [],
+                "result": None,
+                "error": None,
+            }
+        thread = threading.Thread(
+            target=self._run,
+            args=(job_id, stage_seconds, duplicate_ratio, seed),
+            daemon=True,
+            name=f"chunkwise-simulation-{job_id}",
+        )
+        thread.start()
+        return job_id
+
+    def _append_row(self, job_id: str, row: dict) -> None:
+        with self._lock:
+            self._jobs[job_id]["rows"].append(row)
+
+    def _run(
+        self,
+        job_id: str,
+        stage_seconds: int,
+        duplicate_ratio: float,
+        seed: int,
+    ) -> None:
+        try:
+            runner = HybridRunner(
+                home=self.home,
+                metrics_path=self.home / "simulations" / f"{job_id}.jsonl",
+                seed=seed,
+                duplicate_ratio=duplicate_ratio,
+                stage_seconds=stage_seconds,
+                realtime=True,
+                metrics_callback=lambda row: self._append_row(job_id, row),
+            )
+            result = runner.run()
+            with self._lock:
+                self._jobs[job_id]["status"] = "completed"
+                self._jobs[job_id]["result"] = result
+        except Exception as error:
+            print(f"Simulation {job_id} failed: {error}", file=sys.stderr)
+            with self._lock:
+                self._jobs[job_id]["status"] = "failed"
+                self._jobs[job_id]["error"] = str(error)
+
+    def get(self, job_id: str) -> dict | None:
+        with self._lock:
+            job = self._jobs.get(job_id)
+            return None if job is None else dict(job, rows=list(job["rows"]))
 
 
 class ChunkWiseHTTPServer(HTTPServer):
     def __init__(self, address: tuple[str, int], home: Path, max_upload_bytes: int):
         self.home = Path(home).expanduser().resolve()
         self.max_upload_bytes = max_upload_bytes
+        self.simulations = SimulationJobManager(self.home)
         super().__init__(address, ChunkWiseRequestHandler)
 
 
@@ -39,25 +124,54 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
             self._send_json(200, {"ok": True})
             return
         if path == "/api/config":
-            self._send_json(200, {"max_upload_bytes": self.server.max_upload_bytes})
+            backend = os.environ.get("CHUNKWISE_BACKEND", "local").strip().lower()
+            self._send_json(200, {
+                "max_upload_bytes": self.server.max_upload_bytes,
+                "backend": backend,
+                "index_label": "DynamoDB Metadata Index" if backend == "aws" else "SQLite Metadata Index",
+                "store_label": "S3 Chunk Store" if backend == "aws" else "Content-Addressed Chunk Store",
+            })
+            return
+        match = re.fullmatch(r"/api/simulations/([a-f0-9]{12})", path)
+        if match:
+            job = self.server.simulations.get(match.group(1))
+            if job is None:
+                self._send_error_json(404, "Simulation not found")
+            else:
+                self._send_json(200, job)
             return
         if path == "/api/stats":
-            with Engine(self.server.home) as engine:
-                self._send_json(200, asdict(engine.stats()))
+            try:
+                with Engine(self.server.home) as engine:
+                    value = asdict(engine.stats())
+            except (BotoCoreError, ClientError, sqlite3.Error, OSError, ValueError) as error:
+                self._log_backend_error(error)
+                self._send_error_json(503, "Storage backend unavailable")
+                return
+            self._send_json(200, value)
+            return
+        if path == "/api/metrics":
+            from .observability import get_metrics
+            self._send_json(200, get_metrics().to_dict())
             return
         if path == "/api/files":
-            with Engine(self.server.home) as engine:
-                files = [
-                    {
-                        "file_id": row.file_id,
-                        "name": row.name,
-                        "size": row.size,
-                        "chunker": row.chunker,
-                        "created_at": row.created_at,
-                        "chunks": len(engine.index.manifest(row.file_id)),
-                    }
-                    for row in engine.index.list_files()
-                ]
+            try:
+                with Engine(self.server.home) as engine:
+                    files = [
+                        {
+                            "file_id": row.file_id,
+                            "name": row.name,
+                            "size": row.size,
+                            "chunker": row.chunker,
+                            "created_at": row.created_at,
+                            "chunks": len(engine.index.manifest(row.file_id)),
+                        }
+                        for row in engine.index.list_files()
+                    ]
+            except (BotoCoreError, ClientError, sqlite3.Error, OSError, ValueError) as error:
+                self._log_backend_error(error)
+                self._send_error_json(503, "Storage backend unavailable")
+                return
             self._send_json(200, {"files": files})
             return
 
@@ -80,11 +194,17 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
                 )
             except ChunkWiseError as error:
                 self._send_error_json(404, str(error))
+            except (BotoCoreError, ClientError, sqlite3.Error, OSError, ValueError) as error:
+                self._log_backend_error(error)
+                self._send_error_json(503, "Storage backend unavailable")
             return
         self._send_error_json(404, "Not found")
 
     def do_POST(self) -> None:
         path = urlsplit(self.path).path
+        if path == "/api/simulations":
+            self._start_simulation()
+            return
         if path == "/api/files":
             self._upload()
             return
@@ -100,8 +220,57 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(200, {"file_id": file_id, "verified": True, "size": size})
             except ChunkWiseError as error:
                 self._send_error_json(422, str(error))
+            except (BotoCoreError, ClientError, sqlite3.Error, OSError, ValueError) as error:
+                self._log_backend_error(error)
+                self._send_error_json(503, "Storage backend unavailable")
             return
         self._send_error_json(404, "Not found")
+
+    def _start_simulation(self) -> None:
+        try:
+            length = int(self.headers.get("Content-Length", ""))
+        except ValueError:
+            self._send_error_json(400, "A valid Content-Length is required")
+            return
+        if length < 0 or length > 4096:
+            self._send_error_json(400, "Simulation settings must be a small JSON object")
+            return
+        try:
+            options = json.loads(self.rfile.read(length))
+            if not isinstance(options, dict):
+                raise ValueError
+            stage_seconds = options.get("stage_seconds", 2)
+            duplicate_ratio = options.get("duplicate_ratio", 0.6)
+            seed = options.get("seed", 1)
+            source_file_id = options.get("source_file_id")
+            if (
+                isinstance(stage_seconds, bool)
+                or not isinstance(stage_seconds, int)
+                or not 1 <= stage_seconds <= 30
+            ):
+                raise ValueError
+            if duplicate_ratio not in (0.3, 0.6, 0.9):
+                raise ValueError
+            if isinstance(seed, bool) or not isinstance(seed, int) or not 0 <= seed <= 2**31 - 1:
+                raise ValueError
+            if source_file_id is not None and (
+                not isinstance(source_file_id, str)
+                or not FILE_ID_PATTERN.fullmatch(source_file_id)
+            ):
+                raise ValueError
+        except (json.JSONDecodeError, UnicodeDecodeError, ValueError, TypeError):
+            self._send_error_json(400, "Invalid simulation settings")
+            return
+        job_id = self.server.simulations.start(
+            stage_seconds,
+            duplicate_ratio,
+            seed,
+            source_file_id,
+        )
+        if job_id is None:
+            self._send_error_json(409, "A simulation is already running")
+            return
+        self._send_json(202, {"simulation_id": job_id, "status": "running"})
 
     def _upload(self) -> None:
         try:
@@ -113,6 +282,8 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
             self._send_error_json(400, "Content-Length must not be negative")
             return
         if length > self.server.max_upload_bytes:
+            if length > 0:
+                self.rfile.read(min(length, 1024 * 1024))
             self._send_error_json(413, "File exceeds the configured upload limit")
             return
         chunker = self.headers.get("X-Chunker", "cdc")
@@ -136,6 +307,9 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
             self._send_error_json(409, str(error))
         except (ChunkWiseError, ValueError) as error:
             self._send_error_json(400, str(error))
+        except (BotoCoreError, ClientError, sqlite3.Error, OSError) as error:
+            self._log_backend_error(error)
+            self._send_error_json(503, "Storage backend unavailable")
 
     @staticmethod
     def _filename(value: str) -> str:
@@ -150,6 +324,10 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
 
     def _send_error_json(self, status: int, message: str) -> None:
         self._send_json(status, {"error": message})
+
+    @staticmethod
+    def _log_backend_error(error: Exception) -> None:
+        print(f"Storage backend error: {error}", file=sys.stderr)
 
     def _send_bytes(
         self,
@@ -166,7 +344,7 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Referrer-Policy", "no-referrer")
         self.send_header(
             "Content-Security-Policy",
-            "default-src 'self'; script-src 'self'; style-src 'self'; "
+            "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; "
             "img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'",
         )
         for key, value in (headers or {}).items():

@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.installed.cfg
+*.egg
+.chunkwise/
+simulation/metrics.jsonl
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/

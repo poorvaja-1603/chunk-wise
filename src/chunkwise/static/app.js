@@ -123,6 +123,7 @@ async function refreshAll() {
       refreshStats(), refreshFiles(), api("/api/health"), api("/api/config"),
     ]);
     $("#uploadLimit").textContent = `Maximum upload size: ${formatBytes(config.max_upload_bytes)}`;
+    $("#backendBadge").textContent = config.backend === "aws" ? "AWS vault" : "Local vault";
     $("#connectionLabel").textContent = "Storage online";
     $("#connectionStatus").classList.remove("is-offline");
   } catch (error) {
@@ -146,6 +147,7 @@ function selectFile(file) {
   $("#selectedFile").hidden = false;
   uploadButton.disabled = false;
   $("#uploadMessage").hidden = true;
+  $("#uploadNextSteps").hidden = true;
 }
 
 function uploadSelectedFile() {
@@ -192,6 +194,11 @@ function uploadSelectedFile() {
     $("#selectedFile").hidden = true;
     uploadButton.disabled = true;
     setUploadMessage(`${response.name} stored · ${Number(response.chunks).toLocaleString()} chunks · ${formatBytes(response.new_bytes)} new bytes`, "success");
+    $("#simulationLink").href = "#simulation";
+    $("#uploadNextSteps").hidden = false;
+    window.dispatchEvent(new CustomEvent("chunkwise:file-uploaded", {
+      detail: { fileId: response.file_id },
+    }));
     await refreshAll();
   });
   request.addEventListener("error", () => {

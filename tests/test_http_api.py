@@ -1,10 +1,12 @@
 import http.client
 import json
 import threading
+import time
 from contextlib import contextmanager
 
 from chunkwise import Engine
 from chunkwise.http_api import ChunkWiseHTTPServer
+from chunkwise.simulation import HybridRunner
 
 
 @contextmanager
@@ -35,7 +37,20 @@ def test_http_dashboard_upload_list_download_verify_and_stats(tmp_path):
         status, page, headers = request(server, "GET", "/")
         assert status == 200
         assert b"Storage overview" in page
+        assert b"Upload simulation" in page
+        assert b"uploadNextSteps" in page
+        assert b'id="simulation"' in page
+        assert b'id="runButton"' in page
         assert headers["Content-Security-Policy"]
+
+        status, page, _ = request(server, "GET", "/simulation")
+        assert status == 200
+        assert b"simulated" in page
+        assert b"Chunking + Dedup Engine" in page
+        assert b"SQLite Metadata Index" in page
+        status, script, _ = request(server, "GET", "/static/simulation.js")
+        assert status == 200
+        assert b"Chart" in script
 
         status, body, _ = request(
             server,
@@ -170,3 +185,41 @@ def test_http_verification_reports_corrupt_chunk(tmp_path):
         status, body, _ = request(server, "POST", f"/api/files/{file_id}/verify")
         assert status == 422
         assert "failed verification" in json.loads(body)["error"]
+
+
+def test_http_simulation_runs_virtual_only_and_returns_live_simulated_rows(tmp_path, monkeypatch):
+    monkeypatch.setenv("CHUNKWISE_BACKEND", "aws")
+
+    def fail_if_real_backend_is_used(self):
+        raise AssertionError("virtual web simulation initialized a real backend")
+
+    monkeypatch.setattr(HybridRunner, "_real_pipeline", fail_if_real_backend_is_used)
+    with running_server(tmp_path) as server:
+        status, body, _ = request(
+            server,
+            "POST",
+            "/api/simulations",
+            json.dumps({"stage_seconds": 1, "duplicate_ratio": 0.6, "seed": 7}),
+            {"Content-Type": "application/json"},
+        )
+        assert status == 202
+        simulation_id = json.loads(body)["simulation_id"]
+        deadline = time.monotonic() + 10
+        job = None
+        while time.monotonic() < deadline:
+            status, body, _ = request(
+                server, "GET", f"/api/simulations/{simulation_id}"
+            )
+            assert status == 200
+            job = json.loads(body)
+            if job["status"] != "running":
+                break
+            time.sleep(0.1)
+
+        assert job is not None
+        assert job["status"] == "completed"
+        assert len(job["rows"]) == 3
+        assert all(row["mode"] == "virtual" for row in job["rows"])
+        assert all(row["label"] == "simulated" and row["simulated"] for row in job["rows"])
+        assert (server.home / "simulations" / f"{simulation_id}.jsonl").is_file()
+        assert not (server.home / "results" / "results.json").exists()

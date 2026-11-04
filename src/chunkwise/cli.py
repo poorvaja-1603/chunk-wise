@@ -36,7 +36,18 @@ def main(argv: list[str] | None = None) -> int:
 
     verify_parser = commands.add_parser("verify", help="verify a stored file")
     verify_parser.add_argument("file_id")
+
     commands.add_parser("stats", help="print storage accounting")
+
+    delete_parser = commands.add_parser("delete", help="delete a file and tombstone zero-ref chunks")
+    delete_parser.add_argument("file_id")
+
+    gc_parser = commands.add_parser("gc", help="garbage collect expired tombstoned chunks")
+    gc_parser.add_argument("--grace-seconds", type=float, default=86400.0)
+
+    fsck_parser = commands.add_parser("fsck", help="verify refcounts, detect drift and orphan chunks")
+    fsck_parser.add_argument("--repair", action="store_true", default=False)
+    fsck_parser.add_argument("--max-pending-age", type=float, default=3600.0)
 
     arguments = parser.parse_args(argv)
     try:
@@ -58,6 +69,20 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"ok: {engine.verify(arguments.file_id)} bytes verified")
             elif arguments.command == "stats":
                 print(json.dumps(asdict(engine.stats()), indent=2))
+            elif arguments.command == "delete":
+                result = engine.delete(arguments.file_id)
+                print(json.dumps(result, indent=2))
+            elif arguments.command == "gc":
+                result = engine.gc(grace_seconds=arguments.grace_seconds)
+                print(json.dumps(result, indent=2))
+            elif arguments.command == "fsck":
+                result = engine.fsck(
+                    repair=arguments.repair,
+                    max_pending_age_seconds=arguments.max_pending_age,
+                )
+                print(json.dumps(result, indent=2))
+                if not result["ok"] and not arguments.repair:
+                    return 2
     except (IntegrityError, ChunkMissingError) as error:
         print(f"INTEGRITY ERROR: {error}", file=sys.stderr)
         return 2

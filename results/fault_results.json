@@ -1,0 +1,56 @@
+[
+  {
+    "scenario": "crash_after_chunk_put",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.1148
+  },
+  {
+    "scenario": "crash_after_refs_before_commit",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.0521
+  },
+  {
+    "scenario": "crash_mid_manifest",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.0309
+  },
+  {
+    "scenario": "s3_throttle_5xx_retry",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.0
+  },
+  {
+    "scenario": "dynamodb_conditional_failure",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.0
+  },
+  {
+    "scenario": "corrupt_chunk_s3",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.0402
+  },
+  {
+    "scenario": "missing_chunk",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.0395
+  },
+  {
+    "scenario": "concurrent_duplicate_uploads",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.0845
+  },
+  {
+    "scenario": "stale_claim_dead_writer",
+    "detected": true,
+    "recovered": true,
+    "recovery_seconds": 0.0602
+  }
+]

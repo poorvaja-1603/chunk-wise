@@ -1,0 +1,11 @@
+{
+  "source": "C:\\Users\\Poorvaja\\Desktop\\Chunk_Wise\\results\\results.json",
+  "measured_on": "Windows-10-10.0.26100-SP0",
+  "note": "Python prototype timings. Production services will differ. Calibrate, do not copy.",
+  "cpu_service_ms_per_mb_put": 1434.8,
+  "cpu_service_ms_per_mb_get": 104.7,
+  "store_write_fraction_edited_text": 0.0014,
+  "store_write_fraction_small_files_second_copy": 0.0,
+  "dedup_ratio_edited_text": 1.9974,
+  "dedup_ratio_duplicates_D2": 4.0
+}

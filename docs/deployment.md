@@ -1,63 +1,142 @@
-# ChunkWise Dashboard Deployment
+# ChunkWise Deployment
 
-ChunkWise is a single-process Python service with a local SQLite index and a
-filesystem chunk store. The simplest deployment is one container or one
-persistent-disk application instance. Do not scale it horizontally: SQLite and
-the local chunk directory are a single-writer, single-machine store.
+ChunkWise supports a local filesystem/SQLite configuration and an AWS
+configuration using S3 for chunk bytes and an on-demand DynamoDB table for
+metadata. The AWS backend uses boto3's default credential chain. In AWS Academy
+Learner Lab, start the lab and use its provided role credentials; do not copy
+access keys into source files or commit them.
 
-The application has no authentication or multi-user isolation. Keep it private
-or put it behind your hosting platform's access-control layer; do not publish
-an unauthenticated storage dashboard to the public internet.
+The HTTP API has no built-in authentication or multi-user isolation. Keep it
+private, use an SSH tunnel, or restrict access through the security group or an
+authenticated proxy. Do not expose an unauthenticated storage dashboard to the
+public internet.
 
-## Run locally
+## Local
 
-```sh
-python3.11 -m venv .venv
-source .venv/bin/activate
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 pip install -e .
-CHUNKWISE_HOME="$PWD/.chunkwise" CHUNKWISE_HOST=127.0.0.1 PORT=8080 chunkwise-web
+$env:CHUNKWISE_HOME = "$PWD\.chunkwise"
+$env:CHUNKWISE_HOST = "127.0.0.1"
+$env:PORT = "8080"
+chunkwise-web
 ```
 
-Open `http://127.0.0.1:8080`. The service uses only the Python standard library
-at runtime. The UI is served by the same process and makes same-origin requests.
+Open `http://127.0.0.1:8080`. Local mode uses the standard library and SQLite.
+The local data directory must be persistent if it contains files you want to
+keep.
 
-## Environment
+## AWS backend
 
-| Variable                     | Default                       | Purpose                                                          |
-| ---------------------------- | ----------------------------- | ---------------------------------------------------------------- |
-| `CHUNKWISE_HOME`             | `./.chunkwise`                | Private directory containing `index.sqlite3` and chunk data.     |
-| `CHUNKWISE_HOST`             | `0.0.0.0`                     | Listen interface. Set to `127.0.0.1` for local-only development. |
-| `PORT`                       | `CHUNKWISE_PORT`, then `8080` | Hosting-platform port. `PORT` takes precedence.                  |
-| `CHUNKWISE_MAX_UPLOAD_BYTES` | `104857600`                   | Maximum request body accepted by the upload API (100 MiB).       |
+Install the package and set your AWS configuration variables:
 
-Set the platform's port variable to the HTTP port. The app has no database or
-cloud-storage service to configure. The browser only receives the dashboard and
-API responses; the storage home is never a static-file root.
-
-## Docker
-
-Build and run with a named persistent volume:
-
-```sh
-docker build -t chunkwise .
-docker volume create chunkwise-data
-docker run --name chunkwise --restart unless-stopped \
-  -p 8080:8080 \
-  -e PORT=8080 \
-  -e CHUNKWISE_HOME=/data/chunkwise \
-  -v chunkwise-data:/data/chunkwise \
-  chunkwise
+```powershell
+pip install -e .
+$env:CHUNKWISE_BACKEND = "aws"
+$env:CHUNKWISE_S3_BUCKET = "your-existing-bucket"
+$env:CHUNKWISE_DYNAMODB_TABLE = "chunkwise-index"
+$env:CHUNKWISE_AWS_REGION = "us-east-1"
+$env:CHUNKWISE_CLOUDWATCH = "1"
+$env:CHUNKWISE_HOME = "$PWD\.chunkwise"
+$env:PORT = "8080"
+chunkwise-web
 ```
 
-The image runs as UID 10001. Keep `/data/chunkwise` on persistent storage and
-include it in backups. A container's writable layer is not durable across
-replacement. Do not mount the data directory into a web-server document root,
-and do not run multiple service replicas against separate ephemeral disks.
+For local development, keep non-secret settings together in PowerShell.
+Never put AWS credentials into version-controlled files.
 
-For a hosting platform, deploy this Dockerfile as one service, attach one
-persistent disk at `/data/chunkwise`, set `CHUNKWISE_HOME=/data/chunkwise`, and
-allow the platform-assigned `PORT` through its HTTP proxy. The app binds to
-`0.0.0.0` by default. TLS termination should be handled by the platform proxy.
+`CHUNKWISE_AWS_REGION` defaults to the standard boto3 provider chain when omitted.
+The configured S3 bucket must already exist. The DynamoDB table is created
+on demand with `PAY_PER_REQUEST` billing and `pk` / `sk` string keys, plus a
+`status-index` global secondary index for committed file queries.
 
-This configuration is deployment-ready code, not a claim that the application
-has been deployed to a hosting provider.
+### Required IAM Actions
+
+The active AWS credentials or Learner Lab LabRole must permit:
+
+- S3:
+  - `s3:GetObject`
+  - `s3:PutObject`
+  - `s3:DeleteObject`
+  - `s3:ListBucket`
+- DynamoDB:
+  - `dynamodb:CreateTable`
+  - `dynamodb:DescribeTable`
+  - `dynamodb:GetItem`
+  - `dynamodb:BatchGetItem`
+  - `dynamodb:PutItem`
+  - `dynamodb:UpdateItem`
+  - `dynamodb:DeleteItem`
+  - `dynamodb:BatchWriteItem`
+  - `dynamodb:Query` (on the primary table and on the `status-index` GSI)
+- CloudWatch (when `CHUNKWISE_CLOUDWATCH=1`):
+  - `cloudwatch:PutMetricData`
+  - `cloudwatch:PutDashboard`
+  - `cloudwatch:PutMetricAlarm`
+
+Use the lab's existing role and policies. If LabRole denies dashboard creation,
+metric emission via `PutMetricData` remains functional.
+
+## CloudWatch setup
+
+To create the CloudWatch dashboard and alarm for integrity monitoring:
+
+```powershell
+python scripts\cloudwatch_setup.py
+```
+
+## CLI commands
+
+```powershell
+# Upload with content-defined chunking
+chunkwise put path\to\file
+
+# Upload with fixed-size chunking
+chunkwise put path\to\file --chunker fixed
+
+# Print storage accounting summary
+chunkwise stats
+
+# Restore a file to output path
+chunkwise get FILE_ID -o restored.bin
+
+# Verify chunk and whole-file integrity
+chunkwise verify FILE_ID
+
+# Delete a file and mark zero-ref chunks as tombstoned
+chunkwise delete FILE_ID
+
+# Garbage collect expired tombstoned chunks
+chunkwise gc --grace-seconds 86400
+
+# FSCK drift verification and repair
+chunkwise fsck --repair
+```
+
+## Environment variables
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `CHUNKWISE_BACKEND` | `local` | `local`, `aws`, or `virtual` storage and index backend. |
+| `CHUNKWISE_HOME` | `./.chunkwise` | Local data directory and AWS-mode temporary working directory. |
+| `CHUNKWISE_S3_BUCKET` | unset | S3 bucket name when backend is `aws`. |
+| `CHUNKWISE_DYNAMODB_TABLE` | unset | DynamoDB index table name when backend is `aws`. |
+| `CHUNKWISE_AWS_REGION` | boto3 default | Region for AWS clients (e.g. `us-east-1`). |
+| `CHUNKWISE_CLOUDWATCH` | `0` | Enable CloudWatch telemetry (`1` to enable). |
+| `CHUNKWISE_UPLOAD_CONCURRENCY` | `8` | Maximum concurrent thread pool workers for chunk uploads. |
+| `CHUNKWISE_HOST` | `0.0.0.0` | HTTP bind address for `chunkwise-web`. |
+| `PORT` | `8080` | HTTP listen port for `chunkwise-web`. |
+| `CHUNKWISE_MAX_UPLOAD_BYTES` | `104857600` | Maximum upload request size (100 MiB). |
+
+## Live load simulation
+
+Run the capped real/virtual workload separately from the storage benchmark:
+
+```powershell
+chunkwise-simulate `
+  --real-files .\sample-a.bin .\sample-b.bin `
+  --real-worker-count 2 `
+  --metrics .\simulation\metrics.jsonl `
+  --stage-seconds 10
+```

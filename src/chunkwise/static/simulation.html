@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4fb">
+  <title>ChunkWise | Upload simulation</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <link rel="stylesheet" href="/static/simulation.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="/static/simulation.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="ChunkWise home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>chunkwise</span>
+    </a>
+    <div class="topbar-right">
+      <a class="nav-link" href="/">Storage dashboard <span aria-hidden="true">↗</span></a>
+      <span class="connection"><span class="connection-dot"></span><span>Simulation lab</span></span>
+    </div>
+  </header>
+
+  <main class="shell simulation-shell">
+    <section class="page-heading simulation-heading">
+      <div>
+        <p class="eyebrow">UPLOAD FLOW · BREAKSCALE TOPOLOGY</p>
+        <h1>See the file move through the system</h1>
+        <p class="subheading">Follow the ChunkWise components, then run a seeded 1× / 10× / 100× virtual load.</p>
+      </div>
+      <span class="simulation-badge"><span aria-hidden="true">✦</span> VIRTUAL LOAD · SIMULATED</span>
+    </section>
+
+    <section id="fileContext" class="file-context panel" hidden>
+      <div class="file-context-icon" aria-hidden="true">FILE</div>
+      <div class="file-context-main">
+        <p class="eyebrow">YOUR REAL UPLOAD</p>
+        <h2 id="fileName">Loading file…</h2>
+        <p id="fileDetails" class="context-detail"></p>
+      </div>
+      <div class="file-context-status"><span class="status-check">✓</span><span>Stored in <strong id="backendName">storage</strong></span></div>
+    </section>
+    <div id="fileNotice" class="file-notice" hidden></div>
+
+    <section class="panel topology-panel" aria-labelledby="topologyHeading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SYSTEM MAP</p>
+          <h2 id="topologyHeading">Breakscale component flow</h2>
+        </div>
+        <span class="reference-tag">Reference topology · E1</span>
+      </div>
+      <div class="topology-scroll">
+        <div id="topology" class="topology" aria-label="Browser client flows through HTTP API and chunking engine to the metadata index and chunk store">
+          <article class="topology-node client-node" data-node="client">
+            <span class="node-index">01</span><span class="node-symbol">↗</span>
+            <h3>Browser UI / CLI Client</h3><p>Offers upload requests</p>
+            <span class="node-config">1 request / second · 1 client</span>
+          </article>
+          <span class="topology-arrow" aria-hidden="true">→</span>
+          <article class="topology-node api-node" data-node="api">
+            <span class="node-index">02</span><span class="node-symbol">⇄</span>
+            <h3>HTTP API Server</h3><p>Validates and accepts the file</p>
+            <span class="node-config">5.1 ms · queue 64</span>
+          </article>
+          <span class="topology-arrow" aria-hidden="true">→</span>
+          <article class="topology-node engine-node" data-node="engine">
+            <span class="node-index">03</span><span class="node-symbol">⌘</span>
+            <h3>Chunking + Dedup Engine</h3><p>Chunks, hashes, checks duplicates</p>
+            <span class="node-config">500 ms · 1 worker · queue 64</span>
+          </article>
+          <div class="topology-branches">
+            <span class="branch-label">Fan-out after chunking</span>
+            <span class="branch-arrow" aria-hidden="true">↘</span>
+            <span class="branch-arrow" aria-hidden="true">↗</span>
+          </div>
+          <div class="topology-outputs">
+            <article class="topology-node index-node" data-node="index">
+              <span class="node-index">04</span><span class="node-symbol">▤</span>
+              <h3 id="indexNodeName">SQLite Metadata Index</h3><p>Looks up chunks and commits the manifest</p>
+              <span class="node-config">3 ms · queue 48 · lock 15 ms</span>
+            </article>
+            <article class="topology-node store-node" data-node="store">
+              <span class="node-index">05</span><span class="node-symbol">▦</span>
+              <h3 id="storeNodeName">Content-Addressed Chunk Store</h3><p>Writes new unique chunk bytes</p>
+              <span class="node-config">2 ms · 64 capacity · queue 1,024</span>
+            </article>
+          </div>
+        </div>
+      </div>
+      <p class="topology-caption">Reference settings mirror the supplied <code>chunk_wise.breakscale</code> design. Live backend labels update for local or AWS storage.</p>
+    </section>
+
+    <section class="simulation-grid">
+      <section class="panel run-panel" aria-labelledby="runHeading">
+        <div class="section-heading">
+          <div><p class="eyebrow">LOAD GENERATOR</p><h2 id="runHeading">Run a scaling simulation</h2></div>
+          <span class="step-number">01—03</span>
+        </div>
+        <p class="run-description">ChunkWise generates a deterministic synthetic chunk stream and exercises its real in-memory index/store code path. It makes no AWS calls.</p>
+        <div class="run-controls">
+          <label>Duplicate ratio
+            <select id="duplicateRatio">
+              <option value="0.3">30% · low reuse</option>
+              <option value="0.6" selected>60% · balanced</option>
+              <option value="0.9">90% · high reuse</option>
+            </select>
+          </label>
+          <label>Seconds per stage
+            <select id="stageSeconds">
+              <option value="1">1 second</option>
+              <option value="2" selected>2 seconds</option>
+              <option value="5">5 seconds</option>
+              <option value="10">10 seconds</option>
+            </select>
+          </label>
+          <button id="runButton" class="button button-primary" type="button">Run simulation <span aria-hidden="true">▶</span></button>
+        </div>
+        <div id="runStatus" class="run-status" role="status" aria-live="polite">Ready · 1× → 10× → 100× load stages</div>
+        <div class="stage-list" aria-label="Simulation load stages">
+          <span data-stage="1x"><b>1×</b><small>Baseline</small></span>
+          <span data-stage="10x"><b>10×</b><small>Ramp</small></span>
+          <span data-stage="100x"><b>100×</b><small>Stress</small></span>
+        </div>
+        <p id="simulationError" class="error-banner" hidden role="alert"></p>
+      </section>
+
+      <section class="panel file-step-panel">
+        <p class="eyebrow">WHAT HAPPENS NEXT</p>
+        <ol class="next-steps">
+          <li><span>1</span><div><strong>Choose a real file</strong><small>Upload from the dashboard; it appears here as the run context.</small></div></li>
+          <li><span>2</span><div><strong>Trace the storage path</strong><small>API → chunking/dedup → index + chunk store.</small></div></li>
+          <li><span>3</span><div><strong>Run virtual load</strong><small>Watch throughput, duplicate chunks, and lookup latency scale.</small></div></li>
+        </ol>
+        <a class="text-link" href="/">← Back to file uploads</a>
+      </section>
+    </section>
+
+    <section class="live-stats" aria-label="Current simulation measurements">
+      <article><span>Load stage</span><strong id="metricStage">—</strong></article>
+      <article><span>Files / second</span><strong id="metricFiles">—</strong></article>
+      <article><span>Chunks / second</span><strong id="metricChunks">—</strong></article>
+      <article><span>Dedup ratio</span><strong id="metricDedup">—</strong></article>
+      <article><span>Index p95</span><strong id="metricLatency">—</strong></article>
+    </section>
+
+    <div class="charts-heading">
+      <div><p class="eyebrow">LIVE METRICS</p><h2>Upload scaling results</h2></div>
+      <label class="metrics-import">Load JSONL file <input id="metricsFile" type="file" accept=".jsonl,.ndjson,.txt,application/json"></label>
+    </div>
+    <p id="chartStatus" class="chart-status" role="status">Run the simulation to see per-second metrics. Imported virtual rows are checked for their simulated label.</p>
+    <div class="chart-grid">
+      <section class="panel chart-card"><h3>Upload throughput</h3><canvas id="throughput"></canvas></section>
+      <section class="panel chart-card"><h3>Deduplication</h3><canvas id="dedup"></canvas></section>
+      <section class="panel chart-card"><h3>Index lookup latency</h3><canvas id="latency"></canvas></section>
+      <section class="panel chart-card"><h3>Unique vs duplicate chunks</h3><canvas id="chunks"></canvas></section>
+    </div>
+    <p class="simulation-disclaimer">Simulation values are synthetic and labelled <strong>SIMULATED</strong>. The component diagram mirrors the supplied Breakscale topology, but this page is not running Breakscale’s discrete-event engine and does not predict AWS production capacity. Simulated bytes are not storage benchmark results.</p>
+    <footer class="page-footer"><span>ChunkWise · Simulation lab</span><span>Real storage stats remain on the dashboard</span></footer>
+  </main>
+</body>
+</html>
