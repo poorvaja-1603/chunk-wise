@@ -322,7 +322,7 @@ def main() -> int:
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:
         print(f"Breakscale report artifact error: {error}", file=sys.stderr)
         return 2
-    print(f"wrote Figures 5–8 and Table 7 artifacts to {args.output_dir}")
+    print(f"wrote Figures 5-8 and Table 7 artifacts to {args.output_dir}")
     return 0
 
 

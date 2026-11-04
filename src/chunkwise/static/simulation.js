@@ -9,7 +9,7 @@ let pollTimer = null;
 let lastRowCount = -1;
 
 function formatBytes(value) {
-  if (!Number.isFinite(value) || value < 0) return "—";
+  if (!Number.isFinite(value) || value < 0) return "-";
   if (value === 0) return "0 B";
   const units = ["B", "KB", "MB", "GB", "TB"];
   const index = Math.min(Math.floor(Math.log(value) / Math.log(1024)), units.length - 1);
@@ -51,7 +51,7 @@ function setRunStatus(message, state = "") {
 }
 
 function setStage(stage) {
-  $("#metricStage").textContent = stage || "—";
+  $("#metricStage").textContent = stage || "-";
   for (const item of document.querySelectorAll(".stage-list [data-stage]")) {
     item.classList.toggle("is-active", item.dataset.stage === stage);
     item.classList.toggle("is-done", stage === "10x" && item.dataset.stage === "1x"
@@ -75,9 +75,10 @@ function makeDatasets(rows, field, label, color, mode) {
     data: rows.map((row) => row.mode === mode ? row[field] : null),
     borderColor: color,
     backgroundColor: color,
-    borderWidth: 2,
-    pointRadius: 2,
-    tension: 0.28,
+    borderWidth: 2.5,
+    pointRadius: 3,
+    pointHoverRadius: 5,
+    tension: 0.3,
     borderDash: mode === "virtual" ? [5, 4] : [],
     spanGaps: true,
   };
@@ -103,11 +104,34 @@ function renderChart(id, type, datasets, labels) {
       animation: false,
       interaction: { intersect: false, mode: "index" },
       plugins: {
-        legend: { labels: { color: "#716987", boxWidth: 10, usePointStyle: true, font: { size: 9 } } },
+        legend: {
+          labels: {
+            color: "#1e293b",
+            boxWidth: 14,
+            usePointStyle: true,
+            font: { size: 12, weight: "bold", family: "system-ui, sans-serif" },
+            padding: 16,
+          },
+        },
       },
       scales: {
-        x: { ticks: { color: "#8a8499", maxRotation: 0, autoSkip: true, font: { size: 8 } }, grid: { color: "#f0eef5" } },
-        y: { beginAtZero: true, ticks: { color: "#8a8499", font: { size: 8 } }, grid: { color: "#f0eef5" } },
+        x: {
+          ticks: {
+            color: "#64748b",
+            maxRotation: 0,
+            autoSkip: true,
+            font: { size: 11, family: "system-ui, sans-serif" },
+          },
+          grid: { color: "#f1f5f9" },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: "#64748b",
+            font: { size: 11, family: "system-ui, sans-serif" },
+          },
+          grid: { color: "#f1f5f9" },
+        },
       },
     },
   }));

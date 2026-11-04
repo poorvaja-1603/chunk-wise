@@ -40,32 +40,32 @@
       <section class="stats-grid" id="statsGrid" aria-label="Storage statistics" aria-busy="true">
         <article class="stat-card stat-primary">
           <div class="stat-label">Space recovered <span class="stat-icon" aria-hidden="true">↘</span></div>
-          <div class="stat-value" id="statSaved">—</div>
+          <div class="stat-value" id="statSaved">-</div>
           <div class="stat-foot" id="statSavedDetail">Loading storage totals</div>
         </article>
         <article class="stat-card">
           <div class="stat-label">Logical data</div>
-          <div class="stat-value" id="statLogical">—</div>
+          <div class="stat-value" id="statLogical">-</div>
           <div class="stat-foot">Original file contents</div>
         </article>
         <article class="stat-card">
           <div class="stat-label">Physical data</div>
-          <div class="stat-value" id="statPhysical">—</div>
+          <div class="stat-value" id="statPhysical">-</div>
           <div class="stat-foot">Unique chunk bytes stored</div>
         </article>
         <article class="stat-card">
           <div class="stat-label">Deduplication ratio</div>
-          <div class="stat-value" id="statRatio">—</div>
+          <div class="stat-value" id="statRatio">-</div>
           <div class="stat-foot">Logical bytes per stored byte</div>
         </article>
         <article class="stat-card stat-compact">
           <div class="stat-label">Files</div>
-          <div class="stat-value" id="statFiles">—</div>
+          <div class="stat-value" id="statFiles">-</div>
           <div class="stat-foot">Committed records</div>
         </article>
         <article class="stat-card stat-compact">
           <div class="stat-label">Unique chunks</div>
-          <div class="stat-value" id="statChunks">—</div>
+          <div class="stat-value" id="statChunks">-</div>
           <div class="stat-foot">Content-addressed objects</div>
         </article>
       </section>
@@ -122,13 +122,13 @@
             </div>
             <span class="step-number">02</span>
           </div>
-          <div class="composition-total"><span id="compositionLogical">—</span><span>logical</span></div>
+          <div class="composition-total"><span id="compositionLogical">-</span><span>logical</span></div>
           <div class="composition-track" role="img" aria-label="Physical storage as a proportion of logical data">
             <div id="compositionBar" class="composition-physical"></div>
           </div>
           <div class="composition-legend">
-            <div><span class="legend-mark legend-stored"></span><span>Stored</span><strong id="compositionPhysical">—</strong></div>
-            <div><span class="legend-mark legend-recovered"></span><span>Recovered</span><strong id="compositionSaved">—</strong></div>
+            <div><span class="legend-mark legend-stored"></span><span>Stored</span><strong id="compositionPhysical">-</strong></div>
+            <div><span class="legend-mark legend-recovered"></span><span>Recovered</span><strong id="compositionSaved">-</strong></div>
           </div>
           <div class="composition-note" id="compositionNote">Storage totals will appear when data is available.</div>
         </section>
@@ -138,7 +138,7 @@
         <div class="files-heading">
           <div>
             <p class="eyebrow">YOUR VAULT</p>
-            <h2 id="filesHeading">Stored files <span class="count-pill" id="fileCount">—</span></h2>
+            <h2 id="filesHeading">Stored files <span class="count-pill" id="fileCount">-</span></h2>
           </div>
           <button class="button button-secondary" id="filesRefreshButton" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
@@ -205,7 +205,7 @@
 
         <div class="simulation-grid">
           <section class="panel run-panel" aria-labelledby="runHeading">
-            <div class="section-heading"><div><p class="eyebrow">LOAD GENERATOR</p><h2 id="runHeading">Run a scaling simulation</h2></div><span class="step-number">01—03</span></div>
+            <div class="section-heading"><div><p class="eyebrow">LOAD GENERATOR</p><h2 id="runHeading">Run a scaling simulation</h2></div><span class="step-number">01-03</span></div>
             <p class="run-description">ChunkWise generates a deterministic synthetic chunk stream and exercises its real in-memory index/store code path. It makes no AWS calls.</p>
             <div class="run-controls">
               <label>Duplicate ratio<select id="duplicateRatio"><option value="0.3">30% · low reuse</option><option value="0.6" selected>60% · balanced</option><option value="0.9">90% · high reuse</option></select></label>
@@ -227,11 +227,11 @@
         </div>
 
         <section class="live-stats" aria-label="Current simulation measurements">
-          <article><span>Load stage</span><strong id="metricStage">—</strong></article>
-          <article><span>Files / second</span><strong id="metricFiles">—</strong></article>
-          <article><span>Chunks / second</span><strong id="metricChunks">—</strong></article>
-          <article><span>Dedup ratio</span><strong id="metricDedup">—</strong></article>
-          <article><span>Index p95</span><strong id="metricLatency">—</strong></article>
+          <article><span>Load stage</span><strong id="metricStage">-</strong></article>
+          <article><span>Files / second</span><strong id="metricFiles">-</strong></article>
+          <article><span>Chunks / second</span><strong id="metricChunks">-</strong></article>
+          <article><span>Dedup ratio</span><strong id="metricDedup">-</strong></article>
+          <article><span>Index p95</span><strong id="metricLatency">-</strong></article>
         </section>
 
         <div class="charts-heading">

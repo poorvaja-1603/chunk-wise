@@ -64,7 +64,7 @@ tests without requiring measured E1 inputs.
 
 ## Report artifacts
 
-`bench/breakscale/report_artifacts.py` generates Figures 5–8 and
+`bench/breakscale/report_artifacts.py` generates Figures 5-8 and
 `results/table7_assumptions.csv` only after validating complete seed coverage.
 Figures 5 and 6 require Owner A's E1/E2 result rows and selected knee values.
 Supply `breakscale-designs/e2-knees.csv` with exactly these columns:

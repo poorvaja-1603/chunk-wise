@@ -18,6 +18,8 @@ def _home(argument: str | None) -> Path:
 
 
 def _auto_load_dotenv() -> None:
+    if os.environ.get("PYTEST_CURRENT_TEST") is not None:
+        return
     for env_file in (Path(".env"), Path.cwd() / ".env"):
         if env_file.is_file():
             try:
