@@ -356,7 +356,28 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
         print(f"{self.log_date_time_string()} {self.address_string()} {format % args}", file=sys.stderr)
 
 
+def _auto_load_dotenv() -> None:
+    for env_file in (Path(".env"), Path.cwd() / ".env"):
+        if env_file.is_file():
+            try:
+                for line in env_file.read_text(encoding="utf-8").splitlines():
+                    line = line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    key, val = line.split("=", 1)
+                    key = key.strip()
+                    val = val.strip().strip("'\"")
+                    if key not in os.environ:
+                        os.environ[key] = val
+                    if key.upper() not in os.environ:
+                        os.environ[key.upper()] = val
+            except Exception:
+                pass
+            break
+
+
 def main() -> int:
+    _auto_load_dotenv()
     home = Path(os.environ.get("CHUNKWISE_HOME", ".chunkwise"))
     host = os.environ.get("CHUNKWISE_HOST", "0.0.0.0")
     explicit_port = os.environ.get("PORT") or os.environ.get("CHUNKWISE_PORT")
@@ -365,24 +386,23 @@ def main() -> int:
     if not 0 < max_upload <= 2**31 - 1:
         raise SystemExit("CHUNKWISE_MAX_UPLOAD_BYTES must be between 1 and 2147483647")
 
-    candidate_ports = [preferred_port] if explicit_port else [preferred_port, 8081, 8082, 8000, 5000]
+    candidate_ports = [8080, 8081, 8082, 8000, 5000] if preferred_port == 8080 else [preferred_port]
     server = None
     for p in candidate_ports:
         try:
             server = ChunkWiseHTTPServer((host, p), home, max_upload)
             break
         except (PermissionError, OSError) as err:
-            if explicit_port or p == candidate_ports[-1]:
+            if p == candidate_ports[-1]:
                 print(f"Failed to bind to {host}:{p}: {err}", file=sys.stderr)
-                if not explicit_port:
-                    print("Tip: Port 8080 is in use by another service. Try setting PORT=8081 in PowerShell: $env:PORT='8081'", file=sys.stderr)
                 raise
 
     if server is None:
         return 1
 
     display_host = "localhost" if host in ("0.0.0.0", "127.0.0.1") else host
-    print(f"ChunkWise dashboard listening on http://{display_host}:{server.server_port} (home: {server.home})", flush=True)
+    backend = os.environ.get("CHUNKWISE_BACKEND", "local").strip().lower()
+    print(f"ChunkWise dashboard listening on http://{display_host}:{server.server_port} (backend: {backend}, home: {server.home})", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

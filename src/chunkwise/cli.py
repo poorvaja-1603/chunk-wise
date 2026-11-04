@@ -17,7 +17,28 @@ def _home(argument: str | None) -> Path:
     return Path(argument or os.environ.get("CHUNKWISE_HOME", ".chunkwise"))
 
 
+def _auto_load_dotenv() -> None:
+    for env_file in (Path(".env"), Path.cwd() / ".env"):
+        if env_file.is_file():
+            try:
+                for line in env_file.read_text(encoding="utf-8").splitlines():
+                    line = line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    key, val = line.split("=", 1)
+                    key = key.strip()
+                    val = val.strip().strip("'\"")
+                    if key not in os.environ:
+                        os.environ[key] = val
+                    if key.upper() not in os.environ:
+                        os.environ[key.upper()] = val
+            except Exception:
+                pass
+            break
+
+
 def main(argv: list[str] | None = None) -> int:
+    _auto_load_dotenv()
     parser = argparse.ArgumentParser(prog="chunkwise")
     parser.add_argument(
         "--home",
