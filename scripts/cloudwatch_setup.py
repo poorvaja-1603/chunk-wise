@@ -5,6 +5,21 @@ import json
 import os
 import sys
 
+from pathlib import Path
+
+# Auto-load .env
+env_file = Path(".env")
+if env_file.is_file():
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        key = key.strip()
+        val = val.strip().strip("'\"")
+        os.environ[key] = val
+        os.environ[key.upper()] = val
+
 try:
     import boto3
     from botocore.exceptions import ClientError, NoCredentialsError
