@@ -61,3 +61,4 @@ json_v2 = json.dumps({"schema_version": "2.4", "records": records_v2}, indent=2)
 print("Created demo_set2 files successfully:")
 for p in sorted(out_dir.glob("*")):
     print(f"  {p} ({p.stat().st_size:,} bytes)")
+

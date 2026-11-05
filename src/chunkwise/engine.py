@@ -322,7 +322,33 @@ class UploadPipeline:
         )
 
 
+def _auto_load_dotenv() -> None:
+    if os.environ.get("PYTEST_CURRENT_TEST") is not None:
+        return
+    candidates = (
+        Path(".env"),
+        Path.cwd() / ".env",
+        Path(__file__).resolve().parent.parent.parent / ".env",
+    )
+    for env_file in candidates:
+        if env_file.is_file():
+            try:
+                for line in env_file.read_text(encoding="utf-8").splitlines():
+                    line = line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    key, val = line.split("=", 1)
+                    key = key.strip()
+                    val = val.strip().strip("'\"")
+                    os.environ[key] = val
+                    os.environ[key.upper()] = val
+            except Exception:
+                pass
+            break
+
+
 def _configured_backends(home: Path, fsync: bool) -> tuple[ChunkStore, ChunkIndex]:
+    _auto_load_dotenv()
     backend = os.environ.get("CHUNKWISE_BACKEND", "local").strip().lower()
     if backend == "local":
         return (

@@ -359,7 +359,12 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
 def _auto_load_dotenv() -> None:
     if os.environ.get("PYTEST_CURRENT_TEST") is not None:
         return
-    for env_file in (Path(".env"), Path.cwd() / ".env"):
+    candidates = (
+        Path(".env"),
+        Path.cwd() / ".env",
+        Path(__file__).resolve().parent.parent.parent / ".env",
+    )
+    for env_file in candidates:
         if env_file.is_file():
             try:
                 for line in env_file.read_text(encoding="utf-8").splitlines():
@@ -369,10 +374,8 @@ def _auto_load_dotenv() -> None:
                     key, val = line.split("=", 1)
                     key = key.strip()
                     val = val.strip().strip("'\"")
-                    if key not in os.environ:
-                        os.environ[key] = val
-                    if key.upper() not in os.environ:
-                        os.environ[key.upper()] = val
+                    os.environ[key] = val
+                    os.environ[key.upper()] = val
             except Exception:
                 pass
             break
