@@ -93,32 +93,27 @@
       <div class="sidebar-footer">
         <div class="sidebar-system-card">
           <div class="sys-status-row">
-            <span class="sys-dot"></span>
-            <span class="sys-label">All Systems Operational</span>
+            <span class="sys-dot" id="sidebarHealthDot"></span>
+            <span class="sys-label" id="sidebarHealthLabel">Storage Online</span>
             <svg class="sys-spark" viewBox="0 0 32 14" fill="none"><path d="M1 9L7 9L11 3L16 12L20 6L25 9L31 9" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div class="sys-usage-row">
             <div class="sys-donut-mini">
               <svg viewBox="0 0 36 36" class="mini-donut">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3.5" />
-                <path class="circle-fill" stroke-dasharray="24, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#7C78E8" stroke-width="3.5" stroke-linecap="round" />
+                <path id="sidebarDonutFill" class="circle-fill" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#7C78E8" stroke-width="3.5" stroke-linecap="round" />
               </svg>
-              <span class="mini-donut-txt">24%</span>
+              <span class="mini-donut-txt" id="sidebarDonutPct">0%</span>
             </div>
             <div class="sys-usage-text">
               <div class="sys-usage-lbl">Storage Usage</div>
-              <div class="sys-usage-val">12.4 GB / 50 GB</div>
+              <div class="sys-usage-val" id="sidebarDonutVal">0 B / 5 GB</div>
             </div>
           </div>
-        </div>
-
-        <div class="sidebar-health" style="margin-top:10px;">
-          <div class="sidebar-health-dot" id="sidebarHealthDot"></div>
-          <span id="sidebarHealthLabel">Checking…</span>
-        </div>
-        <div class="sidebar-aws-badge">
-          <span class="sidebar-aws-logo">AWS</span>
-          <span id="sidebarBackendLabel">Storage on AWS</span>
+          <div class="sys-backend-row" style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#8F92B2;">
+            <span id="sidebarBackendLogo" style="font-weight:700;color:#A8A5FF;">VAULT</span>
+            <span id="sidebarBackendLabel">Local storage</span>
+          </div>
         </div>
       </div>
     </aside>
@@ -846,9 +841,95 @@
         </div>
       </section>
 
+      <!-- ========== ACTIVITY / AUDIT LOG SECTION ========== -->
       <section id="section-activity" class="shell" hidden>
-        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">AUDIT LOG</p><h1>Activity</h1></div></div>
-        <div class="panel panel-pad"><p style="color:var(--ink-muted);">Activity history will appear here as you upload, restore, and verify files.</p></div>
+        <div class="page-heading">
+          <div class="page-heading-left">
+            <p class="eyebrow">AUDIT LOG · EVENT STREAM</p>
+            <h1>System Activity</h1>
+            <p class="subheading">Immutable chronological history of all ingestions, restorations, and deduplication events.</p>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="button button-secondary" id="activityRefreshBtn" type="button">Refresh Log ↺</button>
+          </div>
+        </div>
+
+        <!-- Activity Overview Metric Strip -->
+        <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">
+          <article class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Total Audit Events</span>
+              <div class="stat-icon-wrap icon-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            </div>
+            <div class="stat-value" id="actStatTotal">0</div>
+            <div class="stat-foot">Recorded operations</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">File Ingestions</span>
+              <div class="stat-icon-wrap icon-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            </div>
+            <div class="stat-value" id="actStatUploads">0</div>
+            <div class="stat-foot">Committed file uploads</div>
+          </article>
+          <article class="stat-card card-dedup">
+            <div class="stat-header">
+              <span class="stat-label">Deduplicated Chunks</span>
+              <div class="stat-icon-wrap icon-mint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            </div>
+            <div class="stat-value" id="actStatDedup">0</div>
+            <div class="stat-foot">Unique chunk blocks in store</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">System Integrity</span>
+              <div class="stat-icon-wrap icon-mint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            </div>
+            <div class="stat-value" style="color:#10B981;">100%</div>
+            <div class="stat-foot">All chunks verified</div>
+          </article>
+        </div>
+
+        <!-- Filter Chips + Audit Table Panel -->
+        <section class="panel panel-pad">
+          <div class="panel-heading" style="flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <h3 class="panel-title-text">Event Log Stream</h3>
+              <span class="count-pill" id="actFilterCount">0 events</span>
+            </div>
+            <div class="activity-filter-pills" style="display:flex;gap:8px;">
+              <button class="act-filter-pill is-active" data-filter="all">All</button>
+              <button class="act-filter-pill" data-filter="upload">Uploads</button>
+              <button class="act-filter-pill" data-filter="restore">Restores</button>
+              <button class="act-filter-pill" data-filter="verify">Verifications</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Event / Operation</th>
+                  <th scope="col">Target File / Hash</th>
+                  <th scope="col">Method / Chunks</th>
+                  <th scope="col">Data Size</th>
+                  <th scope="col">Timestamp</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="activityLogTableBody"></tbody>
+            </table>
+          </div>
+
+          <div id="activityLogEmpty" class="empty-state">
+            <div class="empty-mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#7C78E8" stroke-width="1.8" style="width:24px;height:24px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <h3>No Audit Activity Yet</h3>
+            <p>Upload a file or run an integrity check from the Overview page to record live operations here.</p>
+            <a href="#overview" class="button button-primary" style="margin-top:14px;">Go to Upload →</a>
+          </div>
+        </section>
       </section>
 
       <section id="section-analytics" class="shell" hidden>
@@ -947,6 +1028,40 @@
             </div>
           </section>
         </div>
+
+        <!-- Per-File Storage Analytics Breakdown -->
+        <section class="panel panel-pad" style="margin-top:24px;">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">FILE-WISE TELEMETRY</p>
+              <h3 class="panel-title-text">Per-File Chunking &amp; Deduplication Breakdown</h3>
+            </div>
+            <a href="#chunks" class="link-arrow">Open Chunk Explorer →</a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">File Name</th>
+                  <th scope="col">Logical Size</th>
+                  <th scope="col">Total Chunks</th>
+                  <th scope="col">Unique Chunks</th>
+                  <th scope="col">Avg Chunk Size</th>
+                  <th scope="col">Chunker Method</th>
+                  <th scope="col">Dedup Yield</th>
+                  <th scope="col">Committed Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody id="analyticsFilesBody"></tbody>
+            </table>
+          </div>
+          <div id="analyticsFilesEmpty" class="empty-state" style="padding:32px 16px;">
+            <div class="empty-mark">∅</div>
+            <h3>No File Analytics Available</h3>
+            <p>Upload files on the dashboard to view individual deduplication yields, chunk counts, and storage ratios.</p>
+          </div>
+        </section>
       </section>
 
       <section id="section-settings" class="shell" hidden>

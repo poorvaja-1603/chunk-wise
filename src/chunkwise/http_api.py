@@ -157,17 +157,19 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
         if path == "/api/files":
             try:
                 with Engine(self.server.home) as engine:
-                    files = [
-                        {
+                    files = []
+                    for row in engine.index.list_files():
+                        manifest = engine.index.manifest(row.file_id)
+                        chunk_hashes = [e.chunk_hash for e in manifest]
+                        files.append({
                             "file_id": row.file_id,
                             "name": row.name,
                             "size": row.size,
                             "chunker": row.chunker,
                             "created_at": row.created_at,
-                            "chunks": len(engine.index.manifest(row.file_id)),
-                        }
-                        for row in engine.index.list_files()
-                    ]
+                            "chunks": len(chunk_hashes),
+                            "unique_chunks": len(set(chunk_hashes)),
+                        })
             except (BotoCoreError, ClientError, sqlite3.Error, OSError, ValueError) as error:
                 self._log_backend_error(error)
                 self._send_error_json(503, "Storage backend unavailable")

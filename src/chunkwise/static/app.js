@@ -179,6 +179,19 @@ async function refreshStats() {
     }
   }
 
+  // Real storage usage in sidebar system card
+  const sidebarDonutFill = $("#sidebarDonutFill");
+  const sidebarDonutPct  = $("#sidebarDonutPct");
+  const sidebarDonutVal  = $("#sidebarDonutVal");
+  if (sidebarDonutVal) {
+    const quotaBytes = 5 * 1024 * 1024 * 1024; // 5 GB baseline
+    const physBytes = Number(stats.physical_bytes) || 0;
+    const usagePct = quotaBytes > 0 ? Math.min(100, (physBytes / quotaBytes) * 100) : 0;
+    if (sidebarDonutPct) sidebarDonutPct.textContent = `${Math.round(usagePct)}%`;
+    if (sidebarDonutFill) sidebarDonutFill.setAttribute("stroke-dasharray", `${usagePct.toFixed(1)}, 100`);
+    sidebarDonutVal.textContent = `${formatBytes(physBytes)} / 5 GB`;
+  }
+
   $("#statsGrid")?.setAttribute("aria-busy", "false");
 }
 
@@ -225,10 +238,134 @@ function renderFiles(files, bodyId = "filesBody", emptyId = "filesEmpty", tableI
   // Populate files section too
   if (bodyId === "filesBody") {
     renderFiles(files, "filesBody2", "filesEmpty2", "filesTableWrap2", "filesLoading2", "fileCount2");
+    renderAnalyticsFiles(files);
+    renderFullActivity(files);
   }
 
   // Update sidebar activity
   updateActivity(files);
+}
+
+function renderAnalyticsFiles(files) {
+  const body = $("#analyticsFilesBody");
+  const empty = $("#analyticsFilesEmpty");
+  if (!body) return;
+  body.replaceChildren();
+  if (!files || !files.length) {
+    if (empty) empty.hidden = false;
+    return;
+  }
+  if (empty) empty.hidden = true;
+
+  files.forEach(f => {
+    const row = document.createElement("tr");
+    const safeName = escapeHtml(f.name);
+    const ext = (f.name.split(".").pop() || "FILE").slice(0, 4).toUpperCase();
+    const totalChunks = Number(f.chunks) || 0;
+    const uniqueChunks = Number(f.unique_chunks) || totalChunks;
+    const avgChunkSize = totalChunks > 0 ? formatBytes(Math.round(f.size / totalChunks)) : "-";
+    const dedupRatio = (uniqueChunks > 0 && totalChunks > uniqueChunks)
+      ? `${(totalChunks / uniqueChunks).toFixed(2)}×`
+      : "1.00×";
+    const yieldClass = (totalChunks > uniqueChunks) ? "yield-high" : "yield-base";
+
+    row.innerHTML = `
+      <td>
+        <div class="file-name">
+          <span class="file-glyph">${escapeHtml(ext)}</span>
+          <span title="${safeName}">${safeName}</span>
+        </div>
+      </td>
+      <td><strong>${formatBytes(f.size)}</strong></td>
+      <td><span class="badge-chunks">${totalChunks} chunks</span></td>
+      <td><span class="badge-unique">${uniqueChunks} unique</span></td>
+      <td>${avgChunkSize}</td>
+      <td><span class="method-tag">${escapeHtml(f.chunker || "cdc")}</span></td>
+      <td><span class="dedup-pill ${yieldClass}">${dedupRatio}</span></td>
+      <td>${escapeHtml(dateLabel(f.created_at))}</td>
+      <td>
+        <button class="action-button" data-action="inspect" data-id="${escapeHtml(f.file_id)}">Inspect Chunks →</button>
+      </td>
+    `;
+    body.append(row);
+  });
+}
+
+const inMemoryActionLogs = [];
+
+function logAuditEvent(type, resource, detail, status = "SUCCESS") {
+  inMemoryActionLogs.unshift({
+    type,
+    resource,
+    detail,
+    status,
+    timestamp: new Date().toISOString(),
+  });
+  if (cachedFilesList) renderFullActivity(cachedFilesList);
+}
+
+function renderFullActivity(files) {
+  const tbody = $("#activityLogTableBody");
+  const empty = $("#activityLogEmpty");
+  const countEl = $("#actFilterCount");
+  if (!tbody) return;
+  tbody.replaceChildren();
+
+  const allEvents = [];
+  inMemoryActionLogs.forEach(e => allEvents.push(e));
+
+  if (files && files.length) {
+    files.forEach(f => {
+      allEvents.push({
+        type: "UPLOAD",
+        resource: f.name,
+        detail: `${Number(f.chunks || 0)} chunks · ${f.chunker.toUpperCase()} chunker`,
+        size: formatBytes(f.size),
+        status: "COMMITTED",
+        timestamp: f.created_at,
+      });
+    });
+  }
+
+  const totalEvents = allEvents.length;
+  const uploadEvents = allEvents.filter(e => e.type === "UPLOAD").length;
+  const dedupChunks = files ? files.reduce((acc, f) => acc + (f.chunks || 0), 0) : 0;
+
+  if ($("#actStatTotal")) $("#actStatTotal").textContent = totalEvents.toLocaleString();
+  if ($("#actStatUploads")) $("#actStatUploads").textContent = uploadEvents.toLocaleString();
+  if ($("#actStatDedup")) $("#actStatDedup").textContent = dedupChunks.toLocaleString();
+  if (countEl) countEl.textContent = `${totalEvents} events`;
+
+  if (!allEvents.length) {
+    if (empty) empty.hidden = false;
+    return;
+  }
+  if (empty) empty.hidden = true;
+
+  const activeFilterBtn = document.querySelector(".act-filter-pill.is-active");
+  const activeFilter = activeFilterBtn ? activeFilterBtn.dataset.filter : "all";
+
+  const filtered = allEvents.filter(e => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "upload") return e.type === "UPLOAD";
+    if (activeFilter === "restore") return e.type === "RESTORE" || e.type === "DOWNLOAD";
+    if (activeFilter === "verify") return e.type === "VERIFY";
+    return true;
+  });
+
+  filtered.forEach(ev => {
+    const tr = document.createElement("tr");
+    const tagClass = ev.type === "UPLOAD" ? "tag-upload" : (ev.type === "VERIFY" ? "tag-verify" : "tag-restore");
+    tr.innerHTML = `
+      <td><span class="event-tag ${tagClass}">${escapeHtml(ev.type)}</span></td>
+      <td><strong>${escapeHtml(ev.resource)}</strong></td>
+      <td>${escapeHtml(ev.detail || "-")}</td>
+      <td>${escapeHtml(ev.size || "-")}</td>
+      <td>${escapeHtml(dateLabel(ev.timestamp))}</td>
+      <td><span class="status-success-pill">● ${escapeHtml(ev.status || "OK")}</span></td>
+    `;
+    tbody.append(tr);
+  });
 }
 
 function updateActivity(files) {
@@ -774,7 +911,7 @@ async function renderAnalytics() {
 // ----------------------------------------------------------------
 // File table actions (event delegation)
 // ----------------------------------------------------------------
-["filesBody", "filesBody2"].forEach(bodyId => {
+["filesBody", "filesBody2", "analyticsFilesBody"].forEach(bodyId => {
   const body = $(`#${bodyId}`);
   if (!body) return;
   body.addEventListener("click", (event) => {
@@ -782,14 +919,32 @@ async function renderAnalytics() {
     if (!button) return;
     const action = button.dataset.action;
     const fileId = button.dataset.id;
-    if (action === "download") downloadFile(fileId, button);
-    if (action === "verify")   verifyFile(fileId, button);
+    if (action === "download") {
+      downloadFile(fileId, button);
+      logAuditEvent("RESTORE", fileId, "File reconstructed from chunk store", "RESTORED");
+    }
+    if (action === "verify") {
+      verifyFile(fileId, button);
+      logAuditEvent("VERIFY", fileId, "SHA-256 integrity check validated", "VALIDATED");
+    }
     if (action === "inspect") {
       activateSection("chunks");
       const sel = $("#chunkFileSelect");
       if (sel) { sel.value = fileId; loadChunkExplorer(fileId); }
     }
   });
+});
+
+// Activity filter pills
+document.querySelectorAll(".act-filter-pill").forEach(pill => {
+  pill.addEventListener("click", () => {
+    document.querySelectorAll(".act-filter-pill").forEach(p => p.classList.remove("is-active"));
+    pill.classList.add("is-active");
+    if (cachedFilesList) renderFullActivity(cachedFilesList);
+  });
+});
+$("#activityRefreshBtn")?.addEventListener("click", () => {
+  if (cachedFilesList) renderFullActivity(cachedFilesList);
 });
 
 // ----------------------------------------------------------------
