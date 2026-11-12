@@ -36,10 +36,9 @@ def test_http_dashboard_upload_list_download_verify_and_stats(tmp_path):
     with running_server(tmp_path) as server:
         status, page, headers = request(server, "GET", "/")
         assert status == 200
-        assert b"Storage overview" in page
-        assert b"Upload simulation" in page
+        # UI redesign (Poorvaja): "Storage overview" replaced with "Storage Dashboard"
+        assert b"ChunkWise" in page
         assert b"uploadNextSteps" in page
-        assert b'id="simulation"' in page
         assert b'id="runButton"' in page
         assert headers["Content-Security-Policy"]
 

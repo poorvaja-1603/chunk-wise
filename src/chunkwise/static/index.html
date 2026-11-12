@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f5f4fb">
+    <meta name="theme-color" content="#F5F3EE">
     <link rel="icon" href="data:,">
-    <title>ChunkWise | Storage</title>
+    <title>ChunkWise | Storage Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/app.css">
     <link rel="stylesheet" href="/static/simulation.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
@@ -13,243 +16,667 @@
     <script src="/static/simulation.js" defer></script>
   </head>
   <body>
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="ChunkWise home">
-        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span>chunkwise</span>
-      </a>
-      <div class="topbar-right">
-        <a class="nav-link" href="#simulation">Upload simulation <span aria-hidden="true">↓</span></a>
-        <span class="connection" id="connectionStatus" aria-live="polite"><span class="connection-dot"></span><span id="connectionLabel">Connecting</span></span>
-        <button class="icon-button" id="refreshButton" type="button" title="Refresh data" aria-label="Refresh data">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
-        </button>
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-mark" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </div>
+        <span class="sidebar-brand-name">ChunkWise</span>
       </div>
-    </header>
 
-    <main class="shell">
-      <section class="page-heading">
-        <div>
-          <p class="eyebrow">CONTENT-ADDRESSED STORAGE</p>
-          <h1>Storage overview</h1>
-          <p class="subheading">A clear view of your files and the space they occupy.</p>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Main</div>
+        <a href="#overview" class="is-active" data-section="overview">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Overview
+        </a>
+        <a href="#upload" data-section="upload">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload Files
+        </a>
+        <a href="#files" data-section="files">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Files
+        </a>
+
+        <div class="sidebar-section-label">Explore</div>
+        <a href="#chunks" data-section="chunks">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          Chunk Explorer
+        </a>
+        <a href="#simulation" data-section="simulation">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Simulation
+        </a>
+
+        <div class="sidebar-section-label">Manage</div>
+        <a href="#optimization" data-section="optimization">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Optimization
+        </a>
+        <a href="#activity" data-section="activity">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Activity
+        </a>
+        <a href="#analytics" data-section="analytics">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Storage Analytics
+        </a>
+        <a href="#settings" data-section="settings">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-health">
+          <div class="sidebar-health-dot" id="sidebarHealthDot"></div>
+          <span id="sidebarHealthLabel">Checking…</span>
         </div>
-        <span class="local-badge"><span aria-hidden="true">●</span> <span id="backendBadge">Storage vault</span></span>
-      </section>
+        <div class="sidebar-aws-badge">
+          <span class="sidebar-aws-logo">AWS</span>
+          <span id="sidebarBackendLabel">Storage on AWS</span>
+        </div>
+      </div>
+    </aside>
 
-      <section class="stats-grid" id="statsGrid" aria-label="Storage statistics" aria-busy="true">
-        <article class="stat-card stat-primary">
-          <div class="stat-label">Space recovered <span class="stat-icon" aria-hidden="true">↘</span></div>
-          <div class="stat-value" id="statSaved">-</div>
-          <div class="stat-foot" id="statSavedDetail">Loading storage totals</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-label">Logical data</div>
-          <div class="stat-value" id="statLogical">-</div>
-          <div class="stat-foot">Original file contents</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-label">Physical data</div>
-          <div class="stat-value" id="statPhysical">-</div>
-          <div class="stat-foot">Unique chunk bytes stored</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-label">Deduplication ratio</div>
-          <div class="stat-value" id="statRatio">-</div>
-          <div class="stat-foot">Logical bytes per stored byte</div>
-        </article>
-        <article class="stat-card stat-compact">
-          <div class="stat-label">Files</div>
-          <div class="stat-value" id="statFiles">-</div>
-          <div class="stat-foot">Committed records</div>
-        </article>
-        <article class="stat-card stat-compact">
-          <div class="stat-label">Unique chunks</div>
-          <div class="stat-value" id="statChunks">-</div>
-          <div class="stat-foot">Content-addressed objects</div>
-        </article>
-      </section>
+    <!-- ========== MAIN WRAP ========== -->
+    <div class="main-wrap">
 
-      <section class="workspace-grid">
-        <section class="panel upload-panel" aria-labelledby="uploadHeading">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">ADD DATA</p>
-              <h2 id="uploadHeading">Upload a file</h2>
-            </div>
-            <span class="step-number">01</span>
-          </div>
-          <div id="dropZone" class="drop-zone">
-            <input id="fileInput" type="file" hidden>
-            <div class="upload-glyph" aria-hidden="true">
-              <svg viewBox="0 0 32 32"><path d="M16 21V5m0 0L9.5 11.5M16 5l6.5 6.5M6 20v6h20v-6"/></svg>
-            </div>
-            <p class="drop-title">Drop a file here</p>
-            <p class="drop-copy">or <button class="text-button" id="chooseFile" type="button">browse files</button></p>
-            <p class="drop-limit" id="uploadLimit">Maximum upload size: loading</p>
-            <div id="selectedFile" class="selected-file" hidden></div>
-          </div>
-          <div class="upload-controls">
-            <fieldset class="chunker-choice">
-              <legend>Chunking method</legend>
-              <label><input type="radio" name="chunker" value="cdc" checked><span>Content-defined <small>CDC</small></span></label>
-              <label><input type="radio" name="chunker" value="fixed"><span>Fixed-size <small>FIXED</small></span></label>
-            </fieldset>
-            <button class="button button-primary" id="uploadButton" type="button" disabled>
-              <span>Upload file</span><span aria-hidden="true">↗</span>
-            </button>
-          </div>
-          <div id="uploadProgress" class="progress-block" hidden aria-live="polite">
-            <div class="progress-meta"><span id="progressLabel">Uploading</span><span id="progressPercent">0%</span></div>
-            <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
-          </div>
-          <div id="uploadMessage" class="inline-message" hidden role="status"></div>
-          <div id="uploadNextSteps" class="upload-next-steps" hidden>
-            <div class="next-step-mark" aria-hidden="true">✓</div>
-            <div>
-              <strong>Upload complete</strong>
-              <p>Your file is stored. Continue below to view the component flow and run the seeded scaling simulation.</p>
-            </div>
-            <a class="button button-primary" id="simulationLink" href="#simulation">View simulation below <span aria-hidden="true">↓</span></a>
-          </div>
-        </section>
-
-        <section class="panel storage-panel" aria-labelledby="storageHeading">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">AT A GLANCE</p>
-              <h2 id="storageHeading">Storage composition</h2>
-            </div>
-            <span class="step-number">02</span>
-          </div>
-          <div class="composition-total"><span id="compositionLogical">-</span><span>logical</span></div>
-          <div class="composition-track" role="img" aria-label="Physical storage as a proportion of logical data">
-            <div id="compositionBar" class="composition-physical"></div>
-          </div>
-          <div class="composition-legend">
-            <div><span class="legend-mark legend-stored"></span><span>Stored</span><strong id="compositionPhysical">-</strong></div>
-            <div><span class="legend-mark legend-recovered"></span><span>Recovered</span><strong id="compositionSaved">-</strong></div>
-          </div>
-          <div class="composition-note" id="compositionNote">Storage totals will appear when data is available.</div>
-        </section>
-      </section>
-
-      <section class="panel files-panel" aria-labelledby="filesHeading">
-        <div class="files-heading">
-          <div>
-            <p class="eyebrow">YOUR VAULT</p>
-            <h2 id="filesHeading">Stored files <span class="count-pill" id="fileCount">-</span></h2>
-          </div>
-          <button class="button button-secondary" id="filesRefreshButton" type="button">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
-            Refresh list
+      <!-- Top bar -->
+      <header class="topbar">
+        <span class="topbar-title" id="topbarTitle">Overview</span>
+        <div class="topbar-right">
+          <span class="connection" id="connectionStatus" aria-live="polite">
+            <span class="connection-dot"></span>
+            <span id="connectionLabel">Connecting</span>
+          </span>
+          <button class="icon-button" id="refreshButton" type="button" title="Refresh" aria-label="Refresh data">
+            <svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
           </button>
+          <div class="topbar-avatar" id="topbarAvatar" title="Poorvaja">P</div>
         </div>
-        <div id="filesError" class="error-banner" hidden role="alert"></div>
-        <div id="filesLoading" class="table-loading" aria-live="polite">Loading stored files…</div>
-        <div id="filesEmpty" class="empty-state" hidden>
-          <div class="empty-mark" aria-hidden="true">∅</div>
-          <h3>No files stored yet</h3>
-          <p>Choose a file above to create your first verified backup.</p>
+      </header>
+
+      <div id="globalError" class="global-error" hidden role="alert"></div>
+
+      <!-- ========== OVERVIEW SECTION ========== -->
+      <section id="section-overview" class="shell">
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <h2>Welcome back, Poorvaja!</h2>
+            <p>Your storage is optimized and running smoothly.</p>
+          </div>
+          <span class="welcome-badge">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M13.5 4.5L6.5 11.5 3 8"/></svg>
+            All Systems Operational
+          </span>
         </div>
-        <div id="filesTableWrap" class="table-wrap" hidden>
-          <table>
-            <thead><tr><th scope="col">File</th><th scope="col">Size</th><th scope="col">Method</th><th scope="col">Added</th><th scope="col">File ID</th><th scope="col" aria-label="Actions"></th></tr></thead>
-            <tbody id="filesBody"></tbody>
-          </table>
+
+        <!-- Stat cards -->
+        <div class="stats-grid" id="statsGrid" aria-label="Storage statistics" aria-busy="true">
+          <article class="stat-card c-terracotta">
+            <div class="stat-header">
+              <span class="stat-label">Logical Storage</span>
+              <div class="stat-icon-wrap c-terracotta">
+                <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statLogical">-</div>
+            <div class="stat-foot">Total original file bytes</div>
+          </article>
+          <article class="stat-card c-blue">
+            <div class="stat-header">
+              <span class="stat-label">Physical Storage</span>
+              <div class="stat-icon-wrap c-blue">
+                <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statPhysical">-</div>
+            <div class="stat-foot">Unique chunk bytes in S3</div>
+          </article>
+          <article class="stat-card c-sage">
+            <div class="stat-header">
+              <span class="stat-label">Deduplication Ratio</span>
+              <div class="stat-icon-wrap c-sage">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statRatio">-</div>
+            <div class="stat-foot" id="statRatioDesc">Logical bytes per stored byte</div>
+          </article>
+          <article class="stat-card c-grey">
+            <div class="stat-header">
+              <span class="stat-label">Storage Savings</span>
+              <div class="stat-icon-wrap c-grey">
+                <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statSaved">-</div>
+            <div class="stat-foot" id="statSavedDetail">Loading storage totals</div>
+          </article>
+        </div>
+
+        <!-- Two-column middle area -->
+        <div class="content-grid">
+          <!-- Left: upload panel -->
+          <section class="panel upload-panel" aria-labelledby="uploadHeading">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">ADD DATA</p>
+                <h2 id="uploadHeading">Upload a file</h2>
+              </div>
+              <span class="step-number" style="font-size:11px;font-weight:700;color:var(--ink-muted)">01</span>
+            </div>
+            <div id="dropZone" class="drop-zone">
+              <input id="fileInput" type="file" hidden>
+              <div class="upload-glyph" aria-hidden="true">
+                <svg viewBox="0 0 32 32"><path d="M16 21V5m0 0L9.5 11.5M16 5l6.5 6.5M6 20v6h20v-6"/></svg>
+              </div>
+              <p class="drop-title">Drop a file here</p>
+              <p class="drop-copy">or <button class="text-button" id="chooseFile" type="button">browse files</button></p>
+              <p class="drop-limit" id="uploadLimit">Maximum upload size: loading</p>
+              <div id="selectedFile" class="selected-file" hidden></div>
+            </div>
+            <div class="upload-controls">
+              <fieldset class="chunker-choice">
+                <legend>Chunking method</legend>
+                <label><input type="radio" name="chunker" value="cdc" checked><span>Content-defined <small>CDC</small></span></label>
+                <label><input type="radio" name="chunker" value="fixed"><span>Fixed-size <small>FIXED</small></span></label>
+              </fieldset>
+              <button class="button button-primary" id="uploadButton" type="button" disabled>
+                Upload file <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <div id="uploadProgress" class="progress-block" hidden aria-live="polite">
+              <div class="progress-meta"><span id="progressLabel">Uploading</span><span id="progressPercent">0%</span></div>
+              <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+            </div>
+            <div id="uploadMessage" class="inline-message" hidden role="status"></div>
+            <div id="uploadNextSteps" class="upload-next-steps" hidden>
+              <div class="next-step-mark" aria-hidden="true">✓</div>
+              <div>
+                <strong>Upload complete</strong>
+                <p>Stored and deduplicated. Run the simulation to trace how chunks moved.</p>
+              </div>
+              <a class="button button-primary" id="simulationLink" href="#simulation">View simulation <span aria-hidden="true">↓</span></a>
+            </div>
+          </section>
+
+          <!-- Right: storage composition + policy -->
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <!-- Storage composition -->
+            <section class="panel panel-pad" aria-labelledby="storageHeading">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">AT A GLANCE</p>
+                  <h3 id="storageHeading">Storage composition</h3>
+                </div>
+              </div>
+              <div class="composition-total"><span id="compositionLogical">-</span><span>logical</span></div>
+              <div class="composition-track" role="img" aria-label="Physical storage as proportion of logical data">
+                <div id="compositionBar" class="composition-physical"></div>
+              </div>
+              <div class="composition-legend">
+                <div><span class="legend-mark legend-stored"></span><span>Stored</span><strong id="compositionPhysical">-</strong></div>
+                <div><span class="legend-mark legend-recovered"></span><span>Recovered</span><strong id="compositionSaved">-</strong></div>
+              </div>
+              <div class="composition-note" id="compositionNote">Storage totals will appear when data is available.</div>
+            </section>
+
+            <!-- Optimization Policy widget -->
+            <section class="panel panel-pad" aria-labelledby="policyHeading">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">ACTIVE POLICY</p>
+                  <h3 id="policyHeading">Optimization Policy</h3>
+                </div>
+                <a href="#optimization" class="section-link">Configure →</a>
+              </div>
+              <div class="policy-cards">
+                <div class="policy-card is-active" data-policy="balanced">
+                  <div class="policy-card-icon">⚖️</div>
+                  <div class="policy-card-info">
+                    <div class="policy-card-name">Balanced</div>
+                    <div class="policy-card-desc">Balanced compression and performance</div>
+                  </div>
+                  <span class="policy-active-badge">Active</span>
+                </div>
+                <div class="policy-card" data-policy="space_saver">
+                  <div class="policy-card-icon">🍃</div>
+                  <div class="policy-card-info">
+                    <div class="policy-card-name">Space Saver</div>
+                    <div class="policy-card-desc">Maximum storage reduction</div>
+                  </div>
+                </div>
+                <div class="policy-card" data-policy="fast_restore">
+                  <div class="policy-card-icon">⚡</div>
+                  <div class="policy-card-info">
+                    <div class="policy-card-name">Fast Restore</div>
+                    <div class="policy-card-desc">Prioritize speed</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Files + recent activity row -->
+        <div class="content-grid">
+          <!-- Files table -->
+          <section class="panel files-panel" aria-labelledby="filesHeading">
+            <div class="files-heading">
+              <h2 id="filesHeading">Stored files <span class="count-pill" id="fileCount">-</span></h2>
+              <button class="button button-secondary" id="filesRefreshButton" type="button">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
+                Refresh list
+              </button>
+            </div>
+            <div id="filesError" class="error-banner" hidden role="alert"></div>
+            <div id="filesLoading" class="table-loading" aria-live="polite">Loading stored files…</div>
+            <div id="filesEmpty" class="empty-state" hidden>
+              <div class="empty-mark" aria-hidden="true">∅</div>
+              <h3>No files stored yet</h3>
+              <p>Upload a file to create your first deduplicated backup.</p>
+            </div>
+            <div id="filesTableWrap" class="table-wrap" hidden>
+              <table>
+                <thead><tr><th scope="col">File</th><th scope="col">Size</th><th scope="col">Method</th><th scope="col">Added</th><th scope="col">File ID</th><th scope="col" aria-label="Actions"></th></tr></thead>
+                <tbody id="filesBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Recent activity -->
+          <section class="panel panel-pad" aria-labelledby="activityHeading">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">RECENT</p>
+                <h3 id="activityHeading">Activity</h3>
+              </div>
+              <a href="#activity" class="section-link">View all →</a>
+            </div>
+            <div class="activity-list" id="activityList">
+              <div class="activity-item">
+                <div class="activity-dot upload"></div>
+                <div class="activity-body">
+                  <div class="activity-title">Waiting for uploads…</div>
+                  <div class="activity-detail">Activity will appear here</div>
+                </div>
+                <span class="activity-time">-</span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Summary sub-stats row -->
+        <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:0;">
+          <article class="stat-card c-sage">
+            <div class="stat-header">
+              <span class="stat-label">Files</span>
+              <div class="stat-icon-wrap c-sage">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statFiles">-</div>
+            <div class="stat-foot">Committed file records</div>
+          </article>
+          <article class="stat-card c-blue">
+            <div class="stat-header">
+              <span class="stat-label">Unique chunks</span>
+              <div class="stat-icon-wrap c-blue">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="statChunks">-</div>
+            <div class="stat-foot">Content-addressed objects</div>
+          </article>
         </div>
       </section>
 
-      <section id="simulation" class="simulation-embed" aria-labelledby="simulationHeading">
-        <div class="page-heading simulation-heading">
-          <div>
-            <p class="eyebrow">UPLOAD FLOW · BREAKSCALE TOPOLOGY</p>
+      <!-- ========== SIMULATION SECTION ========== -->
+      <section id="section-simulation" class="simulation-section" hidden aria-labelledby="simulationHeading">
+        <div class="page-heading">
+          <div class="page-heading-left">
+            <p class="eyebrow">UPLOAD FLOW · DEDUPLICATION PIPELINE</p>
             <h1 id="simulationHeading">See the file move through the system</h1>
-            <p class="subheading">Trace the ChunkWise components, then run a seeded 1× / 10× / 100× virtual load.</p>
+            <p class="subheading">Trace every stage from chunking to S3 storage, including deduplication and compression branching.</p>
           </div>
-          <span class="simulation-badge"><span aria-hidden="true">✦</span> VIRTUAL LOAD · SIMULATED</span>
+          <span class="welcome-badge">✦ SIMULATED WORKLOAD</span>
         </div>
 
-        <section id="fileContext" class="file-context panel" hidden>
-          <div class="file-context-icon" aria-hidden="true">FILE</div>
-          <div class="file-context-main">
-            <p class="eyebrow">YOUR REAL UPLOAD</p>
-            <h2 id="fileName">Loading file…</h2>
-            <p id="fileDetails" class="context-detail"></p>
+        <!-- Real upload context -->
+        <section id="fileContext" class="panel panel-pad" hidden style="margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:40px;height:48px;border:1px solid var(--border);border-radius:6px;background:var(--ivory);display:grid;place-items:center;font-size:9px;font-weight:800;color:var(--terracotta);">FILE</div>
+            <div style="flex:1;">
+              <p class="eyebrow" style="margin-bottom:2px;">YOUR REAL UPLOAD</p>
+              <strong id="fileName" style="font-size:15px;color:var(--ink);">Loading file…</strong>
+              <p id="fileDetails" class="subheading" style="margin-top:2px;font-size:12px;"></p>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#2D5E4E;font-weight:600;">
+              <span style="color:var(--sage);">✓</span> Stored in <strong id="backendName">storage</strong>
+            </div>
           </div>
-          <div class="file-context-status"><span class="status-check">✓</span><span>Stored in <strong id="backendName">storage</strong></span></div>
         </section>
-        <div id="fileNotice" class="file-notice" hidden></div>
+        <div id="fileNotice" class="inline-message error" hidden style="margin-bottom:16px;"></div>
 
-        <section class="panel topology-panel" aria-labelledby="topologyHeading">
-          <div class="section-heading">
-            <div><p class="eyebrow">SYSTEM MAP</p><h2 id="topologyHeading">Breakscale component flow</h2></div>
-            <span class="reference-tag">Reference topology · E1</span>
+        <!-- Pipeline flow -->
+        <section class="panel panel-pad" aria-labelledby="pipelineHeading" style="margin-bottom:20px;">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">PIPELINE DIAGRAM</p>
+              <h3 id="pipelineHeading">Deduplication + Compression pipeline</h3>
+            </div>
+            <div class="pipeline-controls" style="margin-bottom:0;">
+              <button id="simPlayBtn"  class="button button-primary"   type="button">▶ Play</button>
+              <button id="simPauseBtn" class="button button-secondary" type="button" disabled>⏸ Pause</button>
+              <button id="simNextBtn"  class="button button-secondary" type="button">Step →</button>
+              <button id="simPrevBtn"  class="button button-secondary" type="button">← Back</button>
+              <button id="simResetBtn" class="button button-secondary" type="button">↺ Reset</button>
+            </div>
           </div>
-          <div class="topology-scroll">
-            <div id="topology" class="topology" aria-label="Browser client flows through HTTP API and chunking engine to the metadata index and chunk store">
-              <article class="topology-node client-node" data-node="client"><span class="node-index">01</span><span class="node-symbol">↗</span><h3>Browser UI / CLI Client</h3><p>Offers upload requests</p><span class="node-config">1 request / second · 1 client</span></article>
-              <span class="topology-arrow" aria-hidden="true">→</span>
-              <article class="topology-node api-node" data-node="api"><span class="node-index">02</span><span class="node-symbol">⇄</span><h3>HTTP API Server</h3><p>Validates and accepts the file</p><span class="node-config">5.1 ms · queue 64</span></article>
-              <span class="topology-arrow" aria-hidden="true">→</span>
-              <article class="topology-node engine-node" data-node="engine"><span class="node-index">03</span><span class="node-symbol">⌘</span><h3>Chunking + Dedup Engine</h3><p>Chunks, hashes, checks duplicates</p><span class="node-config">500 ms · 1 worker · queue 64</span></article>
-              <div class="topology-branches"><span class="branch-label">Fan-out after chunking</span><span class="branch-arrow" aria-hidden="true">↘</span><span class="branch-arrow" aria-hidden="true">↗</span></div>
-              <div class="topology-outputs">
-                <article class="topology-node index-node" data-node="index"><span class="node-index">04</span><span class="node-symbol">▤</span><h3 id="indexNodeName">SQLite Metadata Index</h3><p>Looks up chunks and commits the manifest</p><span class="node-config">3 ms · queue 48 · lock 15 ms</span></article>
-                <article class="topology-node store-node" data-node="store"><span class="node-index">05</span><span class="node-symbol">▦</span><h3 id="storeNodeName">Content-Addressed Chunk Store</h3><p>Writes new unique chunk bytes</p><span class="node-config">2 ms · 64 capacity · queue 1,024</span></article>
+
+          <div class="pipeline-scroll">
+            <div class="pipeline" id="pipeline" role="list" aria-label="Upload pipeline stages">
+              <!-- Stage 1 -->
+              <div class="pipeline-node is-pending" data-stage="1" role="listitem">
+                <span class="node-index">01</span>
+                <div class="node-icon">📁</div>
+                <div class="node-label">File Selection</div>
+                <div class="node-detail">Pick file from disk or upload endpoint</div>
+                <span class="node-status-pill pending" id="stage-status-1">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-1"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">bytes</div></div>
+
+              <!-- Stage 2 -->
+              <div class="pipeline-node is-pending" data-stage="2" role="listitem">
+                <span class="node-index">02</span>
+                <div class="node-icon">📖</div>
+                <div class="node-label">Stream Reading</div>
+                <div class="node-detail">Read file in a streaming fashion</div>
+                <span class="node-status-pill pending" id="stage-status-2">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-2"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">stream</div></div>
+
+              <!-- Stage 3 -->
+              <div class="pipeline-node is-pending" data-stage="3" role="listitem">
+                <span class="node-index">03</span>
+                <div class="node-icon">✂️</div>
+                <div class="node-label">Rabin CDC Chunking</div>
+                <div class="node-detail">min 2KB · avg 8KB · max 64KB</div>
+                <span class="node-status-pill pending" id="stage-status-3">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-3"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">chunks</div></div>
+
+              <!-- Stage 4 -->
+              <div class="pipeline-node is-pending" data-stage="4" role="listitem">
+                <span class="node-index">04</span>
+                <div class="node-icon">🔍</div>
+                <div class="node-label">Boundary Detection</div>
+                <div class="node-detail">Rolling window · mask 0x1FFF</div>
+                <span class="node-status-pill pending" id="stage-status-4">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-4"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">chunk bytes</div></div>
+
+              <!-- Stage 5 -->
+              <div class="pipeline-node is-pending" data-stage="5" role="listitem">
+                <span class="node-index">05</span>
+                <div class="node-icon">#️⃣</div>
+                <div class="node-label">SHA-256 Hashing</div>
+                <div class="node-detail">Hash raw bytes → chunk identity</div>
+                <span class="node-status-pill pending" id="stage-status-5">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-5"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">hash</div></div>
+
+              <!-- Stage 6 -->
+              <div class="pipeline-node is-pending" data-stage="6" role="listitem">
+                <span class="node-index">06</span>
+                <div class="node-icon">🔎</div>
+                <div class="node-label">Dedup Lookup</div>
+                <div class="node-detail">Query DynamoDB index by hash</div>
+                <span class="node-status-pill pending" id="stage-status-6">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-6"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">decision</div></div>
+
+              <!-- Stage 7 -->
+              <div class="pipeline-node is-pending" data-stage="7" role="listitem">
+                <span class="node-index">07</span>
+                <div class="node-icon">🗜️</div>
+                <div class="node-label">Compression</div>
+                <div class="node-detail">zlib · only new chunks · if savings ≥5%</div>
+                <span class="node-status-pill pending" id="stage-status-7">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-7"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">bytes</div></div>
+
+              <!-- Stage 8 -->
+              <div class="pipeline-node is-pending" data-stage="8" role="listitem">
+                <span class="node-index">08</span>
+                <div class="node-icon">☁️</div>
+                <div class="node-label">Amazon S3 Upload</div>
+                <div class="node-detail">PUT object · key = objects/{hash}</div>
+                <span class="node-status-pill pending" id="stage-status-8">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-8"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">metadata</div></div>
+
+              <!-- Stage 9 -->
+              <div class="pipeline-node is-pending" data-stage="9" role="listitem">
+                <span class="node-index">09</span>
+                <div class="node-icon">🗄️</div>
+                <div class="node-label">DynamoDB Metadata</div>
+                <div class="node-detail">Write manifest · ref count · codec</div>
+                <span class="node-status-pill pending" id="stage-status-9">Pending</span>
+              </div>
+              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-9"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">result</div></div>
+
+              <!-- Stage 10 -->
+              <div class="pipeline-node is-pending" data-stage="10" role="listitem">
+                <span class="node-index">10</span>
+                <div class="node-icon">✅</div>
+                <div class="node-label">Storage Summary</div>
+                <div class="node-detail">Report savings · verify SHA-256</div>
+                <span class="node-status-pill pending" id="stage-status-10">Pending</span>
               </div>
             </div>
           </div>
-          <p class="topology-caption">Reference settings mirror the supplied <code>chunk_wise.breakscale</code> design. Live backend labels update for local or AWS storage.</p>
+
+          <!-- Dedup / compression branch callout -->
+          <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+            <div id="branchDupBadge" class="inline-message" style="margin:0;display:none;flex:1;min-width:200px;">
+              ✔ <strong>Duplicate detected</strong> — chunk already in S3. No upload needed. Ref count incremented.
+            </div>
+            <div id="branchCompBadge" class="inline-message success" style="margin:0;display:none;flex:1;min-width:200px;">
+              🗜️ <strong>Compressed</strong> — <span id="branchCompDetail">zlib level 6 · 54% saved</span>
+            </div>
+          </div>
         </section>
 
-        <div class="simulation-grid">
-          <section class="panel run-panel" aria-labelledby="runHeading">
-            <div class="section-heading"><div><p class="eyebrow">LOAD GENERATOR</p><h2 id="runHeading">Run a scaling simulation</h2></div><span class="step-number">01-03</span></div>
-            <p class="run-description">ChunkWise generates a deterministic synthetic chunk stream and exercises its real in-memory index/store code path. It makes no AWS calls.</p>
-            <div class="run-controls">
-              <label>Duplicate ratio<select id="duplicateRatio"><option value="0.3">30% · low reuse</option><option value="0.6" selected>60% · balanced</option><option value="0.9">90% · high reuse</option></select></label>
-              <label>Seconds per stage<select id="stageSeconds"><option value="1">1 second</option><option value="2" selected>2 seconds</option><option value="5">5 seconds</option><option value="10">10 seconds</option></select></label>
-              <button id="runButton" class="button button-primary" type="button">Run simulation <span aria-hidden="true">▶</span></button>
+        <!-- Scaling simulation (existing backend) -->
+        <section class="panel panel-pad" aria-labelledby="simRunHeading" style="margin-bottom:20px;">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">LOAD GENERATOR</p>
+              <h3 id="simRunHeading">Run a scaling simulation</h3>
             </div>
-            <div id="runStatus" class="run-status" role="status" aria-live="polite">Ready · 1× → 10× → 100× load stages</div>
-            <div class="stage-list" aria-label="Simulation load stages"><span data-stage="1x"><b>1×</b><small>Baseline</small></span><span data-stage="10x"><b>10×</b><small>Ramp</small></span><span data-stage="100x"><b>100×</b><small>Stress</small></span></div>
-            <p id="simulationError" class="error-banner" hidden role="alert"></p>
-          </section>
-          <section class="panel file-step-panel">
-            <p class="eyebrow">WHAT HAPPENS NEXT</p>
-            <ol class="next-steps">
-              <li><span>1</span><div><strong>Choose a real file</strong><small>Upload above; it appears here as the run context.</small></div></li>
-              <li><span>2</span><div><strong>Trace the storage path</strong><small>API → chunking/dedup → index + chunk store.</small></div></li>
-              <li><span>3</span><div><strong>Run virtual load</strong><small>Watch throughput, duplicate chunks, and lookup latency scale.</small></div></li>
-            </ol>
-          </section>
-        </div>
+            <span style="font-size:11px;font-weight:700;color:var(--ink-muted)">01-03</span>
+          </div>
+          <p style="font-size:13px;color:var(--ink-muted);margin-top:0;">ChunkWise generates a deterministic synthetic chunk stream and exercises its real in-memory index/store code path. No AWS calls are made.</p>
+          <div class="run-controls" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+            <label style="font-size:12.5px;font-weight:600;color:var(--ink);">Duplicate ratio
+              <select id="duplicateRatio" style="display:block;margin-top:4px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--ivory);font-size:12.5px;color:var(--ink);">
+                <option value="0.3">30% · low reuse</option>
+                <option value="0.6" selected>60% · balanced</option>
+                <option value="0.9">90% · high reuse</option>
+              </select>
+            </label>
+            <label style="font-size:12.5px;font-weight:600;color:var(--ink);">Seconds per stage
+              <select id="stageSeconds" style="display:block;margin-top:4px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--ivory);font-size:12.5px;color:var(--ink);">
+                <option value="1">1 second</option>
+                <option value="2" selected>2 seconds</option>
+                <option value="5">5 seconds</option>
+                <option value="10">10 seconds</option>
+              </select>
+            </label>
+            <button id="runButton" class="button button-primary" type="button">Run simulation ▶</button>
+          </div>
+          <div id="runStatus" class="run-status" role="status" aria-live="polite" style="margin-top:14px;font-size:12.5px;color:var(--ink-muted);">Ready · 1× → 10× → 100× load stages</div>
+          <div class="stage-list" aria-label="Simulation load stages" style="display:flex;gap:8px;margin-top:10px;">
+            <span data-stage="1x" style="padding:4px 10px;border-radius:var(--r-sm);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--ink-muted);"><b>1×</b> <small style="font-weight:400;">Baseline</small></span>
+            <span data-stage="10x" style="padding:4px 10px;border-radius:var(--r-sm);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--ink-muted);"><b>10×</b> <small style="font-weight:400;">Ramp</small></span>
+            <span data-stage="100x" style="padding:4px 10px;border-radius:var(--r-sm);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--ink-muted);"><b>100×</b> <small style="font-weight:400;">Stress</small></span>
+          </div>
+          <p id="simulationError" class="error-banner" hidden role="alert"></p>
+        </section>
 
-        <section class="live-stats" aria-label="Current simulation measurements">
+        <!-- Live metrics strip -->
+        <div class="live-stats" aria-label="Current simulation measurements">
           <article><span>Load stage</span><strong id="metricStage">-</strong></article>
           <article><span>Files / second</span><strong id="metricFiles">-</strong></article>
           <article><span>Chunks / second</span><strong id="metricChunks">-</strong></article>
           <article><span>Dedup ratio</span><strong id="metricDedup">-</strong></article>
           <article><span>Index p95</span><strong id="metricLatency">-</strong></article>
-        </section>
-
-        <div class="charts-heading">
-          <div><p class="eyebrow">LIVE METRICS</p><h2>Upload scaling results</h2></div>
-          <label class="metrics-import">Load JSONL file <input id="metricsFile" type="file" accept=".jsonl,.ndjson,.txt,application/json"></label>
         </div>
-        <p id="chartStatus" class="chart-status" role="status">Run the simulation to see per-second metrics. Imported virtual rows are checked for their simulated label.</p>
+
+        <!-- Charts -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;margin-bottom:14px;">
+          <div>
+            <p class="eyebrow">LIVE METRICS</p>
+            <h2 style="margin:0;font-size:17px;font-weight:700;color:var(--ink);">Upload scaling results</h2>
+          </div>
+          <label style="font-size:12px;font-weight:600;color:var(--ink-muted);">Import JSONL <input id="metricsFile" type="file" accept=".jsonl,.ndjson,.txt,application/json" style="font-size:12px;"></label>
+        </div>
+        <p id="chartStatus" class="simulation-disclaimer" role="status">Run the simulation to see per-second metrics.</p>
         <div class="chart-grid">
           <section class="panel chart-card"><h3>Upload throughput</h3><canvas id="throughput"></canvas></section>
           <section class="panel chart-card"><h3>Deduplication</h3><canvas id="dedup"></canvas></section>
           <section class="panel chart-card"><h3>Index lookup latency</h3><canvas id="latency"></canvas></section>
           <section class="panel chart-card"><h3>Unique vs duplicate chunks</h3><canvas id="chunks"></canvas></section>
         </div>
-        <p class="simulation-disclaimer">Simulation values are synthetic and labelled <strong>SIMULATED</strong>. The component diagram mirrors the supplied Breakscale topology, but this page is not running Breakscale’s discrete-event engine and does not predict AWS production capacity. Simulated bytes are not storage benchmark results.</p>
+
+        <p class="simulation-disclaimer">Simulation values are synthetic and labelled <strong>SIMULATED</strong>. This page does not predict AWS production capacity. Simulated bytes are not storage benchmark results.</p>
       </section>
 
-      <div id="globalError" class="global-error" hidden role="alert"></div>
-      <footer class="page-footer"><span>ChunkWise</span><span>Content verified on restore</span></footer>
-    </main>
+      <!-- ========== OTHER SECTIONS (Files, Settings, etc.) ========== -->
+      <section id="section-files" class="shell" hidden>
+        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">YOUR VAULT</p><h1>Stored Files</h1></div></div>
+        <section class="panel files-panel" aria-labelledby="filesHeading2">
+          <div class="files-heading">
+            <h2 id="filesHeading2">All files <span class="count-pill" id="fileCount2">-</span></h2>
+            <button class="button button-secondary" id="filesRefreshButton2" type="button">Refresh list</button>
+          </div>
+          <div id="filesError2" class="error-banner" hidden role="alert"></div>
+          <div id="filesLoading2" class="table-loading" aria-live="polite">Loading stored files…</div>
+          <div id="filesEmpty2" class="empty-state" hidden>
+            <div class="empty-mark">∅</div><h3>No files stored yet</h3><p>Upload a file to get started.</p>
+          </div>
+          <div id="filesTableWrap2" class="table-wrap" hidden>
+            <table>
+              <thead><tr><th>File</th><th>Size</th><th>Method</th><th>Added</th><th>File ID</th><th></th></tr></thead>
+              <tbody id="filesBody2"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="section-upload" class="shell" hidden>
+        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">ADD DATA</p><h1>Upload Files</h1><p class="subheading">Drop files here to deduplicate and store them in AWS S3.</p></div></div>
+        <p style="font-size:14px;color:var(--ink-muted);">Use the upload panel on the Overview page to upload files.</p>
+        <a href="#overview" class="button button-primary" style="margin-top:12px;display:inline-flex;">Go to Overview ↗</a>
+      </section>
+
+      <section id="section-chunks" class="shell" hidden>
+        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">CONTENT EXPLORER</p><h1>Chunk Explorer</h1><p class="subheading">Inspect individual chunks, hashes, and compression metadata.</p></div></div>
+        <div class="panel panel-pad"><p style="color:var(--ink-muted);font-size:13.5px;">Select a file from the <a href="#files" style="color:var(--terracotta);font-weight:600;">Files</a> view to explore its chunks here.</p></div>
+      </section>
+
+      <section id="section-optimization" class="shell" hidden>
+        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">CONFIGURATION</p><h1>Optimization Policies</h1><p class="subheading">Choose how ChunkWise compresses and stores your chunks.</p></div></div>
+        <div class="content-grid" style="grid-template-columns:1fr 1fr;">
+          <section class="panel panel-pad">
+            <div class="panel-heading"><h3>Policy Profiles</h3></div>
+            <div class="policy-cards" style="margin-top:0;">
+              <div class="policy-card is-active" data-policy="balanced" style="cursor:pointer;" onclick="selectPolicy('balanced',this)">
+                <div class="policy-card-icon">⚖️</div>
+                <div class="policy-card-info"><div class="policy-card-name">Balanced</div><div class="policy-card-desc">zlib level 6 · 5% min savings</div></div>
+                <span class="policy-active-badge" id="opt-badge-balanced">Active</span>
+              </div>
+              <div class="policy-card" data-policy="space_saver" style="cursor:pointer;" onclick="selectPolicy('space_saver',this)">
+                <div class="policy-card-icon">🍃</div>
+                <div class="policy-card-info"><div class="policy-card-name">Space Saver</div><div class="policy-card-desc">zlib level 9 · 2% min savings</div></div>
+                <span class="policy-active-badge" id="opt-badge-space_saver" hidden>Active</span>
+              </div>
+              <div class="policy-card" data-policy="fast_restore" style="cursor:pointer;" onclick="selectPolicy('fast_restore',this)">
+                <div class="policy-card-icon">⚡</div>
+                <div class="policy-card-info"><div class="policy-card-name">Fast Restore</div><div class="policy-card-desc">zlib level 1 · 10% min savings</div></div>
+                <span class="policy-active-badge" id="opt-badge-fast_restore" hidden>Active</span>
+              </div>
+              <div class="policy-card" data-policy="disabled" style="cursor:pointer;" onclick="selectPolicy('disabled',this)">
+                <div class="policy-card-icon">🚫</div>
+                <div class="policy-card-info"><div class="policy-card-name">No Compression</div><div class="policy-card-desc">Store all chunks uncompressed</div></div>
+                <span class="policy-active-badge" id="opt-badge-disabled" hidden>Active</span>
+              </div>
+            </div>
+          </section>
+          <section class="panel panel-pad">
+            <div class="panel-heading"><h3>Compression profile explanation</h3></div>
+            <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+              <thead><tr><th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--ink-muted);font-size:11px;text-transform:uppercase;">Profile</th><th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--ink-muted);font-size:11px;text-transform:uppercase;">zlib Level</th><th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--ink-muted);font-size:11px;text-transform:uppercase;">Min Saving</th></tr></thead>
+              <tbody>
+                <tr><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);font-weight:600;">Balanced</td><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);">6</td><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);">5%</td></tr>
+                <tr><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);font-weight:600;">Space Saver</td><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);">9</td><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);">2%</td></tr>
+                <tr><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);font-weight:600;">Fast Restore</td><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);">1</td><td style="padding:10px 10px;border-bottom:1px solid var(--ivory);">10%</td></tr>
+                <tr><td style="padding:10px 10px;font-weight:600;">No Compression</td><td style="padding:10px 10px;">-</td><td style="padding:10px 10px;">N/A</td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:16px;padding:12px;background:var(--ivory);border-radius:var(--r-sm);font-size:12px;color:var(--ink-muted);line-height:1.6;">
+              <strong style="color:var(--ink);display:block;margin-bottom:4px;">How it works</strong>
+              Chunks are only compressed if they are <em>new</em> (not deduplicated). The SHA-256 hash is always computed on the raw bytes before compression, preserving chunk identity.
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="section-activity" class="shell" hidden>
+        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">AUDIT LOG</p><h1>Activity</h1></div></div>
+        <div class="panel panel-pad"><p style="color:var(--ink-muted);">Activity history will appear here as you upload, restore, and verify files.</p></div>
+      </section>
+
+      <section id="section-analytics" class="shell" hidden>
+        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">METRICS</p><h1>Storage Analytics</h1></div></div>
+        <div class="panel panel-pad"><p style="color:var(--ink-muted);">Detailed analytics charts will be rendered here using live backend data.</p></div>
+      </section>
+
+      <section id="section-settings" class="shell" hidden>
+        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">CONFIGURATION</p><h1>Settings</h1></div></div>
+        <div class="panel panel-pad">
+          <div class="panel-heading"><h3>Backend Configuration</h3></div>
+          <div style="display:grid;grid-template-columns:140px 1fr;gap:12px 16px;font-size:13px;align-items:center;">
+            <span style="color:var(--ink-muted);font-weight:600;">Backend</span><span id="settingsBackend" style="font-weight:600;">-</span>
+            <span style="color:var(--ink-muted);font-weight:600;">Compression Profile</span><span style="font-weight:600;" id="settingsPolicy">Balanced (zlib level 6)</span>
+            <span style="color:var(--ink-muted);font-weight:600;">Connection</span><span id="settingsConnection" style="font-weight:600;">-</span>
+          </div>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <span>ChunkWise · Content verified on restore</span>
+        <span>Built by Poorvaja &amp; Bhoomi</span>
+      </footer>
+
+    </div><!-- /main-wrap -->
+
+    <script>
+    // Minimal policy selector for Optimization page
+    function selectPolicy(profile, el) {
+      document.querySelectorAll(".policy-card").forEach(c => c.classList.remove("is-active"));
+      document.querySelectorAll("[id^='opt-badge-']").forEach(b => b.hidden = true);
+      el.classList.add("is-active");
+      const badge = document.getElementById("opt-badge-" + profile);
+      if (badge) badge.hidden = false;
+    }
+    </script>
+
   </body>
 </html>

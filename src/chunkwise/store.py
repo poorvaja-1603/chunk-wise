@@ -1,7 +1,15 @@
-"""Content-addressed chunk storage backends."""
+"""Content-addressed chunk storage backends.
+
+Compression extension (plan.md, Section A -- Poorvaja):
+- S3ChunkStore gains put_compressed / get_with_codec to store zlib-compressed
+  bytes under the same SHA-256 key, using S3 object metadata to record codec.
+- LocalChunkStore gains a parallel .meta JSON sidecar for the same purpose.
+- Existing put / get methods are unchanged; backward compatibility is preserved.
+"""
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import uuid
 from pathlib import Path
@@ -97,6 +105,98 @@ class LocalChunkStore:
                         if len(digest) == 64:
                             found.add(digest)
         return found
+
+    def _meta_path(self, digest: str) -> Path:
+        """Return the path to the compression metadata sidecar for *digest*."""
+        return self.root / "objects" / digest[:2] / (digest[2:] + ".meta.json")
+
+    def put_compressed(
+        self,
+        digest: str,
+        stored_data: bytes,
+        codec: str,
+        original_size: int,
+        level: int,
+    ) -> bool:
+        """Store *stored_data* (possibly compressed) alongside a metadata sidecar.
+
+        The main chunk file always holds the bytes that will be served to the
+        restore pipeline.  A companion ``.meta.json`` file records the codec so
+        that ``get_with_codec`` can decompress transparently.
+
+        If *codec* is ``'none'`` the data must equal the original raw bytes and
+        this method falls back to the standard ``put``.
+        """
+        from .compression import CODEC_NONE  # local import to avoid circularity
+
+        if codec == CODEC_NONE:
+            return self.put(digest, stored_data)
+
+        _validate_digest(digest)
+        # For the local store we do NOT enforce sha256(data)==digest because
+        # stored_data is the compressed form.  We write the compressed bytes
+        # directly and record codec metadata in a sidecar.
+        path = self.path_for(digest)
+        if path.exists():
+            # Already stored; nothing to do (dedup).
+            return False
+
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_data = self.root / "tmp" / uuid.uuid4().hex
+        tmp_meta = self.root / "tmp" / uuid.uuid4().hex
+        meta = {
+            "codec": codec,
+            "original_size": original_size,
+            "stored_size": len(stored_data),
+            "level": level,
+            "sha256": digest,
+        }
+        try:
+            tmp_data.write_bytes(stored_data)
+            tmp_meta.write_text(json.dumps(meta), encoding="utf-8")
+            if self.fsync:
+                for t in (tmp_data, tmp_meta):
+                    with t.open("rb") as f:
+                        os.fsync(f.fileno())
+            os.replace(tmp_data, path)
+            # On Windows, os.replace to an existing destination can raise
+            # PermissionError when another thread just created it concurrently.
+            # Treat that as a benign dedup hit.
+            try:
+                os.replace(tmp_meta, self._meta_path(digest))
+            except (PermissionError, FileExistsError):
+                pass  # Another concurrent writer already wrote the sidecar
+            return True
+        finally:
+            tmp_data.unlink(missing_ok=True)
+            tmp_meta.unlink(missing_ok=True)
+
+    def get_with_codec(self, digest: str) -> tuple[bytes, str]:
+        """Return ``(raw_bytes, codec)`` decompressing automatically if needed.
+
+        Returns the original uncompressed chunk bytes together with the codec
+        string.  Callers that need to verify the hash should do so against the
+        returned raw bytes.
+        """
+        from .compression import decompress_chunk, CODEC_NONE
+
+        stored = self.get(digest)  # may be compressed bytes
+        meta_path = self._meta_path(digest)
+        if not meta_path.exists():
+            return stored, CODEC_NONE
+        try:
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        except Exception:
+            return stored, CODEC_NONE
+
+        codec = meta.get("codec", CODEC_NONE)
+        try:
+            raw = decompress_chunk(stored, codec, expected_hash=digest)
+        except Exception as exc:
+            # Re-raise with canonical "failed verification" phrasing so that
+            # existing tests (and the HTTP API) can match it uniformly.
+            raise IntegrityError(f"chunk {digest} failed verification: {exc}") from exc
+        return raw, codec
 
     def close(self) -> None:
         return None
@@ -195,6 +295,86 @@ class S3ChunkStore:
         if hashlib.sha256(data).hexdigest() != digest:
             raise IntegrityError(f"S3 chunk {digest} failed verification")
         return data
+
+    def put_compressed(
+        self,
+        digest: str,
+        stored_data: bytes,
+        codec: str,
+        original_size: int,
+        level: int,
+    ) -> bool:
+        """Store *stored_data* (possibly zlib-compressed) in S3.
+
+        Unlike ``put``, this method does NOT enforce ``sha256(stored_data)==digest``.
+        Instead, compression metadata is recorded in S3 object user-defined metadata
+        so that ``get_with_codec`` can decompress on retrieval.
+
+        If *codec* is ``'none'`` the method delegates to the standard ``put``.
+        """
+        from .compression import CODEC_NONE
+
+        if codec == CODEC_NONE:
+            return self.put(digest, stored_data)
+
+        _validate_digest(digest)
+        key = self.key_for(digest)
+        s3_metadata = {
+            "sha256": digest,
+            "codec": codec,
+            "original-size": str(original_size),
+            "stored-size": str(len(stored_data)),
+            "level": str(level),
+        }
+        self.s3_puts = getattr(self, "s3_puts", 0) + 1
+        try:
+            self.client.put_object(
+                Bucket=self.bucket,
+                Key=key,
+                Body=stored_data,
+                Metadata=s3_metadata,
+                IfNoneMatch="*",
+            )
+            return True
+        except Exception as error:
+            response = getattr(error, "response", {})
+            code = str(response.get("Error", {}).get("Code", ""))
+            status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+            if code in {"412", "PreconditionFailed"} or status == 412:
+                # Object already exists; treat as dedup hit
+                return False
+            raise
+
+    def get_with_codec(self, digest: str) -> tuple[bytes, str]:
+        """Return ``(raw_bytes, codec)`` decompressing automatically when needed.
+
+        Reads S3 object metadata to determine whether the stored bytes are
+        compressed.  Returns the original uncompressed bytes.
+        """
+        from .compression import decompress_chunk, CODEC_NONE
+
+        self.s3_gets = getattr(self, "s3_gets", 0) + 1
+        try:
+            result = self.client.get_object(Bucket=self.bucket, Key=self.key_for(digest))
+        except Exception as error:
+            response = getattr(error, "response", {})
+            code = str(response.get("Error", {}).get("Code", ""))
+            status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+            if code in {"404", "NoSuchKey", "NotFound"} or status == 404:
+                raise ChunkMissingError(f"chunk {digest} missing from S3") from None
+            raise
+
+        stored = result["Body"].read()
+        # Read codec from S3 object metadata (lowercase keys by AWS convention)
+        meta = {k.lower(): v for k, v in result.get("Metadata", {}).items()}
+        codec = meta.get("codec", CODEC_NONE)
+        try:
+            raw = decompress_chunk(stored, codec, expected_hash=digest)
+        except Exception as exc:
+            # Re-raise with canonical "failed verification" phrasing so that
+            # existing tests (and the HTTP API) can match it uniformly.
+            raise IntegrityError(f"chunk {digest} failed verification: {exc}") from exc
+        return raw, codec
 
     def delete(self, digest: str) -> None:
         key = self.key_for(digest)

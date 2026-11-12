@@ -525,3 +525,44 @@
   .run-controls .button { margin-left: 0; }
   .stage-list { grid-template-columns: 1fr; }
 }
+
+/* =============================================================
+   Pipeline stage diagram styles — Poorvaja (Member A)
+   Warm Ivory design system: pipeline node animations
+   ============================================================= */
+
+/* Stage active pulse */
+.pipeline-node.is-active {
+  animation: node-stage-pulse 1.5s ease infinite;
+}
+@keyframes node-stage-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,125,112,0.0); }
+  50%       { box-shadow: 0 0 0 6px rgba(212,125,112,0.18); }
+}
+
+/* Arrow animated flow dash */
+.pipeline-arrow-line.is-active {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--terracotta, #D47D70) 0, var(--terracotta, #D47D70) 8px,
+    transparent 8px, transparent 14px
+  );
+  background-size: 200% 100%;
+  animation: arrow-flow 0.6s linear infinite;
+}
+@keyframes arrow-flow {
+  from { background-position: 200% 0; }
+  to   { background-position: 0% 0; }
+}
+
+/* Stage list items in breakscale simulation */
+.stage-list [data-stage].is-active {
+  background: var(--terracotta-l, #FAF0EE);
+  border-color: var(--terracotta, #D47D70) !important;
+  color: var(--terracotta-h, #C06A5D);
+}
+.stage-list [data-stage].is-done {
+  background: var(--sage-l, #EBF0ED);
+  border-color: var(--sage, #8FA69A) !important;
+  color: #2D5E4E;
+}

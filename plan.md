@@ -21,7 +21,6 @@
 ---
 
 ## Table of Contents
-
 1. [Executive Summary](#1-executive-summary)
 2. [Current Architecture and Codebase Audit](#2-current-architecture-and-codebase-audit)
 3. [Professor's Additional Requirements](#3-professors-additional-requirements)
@@ -58,7 +57,6 @@
 ChunkWise is a chunk-level deduplication and cloud storage optimization platform designed for modern file workflows. The existing core system uses Rabin-based Content Defined Chunking (CDC) to identify variable-length chunk boundaries and SHA-256 cryptographic hashes for chunk addressing, backed by Amazon S3 for chunk content and Amazon DynamoDB for metadata indexing.
 
 To satisfy the four extensions specified by the professor and deliver a production-grade capstone project, this plan defines the technical roadmap for:
-
 1. **Compression Layer**: Integrating an adaptive zlib compression pipeline that operates strictly post-deduplication, guaranteeing chunk immutability and preventing redundant CPU expenditure.
 2. **Improved GUI**: Transforming the user experience into a polished, light-themed SaaS dashboard using a Warm Ivory aesthetic and building an interactive 10-stage deduplication simulation.
 3. **Reparse Point Handling**: Introducing a safe filesystem scanner for Windows NTFS symbolic links, directory junctions, and mount points to prevent infinite traversal and path traversal exploits.
@@ -71,7 +69,6 @@ The workload is divided equitably between **Poorvaja** (Frontend Lead & Compress
 ## 2. Current Architecture and Codebase Audit
 
 ### 2.1 Existing Modules
-
 - `src/chunkwise/chunker.py`:
   - Implements Rabin CDC with parameters:
     - Minimum chunk size: 2 KB (2,048 bytes).
@@ -94,7 +91,6 @@ The workload is divided equitably between **Poorvaja** (Frontend Lead & Compress
   - 72 passing test cases verifying chunker boundary conditions, deduplication counts, and S3 mock integration.
 
 ### 2.2 Critical Invariants to Preserve
-
 - **Chunk Identity**: The SHA-256 digest must ALWAYS be computed over the raw uncompressed bytes. Compression must never mutate the chunk hash.
 - **Backward Compatibility**: Existing uncompressed chunks stored in S3 must remain restorable without corruption.
 - **Two-Phase Commit**: Chunks must be safely committed to S3 prior to creating metadata records in DynamoDB to eliminate orphan metadata pointers.
@@ -106,7 +102,6 @@ The workload is divided equitably between **Poorvaja** (Frontend Lead & Compress
 ### A. Compression Layer (Owner: Poorvaja)
 
 #### Technical Rationale: Why Compress After Deduplication?
-
 1. **Hashing Invariance**: Deduplication relies on content hash equality. Two identical files must yield identical chunk hashes regardless of the compression algorithm or compression level applied.
 2. **Eliminating Redundant CPU Work**: In a deduplicated system, a large percentage of chunks already exist in storage. Compressing every chunk before querying DynamoDB would waste CPU cycles compressing data that will immediately be discarded.
 3. **Adaptive Decision**: Compressing after lookup allows ChunkWise to compress only genuinely new, unique chunks.
@@ -135,15 +130,13 @@ Reuse Chunk  Run zlib.compress(chunk, level)
 ```
 
 #### Policy Profiles
-
-| Profile Name     | zlib Level | Min Savings Threshold | Target Workload                                |
-| ---------------- | ---------- | --------------------- | ---------------------------------------------- |
-| **Balanced**     | 6          | 5%                    | General documents, mixed archives              |
-| **Space Saver**  | 9          | 2%                    | Large backups, high-latency/metered storage    |
-| **Fast Restore** | 1          | 10%                   | Frequent access files, latency-sensitive reads |
+| Profile Name | zlib Level | Min Savings Threshold | Target Workload |
+|--------------|------------|-----------------------|-----------------|
+| **Balanced** | 6 | 5% | General documents, mixed archives |
+| **Space Saver** | 9 | 2% | Large backups, high-latency/metered storage |
+| **Fast Restore** | 1 | 10% | Frequent access files, latency-sensitive reads |
 
 #### Restoration Pipeline
-
 - Retrieve chunk from S3 using key `objects/{hash[:2]}/{hash}`.
 - Inspect `codec` attribute in `ChunkMeta`:
   - If `codec == 'zlib'`: Decompress using `zlib.decompress()`.
@@ -155,30 +148,27 @@ Reuse Chunk  Run zlib.compress(chunk, level)
 ### B. Improved GUI (Owner: Poorvaja)
 
 #### Visual Theme & Palette
-
 The interface is strictly light-themed, modern, and aligned with enterprise SaaS aesthetics.
 
-| Color Name           | Hex Code  | Role in Interface                                       |
-| -------------------- | --------- | ------------------------------------------------------- |
-| **Warm Ivory**       | `#F5F3EE` | Main background canvas, page backdrop                   |
-| **White**            | `#FFFFFF` | Primary card surfaces, modal sheets                     |
-| **Deep Slate**       | `#263746` | Primary typography, headers, active icon fills          |
-| **Muted Terracotta** | `#D47D70` | Primary action buttons, active sidebar pill, highlights |
-| **Sage**             | `#8FA69A` | Success indicators, verified checkmarks, dedup badge    |
-| **Dusty Blue**       | `#8DA7B8` | Storage metrics, secondary graph accents, progress bars |
-| **Warm Grey**        | `#E7E3DC` | Subtle borders, table dividers, card outlines           |
-| **Slate Grey**       | `#697782` | Secondary labels, timestamps, descriptive subtitles     |
+| Color Name | Hex Code | Role in Interface |
+|------------|----------|-------------------|
+| **Warm Ivory** | `#F5F3EE` | Main background canvas, page backdrop |
+| **White** | `#FFFFFF` | Primary card surfaces, modal sheets |
+| **Deep Slate** | `#263746` | Primary typography, headers, active icon fills |
+| **Muted Terracotta**| `#D47D70` | Primary action buttons, active sidebar pill, highlights |
+| **Sage** | `#8FA69A` | Success indicators, verified checkmarks, dedup badge |
+| **Dusty Blue** | `#8DA7B8` | Storage metrics, secondary graph accents, progress bars |
+| **Warm Grey** | `#E7E3DC` | Subtle borders, table dividers, card outlines |
+| **Slate Grey** | `#697782` | Secondary labels, timestamps, descriptive subtitles |
 
 ---
 
 ### C. Reparse Point Handling (Owner: Bhoomi)
 
 #### Scope & Windows Specifics
-
 On Windows NTFS, reparse points implement Symbolic Links (`IO_REPARSE_TAG_SYMLINK`), Directory Junctions (`IO_REPARSE_TAG_MOUNT_POINT`), and Volume Mount Points.
 
 #### Ingestion Rules (Safety First)
-
 1. **Detection Before Traversal**: Check `os.lstat(path)` for `stat.FILE_ATTRIBUTE_REPARSE_POINT` using `pywin32` APIs (`GetFileInformationByHandleEx`).
 2. **Never Follow Recursively by Default**: Treat reparse points as atomic metadata entries. Do not traverse into link target directories during whole-folder uploads.
 3. **Capture Metadata Object**:
@@ -188,7 +178,6 @@ On Windows NTFS, reparse points implement Symbolic Links (`IO_REPARSE_TAG_SYMLIN
    - `is_directory`: Boolean flag
 
 #### Restoration Safety
-
 1. **Explicit Toggle**: Links are only recreated if `restore_links=true` is passed by user.
 2. **Path Traversal Guard**: If a relative link resolves to a path outside the destination root (`../..`), refuse link creation and record a security warning.
 3. **Junction vs Symlink Separation**:
@@ -200,7 +189,6 @@ On Windows NTFS, reparse points implement Symbolic Links (`IO_REPARSE_TAG_SYMLIN
 ### D. Optimization Policies (Owner: Bhoomi)
 
 #### Policy Definition Schema
-
 Optimization policies govern the compression parameters and storage behavior across upload tasks.
 
 ```json
@@ -230,7 +218,6 @@ Optimization policies govern the compression parameters and storage behavior acr
 ```
 
 #### Application Rules
-
 - **Non-Retroactive**: Modifying an optimization policy applies strictly to future file uploads. Existing chunks in S3 remain untouched.
 - **Auditability**: Every uploaded file record in DynamoDB stores the active `policy_id` under which it was processed.
 
@@ -239,7 +226,6 @@ Optimization policies govern the compression parameters and storage behavior acr
 ## 4. Detailed UI/UX Design and Information Architecture (Lead: Poorvaja)
 
 ### Visual Design System
-
 - **Typography**: Inter (System fallback: Segoe UI, Roboto). Clear 600 weight for headings, 400 for body, 500 for metrics.
 - **Card Containers**: Background `#FFFFFF`, 1px border `#E7E3DC`, border-radius 8px, soft drop-shadow `0 2px 6px rgba(38, 55, 70, 0.04)`.
 - **Buttons**:
@@ -247,9 +233,7 @@ Optimization policies govern the compression parameters and storage behavior acr
   - Secondary: Background `#FFFFFF`, border 1px solid `#E7E3DC`, text `#263746`.
 
 ### Sidebar Navigation
-
 A clean, fixed-width (240px) sidebar with the Deep Slate and Warm Ivory background:
-
 1. **Brand Header**: ChunkWise logo mark + project status pill (`Operational`).
 2. **Navigation List**:
    - **Overview** (Home dashboard, key metrics, storage breakdown).
@@ -266,11 +250,9 @@ A clean, fixed-width (240px) sidebar with the Deep Slate and Warm Ivory backgrou
    - Mini AWS connectivity badge (`Storage on AWS`).
 
 ### Interactive Simulation UI
-
 The simulation renders the internal CDC and deduplication pipeline step-by-step to educate professors and evaluators.
 
 #### 10-Stage Visual Timeline
-
 ```
 [1. File Selection]
        |
@@ -317,24 +299,21 @@ The simulation renders the internal CDC and deduplication pipeline step-by-step 
 ```
 
 #### Simulation Interactive Controls
-
 - **Controls Toolbar**: Play (auto-advance every 1.5s), Pause, Step Forward, Step Back, Reset.
 - **Node Statuses**: `Idle` (Grey outline), `Running` (Deep Slate pulse with active arrow animation), `Completed` (Sage green border), `Skipped/Deduplicated` (Muted Terracotta highlight).
 - **Inspector Drawer**: Clicking any node opens a right-side drawer displaying live data (e.g., rolling checksum hex, chunk buffer size, SHA-256 digest, zlib compression ratio).
 
 ### Human-Centric Information Display
-
 - **Instead of raw cryptic text**: `Deduplication: 2.21x`
 - **Render human context**:
   > **Deduplication Ratio: 2.21x**  
-  > _You uploaded 24.8 GB of data, but ChunkWise only stored 11.2 GB in AWS. That is a 54.7% physical storage saving._
+  > *You uploaded 24.8 GB of data, but ChunkWise only stored 11.2 GB in AWS. That is a 54.7% physical storage saving.*
 
 ---
 
 ## 5. Authentication Strategy (Joint: Poorvaja & Bhoomi)
 
 ### Architecture
-
 - **Provider**: AWS Cognito User Pool with Hosted UI and App Client.
 - **Token Flow**: Authorization Code Grant with PKCE.
 - **Frontend Role (Poorvaja)**:
@@ -350,26 +329,20 @@ The simulation renders the internal CDC and deduplication pipeline step-by-step 
 ## 6. Backend Architecture and Schema Extensions
 
 ### Compression Service (Owner: Poorvaja)
-
 File: `src/chunkwise/compression.py`
-
 - Functions:
   - `compress_chunk(data: bytes, level: int = 6) -> tuple[bytes, str, float]`: Compresses via `zlib.compress`, returns `(compressed_bytes, codec_name, saving_ratio)`.
   - `decompress_chunk(data: bytes, codec: str) -> bytes`: Unpacks data based on codec identifier.
 
 ### Reparse Point Service (Owner: Bhoomi)
-
 File: `src/chunkwise/reparse.py`
-
 - Functions:
   - `inspect_path(path: str) -> dict`: Inspects file attributes for `FILE_ATTRIBUTE_REPARSE_POINT`.
   - `safe_resolve_target(link_path: str, root_dir: str) -> str`: Asserts target path does not escape sandbox.
   - `create_reparse_link(source_path: str, target: str, link_type: str) -> bool`: Safe junction/symlink creator.
 
 ### Policy Management API (Owner: Bhoomi)
-
 File: `src/chunkwise/policy.py`
-
 - Endpoints:
   - `GET /api/v1/policies`: Lists system policy profiles.
   - `GET /api/v1/policies/active`: Retrieves currently selected configuration.
@@ -378,7 +351,6 @@ File: `src/chunkwise/policy.py`
 ### DynamoDB Schema Changes (Owner: Bhoomi)
 
 #### Table: `ChunkMeta` (`chunkwise-chunks`)
-
 - Existing: `hash` (PK, String), `size` (Number), `ref_count` (Number), `s3_key` (String).
 - **New Attributes**:
   - `codec`: String (`"zlib"` or `"none"`).
@@ -387,14 +359,12 @@ File: `src/chunkwise/policy.py`
   - `compression_level`: Number (1-9, or 0 if uncompressed).
 
 #### Table: `FileMeta` (`chunkwise-files`)
-
 - Existing: `file_id` (PK, String), `filename` (String), `total_size` (Number), `chunk_hashes` (List).
 - **New Attributes**:
   - `policy_id`: String (identifies policy active at upload).
   - `reparse_records`: List of objects capturing symlink/junction metadata.
 
 ### Error Handling and Safety Invariants
-
 - **Corrupted Compressed Chunks**: If `zlib.decompress` fails or decompressed bytes do not match SHA-256, raise `ChunkIntegrityError` and abort restore cleanly.
 - **S3 Upload Failure**: If S3 upload fails, do not write DynamoDB chunk records.
 
@@ -435,7 +405,6 @@ flowchart TD
 ## 8. Testing and Benchmarking Plan
 
 ### Backend Unit and Integration Tests (Owner: Bhoomi)
-
 - Tests for `reparse.py`:
   - Verify detection of Windows junction points vs standard folders.
   - Verify rejection of directory traversal attempts (`..\..\windows\system32`).
@@ -445,14 +414,12 @@ flowchart TD
   - Upload file -> verify DynamoDB chunk count -> re-upload identical file -> assert S3 PUT count does not increase.
 
 ### Frontend Component and End-to-End Tests (Owner: Poorvaja)
-
 - Unit tests for compression utility (`compression.test.ts` / `pytest test_compression.py`).
 - Component tests for Simulation state transitions (Play -> Pause -> Step Forward).
 - Cypress E2E tests:
   - User logs in -> selects "Space Saver" policy -> uploads test file -> verifies deduplication card updates.
 
 ### Empirical Performance Benchmarks (Joint: Poorvaja & Bhoomi)
-
 - Benchmark Dataset: 10 GB mixed corpus (RFC text files, compiled binary DLLs, JPEG images, repetitive log files).
 - Metrics to measure and record:
   - Compression ratio across Balanced vs Space Saver vs Fast Restore.
@@ -464,20 +431,19 @@ flowchart TD
 
 ## 9. Member-wise Work Division and 5-Week Timeline
 
-|    Week    | Poorvaja (Frontend & Compression)                                                                                      | Bhoomi (Backend & Optimization/Reparse)                                                                                    | Joint Milestone                                                          |
-| :--------: | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **Week 1** | Implement `compression.py` (zlib compress/decompress + threshold logic). Build UI Design System & CSS tokens in React. | Implement Windows reparse point inspector (`reparse.py`). Design DynamoDB schema extensions for `codec` and `stored_size`. | Compression core tested; Reparse detection verified on Windows.          |
-| **Week 2** | Build persistent Sidebar, Overview Page, and File Upload dropzone. Connect upload UI to FastAPI upload stream.         | Integrate `compression.py` into `engine.py` (post-dedup pipeline). Update S3 store and DynamoDB chunk writer.              | First compressed file upload successfully deduplicated in AWS.           |
-| **Week 3** | Develop interactive 10-Stage Simulation UI with SVG animated arrows, play/pause controls, and inspector drawer.        | Implement Optimization Policy engine (`policy.py`), DynamoDB `Config` table, and policy selector API.                      | Simulation UI runs in browser; Policy switching reflects in backend.     |
-| **Week 4** | Build Chunk Explorer and Storage Analytics charts (pie chart, savings breakdown). Integrate Cognito login.             | Implement safe restore logic for reparse points. Write 10 GB benchmark suite (`benchmarks/run.py`).                        | End-to-end restore verified; Benchmark numbers gathered.                 |
-| **Week 5** | Polish UI styling, responsive adjustments, error modals, and visual tooltips. Conduct Cypress UI testing.              | Deploy FastAPI to ECS Fargate; configure CloudWatch alarms and verify production DynamoDB throughput.                      | Final rehearsal, demo dataset prepared, project viva presentation ready. |
+| Week | Poorvaja (Frontend & Compression) | Bhoomi (Backend & Optimization/Reparse) | Joint Milestone |
+|:---:|---|---|---|
+| **Week 1** | Implement `compression.py` (zlib compress/decompress + threshold logic). Build UI Design System & CSS tokens in React. | Implement Windows reparse point inspector (`reparse.py`). Design DynamoDB schema extensions for `codec` and `stored_size`. | Compression core tested; Reparse detection verified on Windows. |
+| **Week 2** | Build persistent Sidebar, Overview Page, and File Upload dropzone. Connect upload UI to FastAPI upload stream. | Integrate `compression.py` into `engine.py` (post-dedup pipeline). Update S3 store and DynamoDB chunk writer. | First compressed file upload successfully deduplicated in AWS. |
+| **Week 3** | Develop interactive 10-Stage Simulation UI with SVG animated arrows, play/pause controls, and inspector drawer. | Implement Optimization Policy engine (`policy.py`), DynamoDB `Config` table, and policy selector API. | Simulation UI runs in browser; Policy switching reflects in backend. |
+| **Week 4** | Build Chunk Explorer and Storage Analytics charts (pie chart, savings breakdown). Integrate Cognito login. | Implement safe restore logic for reparse points. Write 10 GB benchmark suite (`benchmarks/run.py`). | End-to-end restore verified; Benchmark numbers gathered. |
+| **Week 5** | Polish UI styling, responsive adjustments, error modals, and visual tooltips. Conduct Cypress UI testing. | Deploy FastAPI to ECS Fargate; configure CloudWatch alarms and verify production DynamoDB throughput. | Final rehearsal, demo dataset prepared, project viva presentation ready. |
 
 ---
 
 ## 10. Demo and Viva Defense Plan
 
 ### 5-Minute Live Demo Walkthrough
-
 1. **Introduction & Login (Poorvaja - 45s)**:
    - Present the polished SaaS dashboard.
    - Explain the Warm Ivory design system and enterprise storage management view.
@@ -485,41 +451,38 @@ flowchart TD
    - Run a live file through the 10-stage simulation.
    - Highlight the boundary detection (Rabin 8191 mask), SHA-256 generation, and post-dedup compression branch.
 3. **Policy Engine & Benchmarks (Bhoomi - 90s)**:
-   - Switch active policy from _Balanced_ to _Space Saver_.
+   - Switch active policy from *Balanced* to *Space Saver*.
    - Show empirical metrics on 10 GB dataset proving storage reduction vs CPU cost.
 4. **Reparse Point Safety & Deduplication Proof (Bhoomi - 75s)**:
    - Ingest a directory containing a Windows junction point; show that ChunkWise records target metadata without getting trapped in a loop.
    - Upload identical file version; inspect AWS S3 and DynamoDB to prove zero duplicate S3 chunk uploads.
 
 ### Anticipated Viva Questions and Answers
-
 - **Q: Why compress after deduplication lookup instead of before?**
-  - _Answer (Poorvaja)_: Deduplication requires deterministic content identity. SHA-256 must be computed on raw bytes. Furthermore, compressing duplicate chunks before lookup would waste significant CPU compressing data that will simply be discarded.
+  - *Answer (Poorvaja)*: Deduplication requires deterministic content identity. SHA-256 must be computed on raw bytes. Furthermore, compressing duplicate chunks before lookup would waste significant CPU compressing data that will simply be discarded.
 - **Q: How does ChunkWise avoid infinite recursion on Windows directory junctions?**
-  - _Answer (Bhoomi)_: We inspect `stat.FILE_ATTRIBUTE_REPARSE_POINT` using `os.lstat` before descending into directories. Junctions are stored as link metadata objects rather than recursively traversed.
+  - *Answer (Bhoomi)*: We inspect `stat.FILE_ATTRIBUTE_REPARSE_POINT` using `os.lstat` before descending into directories. Junctions are stored as link metadata objects rather than recursively traversed.
 - **Q: What happens if an uncompressed chunk from an earlier version is restored?**
-  - _Answer (Poorvaja)_: Backward compatibility is built into the restore pipeline. If `codec == 'none'`, decompression is bypassed and the chunk is verified directly against the SHA-256 digest.
+  - *Answer (Poorvaja)*: Backward compatibility is built into the restore pipeline. If `codec == 'none'`, decompression is bypassed and the chunk is verified directly against the SHA-256 digest.
 
 ---
 
 ## 11. Risk Matrix and Mitigation Strategies
 
-| Risk Description                                          | Severity |  Owner   | Mitigation Strategy                                                                                    |
-| --------------------------------------------------------- | :------: | :------: | ------------------------------------------------------------------------------------------------------ |
-| zlib CPU overhead slows down high-throughput file uploads |  Medium  | Poorvaja | Provide "Fast Restore" profile (level 1) and skip compression if chunk size < 2 KB.                    |
-| Windows non-admin permissions block symlink creation      |   High   |  Bhoomi  | Fall back cleanly to metadata text stub (`.link_info.json`) when `ERROR_PRIVILEGE_NOT_HELD` is caught. |
-| DynamoDB throughput throttling on batch uploads           |  Medium  |  Bhoomi  | Use exponential backoff with jitter and batch writes up to 25 items per request.                       |
-| Discrepancy between simulation animation and real backend |   Low    | Poorvaja | Drive simulation state via WebSocket progress events emitted directly by `engine.py`.                  |
+| Risk Description | Severity | Owner | Mitigation Strategy |
+|---|:---:|:---:|---|
+| zlib CPU overhead slows down high-throughput file uploads | Medium | Poorvaja | Provide "Fast Restore" profile (level 1) and skip compression if chunk size < 2 KB. |
+| Windows non-admin permissions block symlink creation | High | Bhoomi | Fall back cleanly to metadata text stub (`.link_info.json`) when `ERROR_PRIVILEGE_NOT_HELD` is caught. |
+| DynamoDB throughput throttling on batch uploads | Medium | Bhoomi | Use exponential backoff with jitter and batch writes up to 25 items per request. |
+| Discrepancy between simulation animation and real backend | Low | Poorvaja | Drive simulation state via WebSocket progress events emitted directly by `engine.py`. |
 
 ---
 
 ## 12. Future Improvements
-
 - **Advanced Codecs**: Adding Zstandard (zstd) and Brotli for higher compression density.
 - **Client-Side Deduplication**: Calculating Rabin CDC and SHA-256 client-side in WebAssembly to save network upload bandwidth.
 - **S3 Intelligent-Tiering**: Automatically shifting cold chunks to S3 Glacier after 90 days of zero reference count access.
 - **Cross-Region Replication**: DynamoDB Global Tables and S3 Cross-Region Replication for disaster recovery.
 
 ---
-
-_Document approved for ChunkWise Capstone Project. Authors: Poorvaja & Bhoomi._
+*Document approved for ChunkWise Capstone Project. Authors: Poorvaja & Bhoomi.*

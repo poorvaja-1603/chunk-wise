@@ -1,14 +1,77 @@
 "use strict";
 
+// ----------------------------------------------------------------
+// ChunkWise frontend — Poorvaja (Member A)
+// Design system: Warm Ivory palette
+// ----------------------------------------------------------------
+
 const $ = (selector) => document.querySelector(selector);
-const fileInput = $("#fileInput");
-const dropZone = $("#dropZone");
+const $$ = (selector) => document.querySelectorAll(selector);
+
+const fileInput  = $("#fileInput");
+const dropZone   = $("#dropZone");
 const uploadButton = $("#uploadButton");
 let selectedFile = null;
 let pendingUploadKey = null;
 let pendingUploadFingerprint = null;
 let refreshGeneration = 0;
 
+// ----------------------------------------------------------------
+// Sidebar navigation
+// ----------------------------------------------------------------
+const SECTION_TITLES = {
+  overview:     "Overview",
+  upload:       "Upload Files",
+  files:        "Files",
+  chunks:       "Chunk Explorer",
+  simulation:   "Simulation",
+  optimization: "Optimization",
+  activity:     "Activity",
+  analytics:    "Storage Analytics",
+  settings:     "Settings",
+};
+
+function activateSection(name) {
+  // Hide all sections
+  for (const key of Object.keys(SECTION_TITLES)) {
+    const el = $(`#section-${key}`);
+    if (el) el.hidden = true;
+  }
+  // Show requested
+  const target = $(`#section-${name}`);
+  if (target) target.hidden = false;
+
+  // Update sidebar active state
+  $$(".sidebar-nav a").forEach(a => {
+    a.classList.toggle("is-active", a.dataset.section === name);
+  });
+
+  // Update topbar title
+  const titleEl = $("#topbarTitle");
+  if (titleEl) titleEl.textContent = SECTION_TITLES[name] || name;
+}
+
+// Sidebar link clicks
+$$(".sidebar-nav a").forEach(link => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    const section = link.dataset.section;
+    if (section) activateSection(section);
+  });
+});
+
+// Hash-based navigation (from links like href="#simulation")
+function navigateFromHash() {
+  const hash = window.location.hash.replace("#", "");
+  if (hash && SECTION_TITLES[hash]) {
+    activateSection(hash);
+  }
+}
+window.addEventListener("hashchange", navigateFromHash);
+
+// ----------------------------------------------------------------
+// Utilities
+// ----------------------------------------------------------------
 function formatBytes(value) {
   if (value === 0) return "0 B";
   if (!Number.isFinite(value) || value < 0) return "-";
@@ -19,15 +82,23 @@ function formatBytes(value) {
 }
 
 function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, (character) => ({
+  return String(value).replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-  })[character]);
+  })[c]);
+}
+
+function dateLabel(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "Unknown"
+    : new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(date);
 }
 
 async function api(url, options = {}) {
   const response = await fetch(url, options);
   const type = response.headers.get("content-type") || "";
-  const body = type.includes("application/json") ? await response.json() : await response.blob();
+  const body = type.includes("application/json")
+    ? await response.json()
+    : await response.blob();
   if (!response.ok) throw new Error(body.error || `Request failed (${response.status})`);
   return body;
 }
@@ -45,74 +116,148 @@ function setUploadMessage(message, kind) {
   node.hidden = false;
 }
 
-function uploadKeyStorageKey(fingerprint) {
-  return `chunkwise-pending-upload:${fingerprint}`;
-}
-
+// ----------------------------------------------------------------
+// Stats / UI refresh
+// ----------------------------------------------------------------
 async function refreshStats() {
   const stats = await api("/api/stats");
-  $("#statLogical").textContent = formatBytes(stats.logical_bytes);
+  const ratio = Number(stats.dedup_ratio);
+  const savedPct = Number(stats.storage_saved_pct);
+
+  $("#statLogical").textContent  = formatBytes(stats.logical_bytes);
   $("#statPhysical").textContent = formatBytes(stats.physical_bytes);
-  $("#statRatio").textContent = `${Number(stats.dedup_ratio).toFixed(2)}×`;
-  $("#statSaved").textContent = `${Number(stats.storage_saved_pct).toFixed(1)}%`;
-  $("#statSavedDetail").textContent = `${formatBytes(Math.max(0, stats.logical_bytes - stats.physical_bytes))} less stored`;
-  $("#statFiles").textContent = Number(stats.files).toLocaleString();
+  $("#statRatio").textContent    = `${ratio.toFixed(2)}×`;
+  $("#statSaved").textContent    = `${savedPct.toFixed(1)}%`;
+
+  // Human-friendly dedup explanation
+  const ratioDesc = ratio >= 1.1
+    ? `${ratio.toFixed(1)}× means every ${ratio.toFixed(1)} GB stored as 1 GB — ${savedPct.toFixed(0)}% space saved`
+    : "Logical bytes per stored byte";
+  const ratioEl = $("#statRatioDesc");
+  if (ratioEl) ratioEl.textContent = ratioDesc;
+
+  const savedEl = $("#statSavedDetail");
+  if (savedEl) {
+    const savedBytes = Math.max(0, stats.logical_bytes - stats.physical_bytes);
+    savedEl.textContent = `${formatBytes(savedBytes)} less stored than original`;
+  }
+
+  $("#statFiles").textContent  = Number(stats.files).toLocaleString();
   $("#statChunks").textContent = Number(stats.unique_chunks).toLocaleString();
-  $("#compositionLogical").textContent = formatBytes(stats.logical_bytes);
-  $("#compositionPhysical").textContent = formatBytes(stats.physical_bytes);
-  $("#compositionSaved").textContent = formatBytes(Math.max(0, stats.logical_bytes - stats.physical_bytes));
-  const storedShare = stats.logical_bytes > 0 ? Math.min(100, (stats.physical_bytes / stats.logical_bytes) * 100) : 0;
-  $("#compositionBar").style.width = `${storedShare}%`;
-  $("#compositionNote").textContent = stats.files
-    ? `${Number(stats.unique_chunks).toLocaleString()} unique chunks across ${Number(stats.files).toLocaleString()} committed files.`
-    : "Storage totals will appear when data is available.";
-  $("#statsGrid").setAttribute("aria-busy", "false");
+
+  // Composition panel
+  const compositionLogical = $("#compositionLogical");
+  if (compositionLogical) {
+    compositionLogical.textContent = formatBytes(stats.logical_bytes);
+    $("#compositionPhysical").textContent = formatBytes(stats.physical_bytes);
+    $("#compositionSaved").textContent    = formatBytes(Math.max(0, stats.logical_bytes - stats.physical_bytes));
+    const storedShare = stats.logical_bytes > 0
+      ? Math.min(100, (stats.physical_bytes / stats.logical_bytes) * 100) : 0;
+    $("#compositionBar").style.width = `${storedShare}%`;
+    const noteEl = $("#compositionNote");
+    if (noteEl) {
+      noteEl.textContent = stats.files
+        ? `${Number(stats.unique_chunks).toLocaleString()} unique chunks across ${Number(stats.files).toLocaleString()} committed files.`
+        : "Storage totals will appear when data is available.";
+    }
+  }
+
+  $("#statsGrid")?.setAttribute("aria-busy", "false");
 }
 
-function dateLabel(value) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "Unknown" : new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(date);
-}
-
-function renderFiles(files) {
-  const body = $("#filesBody");
+function renderFiles(files, bodyId = "filesBody", emptyId = "filesEmpty", tableId = "filesTableWrap", loadId = "filesLoading", countId = "fileCount") {
+  const body = $(`#${bodyId}`);
+  if (!body) return;
   body.replaceChildren();
-  $("#fileCount").textContent = files.length.toLocaleString();
+  const countEl = $(`#${countId}`);
+  if (countEl) countEl.textContent = files.length.toLocaleString();
+  const empty = $(`#${emptyId}`);
+  const table = $(`#${tableId}`);
   if (!files.length) {
-    $("#filesEmpty").hidden = false;
-    $("#filesTableWrap").hidden = true;
+    if (empty) empty.hidden = false;
+    if (table) table.hidden = true;
     return;
   }
-  $("#filesEmpty").hidden = true;
-  $("#filesTableWrap").hidden = false;
+  if (empty) empty.hidden = true;
+  if (table) table.hidden = false;
+
   for (const file of files) {
     const row = document.createElement("tr");
     const safeName = escapeHtml(file.name);
-    const extension = (file.name.split(".").pop() || "FILE").slice(0, 4).toUpperCase();
-    row.innerHTML = `<td><div class="file-name"><span class="file-glyph">${escapeHtml(extension)}</span><span title="${safeName}">${safeName}</span></div></td>
-      <td>${formatBytes(file.size)}</td><td><span class="method-tag">${escapeHtml(file.chunker)}</span></td>
-      <td>${escapeHtml(dateLabel(file.created_at))}</td><td><span class="file-id">${escapeHtml(file.file_id)}</span></td>
-      <td><div class="row-actions"><button class="action-button" data-action="verify" data-id="${escapeHtml(file.file_id)}">Verify</button><button class="action-button" data-action="download" data-id="${escapeHtml(file.file_id)}">Restore</button></div></td>`;
+    const ext = (file.name.split(".").pop() || "FILE").slice(0, 4).toUpperCase();
+    row.innerHTML = `
+      <td><div class="file-name">
+        <span class="file-glyph">${escapeHtml(ext)}</span>
+        <span title="${safeName}">${safeName}</span>
+      </div></td>
+      <td>${formatBytes(file.size)}</td>
+      <td><span class="method-tag">${escapeHtml(file.chunker)}</span></td>
+      <td>${escapeHtml(dateLabel(file.created_at))}</td>
+      <td><span class="file-id">${escapeHtml(file.file_id)}</span></td>
+      <td><div class="row-actions">
+        <button class="action-button" data-action="verify"   data-id="${escapeHtml(file.file_id)}">Verify</button>
+        <button class="action-button" data-action="download" data-id="${escapeHtml(file.file_id)}">Restore</button>
+      </div></td>`;
     body.append(row);
   }
+
+  // Populate files section too
+  if (bodyId === "filesBody") {
+    renderFiles(files, "filesBody2", "filesEmpty2", "filesTableWrap2", "filesLoading2", "fileCount2");
+  }
+
+  // Update sidebar activity
+  updateActivity(files);
+}
+
+function updateActivity(files) {
+  const list = $("#activityList");
+  if (!list || !files.length) return;
+  list.replaceChildren();
+  files.slice(0, 5).forEach(f => {
+    const item = document.createElement("div");
+    item.className = "activity-item";
+    const timeAgo = dateLabel(f.created_at);
+    item.innerHTML = `
+      <div class="activity-dot upload"></div>
+      <div class="activity-body">
+        <div class="activity-title">${escapeHtml(f.name)} uploaded</div>
+        <div class="activity-detail">${formatBytes(f.size)} · ${Number(f.chunks || 0).toLocaleString()} chunks</div>
+      </div>
+      <span class="activity-time">${escapeHtml(timeAgo)}</span>`;
+    list.append(item);
+  });
 }
 
 async function refreshFiles() {
   const generation = ++refreshGeneration;
-  $("#filesLoading").hidden = false;
-  $("#filesTableWrap").hidden = true;
-  $("#filesEmpty").hidden = true;
-  $("#filesError").hidden = true;
+  for (const id of ["filesLoading", "filesLoading2"]) {
+    const el = $(`#${id}`);
+    if (el) el.hidden = false;
+  }
+  for (const id of ["filesTableWrap", "filesEmpty", "filesError", "filesTableWrap2", "filesEmpty2", "filesError2"]) {
+    const el = $(`#${id}`);
+    if (el) el.hidden = true;
+  }
   try {
     const result = await api("/api/files");
-    if (generation === refreshGeneration) renderFiles(result.files);
+    if (generation === refreshGeneration) {
+      renderFiles(result.files);
+    }
   } catch (error) {
     if (generation === refreshGeneration) {
-      $("#filesError").textContent = error.message;
-      $("#filesError").hidden = false;
+      for (const id of ["filesError", "filesError2"]) {
+        const el = $(`#${id}`);
+        if (el) { el.textContent = error.message; el.hidden = false; }
+      }
     }
   } finally {
-    if (generation === refreshGeneration) $("#filesLoading").hidden = true;
+    if (generation === refreshGeneration) {
+      for (const id of ["filesLoading", "filesLoading2"]) {
+        const el = $(`#${id}`);
+        if (el) el.hidden = true;
+      }
+    }
   }
 }
 
@@ -122,16 +267,51 @@ async function refreshAll() {
     const [, , , config] = await Promise.all([
       refreshStats(), refreshFiles(), api("/api/health"), api("/api/config"),
     ]);
-    $("#uploadLimit").textContent = `Maximum upload size: ${formatBytes(config.max_upload_bytes)}`;
-    $("#backendBadge").textContent = config.backend === "aws" ? "AWS vault" : "Local vault";
-    $("#connectionLabel").textContent = "Storage online";
-    $("#connectionStatus").classList.remove("is-offline");
+    const uploadLimit = $("#uploadLimit");
+    if (uploadLimit) uploadLimit.textContent = `Maximum upload size: ${formatBytes(config.max_upload_bytes)}`;
+
+    const isAWS = config.backend === "aws";
+    const backendText = isAWS ? "AWS vault" : "Local vault";
+
+    // Topbar
+    const connLabel = $("#connectionLabel");
+    if (connLabel) connLabel.textContent = "Storage online";
+    const connStatus = $("#connectionStatus");
+    if (connStatus) connStatus.classList.remove("is-offline");
+
+    // Sidebar
+    const sidebarHealth = $("#sidebarHealthLabel");
+    if (sidebarHealth) sidebarHealth.textContent = "All Systems Operational";
+    const sidebarDot = $("#sidebarHealthDot");
+    if (sidebarDot) sidebarDot.classList.remove("is-offline");
+    const sidebarBackend = $("#sidebarBackendLabel");
+    if (sidebarBackend) sidebarBackend.textContent = backendText;
+
+    // Settings
+    const settingsBackend = $("#settingsBackend");
+    if (settingsBackend) settingsBackend.textContent = backendText;
+    const settingsConn = $("#settingsConnection");
+    if (settingsConn) settingsConn.textContent = "Online";
+
   } catch (error) {
-    $("#statsGrid").setAttribute("aria-busy", "false");
-    $("#connectionLabel").textContent = "Storage offline";
-    $("#connectionStatus").classList.add("is-offline");
+    $("#statsGrid")?.setAttribute("aria-busy", "false");
+    const connLabel = $("#connectionLabel");
+    if (connLabel) connLabel.textContent = "Storage offline";
+    const connStatus = $("#connectionStatus");
+    if (connStatus) connStatus.classList.add("is-offline");
+    const sidebarDot = $("#sidebarHealthDot");
+    if (sidebarDot) sidebarDot.classList.add("is-offline");
+    const sidebarHealth = $("#sidebarHealthLabel");
+    if (sidebarHealth) sidebarHealth.textContent = "Storage offline";
     showGlobalError(`Storage could not be loaded: ${error.message}`);
   }
+}
+
+// ----------------------------------------------------------------
+// File selection / upload
+// ----------------------------------------------------------------
+function uploadKeyStorageKey(fingerprint) {
+  return `chunkwise-pending-upload:${fingerprint}`;
 }
 
 function selectFile(file) {
@@ -143,11 +323,13 @@ function selectFile(file) {
     try { pendingUploadKey = sessionStorage.getItem(uploadKeyStorageKey(fingerprint)); }
     catch { pendingUploadKey = null; }
   }
-  $("#selectedFile").textContent = `${file.name} · ${formatBytes(file.size)}`;
-  $("#selectedFile").hidden = false;
+  const selEl = $("#selectedFile");
+  if (selEl) { selEl.textContent = `${file.name} · ${formatBytes(file.size)}`; selEl.hidden = false; }
   uploadButton.disabled = false;
-  $("#uploadMessage").hidden = true;
-  $("#uploadNextSteps").hidden = true;
+  const msgEl = $("#uploadMessage");
+  if (msgEl) msgEl.hidden = true;
+  const nextEl = $("#uploadNextSteps");
+  if (nextEl) nextEl.hidden = true;
 }
 
 function uploadSelectedFile() {
@@ -155,15 +337,21 @@ function uploadSelectedFile() {
   const file = selectedFile;
   pendingUploadKey ||= crypto.randomUUID();
   try { sessionStorage.setItem(uploadKeyStorageKey(pendingUploadFingerprint), pendingUploadKey); }
-  catch { /* The in-memory key still protects retries in this page. */ }
+  catch { /* ignore */ }
+
   const chunker = document.querySelector('input[name="chunker"]:checked').value;
   const progress = $("#uploadProgress");
-  progress.hidden = false;
+  if (progress) progress.hidden = false;
   uploadButton.disabled = true;
-  $("#uploadMessage").hidden = true;
-  $("#progressLabel").textContent = "Uploading and indexing";
-  $("#progressPercent").textContent = "0%";
-  $("#progressBar").style.width = "0%";
+  const msgEl = $("#uploadMessage");
+  if (msgEl) msgEl.hidden = true;
+  const labelEl = $("#progressLabel");
+  if (labelEl) labelEl.textContent = "Uploading and indexing";
+  const pctEl = $("#progressPercent");
+  if (pctEl) pctEl.textContent = "0%";
+  const barEl = $("#progressBar");
+  if (barEl) barEl.style.width = "0%";
+
   const request = new XMLHttpRequest();
   request.open("POST", "/api/files");
   request.setRequestHeader("Content-Type", "application/octet-stream");
@@ -173,12 +361,12 @@ function uploadSelectedFile() {
   request.upload.addEventListener("progress", (event) => {
     if (!event.lengthComputable) return;
     const percent = Math.min(100, Math.round((event.loaded / event.total) * 100));
-    $("#progressPercent").textContent = `${percent}%`;
-    $("#progressBar").style.width = `${percent}%`;
+    if (pctEl) pctEl.textContent = `${percent}%`;
+    if (barEl) barEl.style.width = `${percent}%`;
   });
   request.addEventListener("load", async () => {
     uploadButton.disabled = false;
-    progress.hidden = true;
+    if (progress) progress.hidden = true;
     let response;
     try { response = JSON.parse(request.responseText); } catch { response = {}; }
     if (request.status < 200 || request.status >= 300) {
@@ -186,25 +374,30 @@ function uploadSelectedFile() {
       return;
     }
     selectedFile = null;
-    try { sessionStorage.removeItem(uploadKeyStorageKey(pendingUploadFingerprint)); }
-    catch { /* Storage may be disabled; the upload itself has completed. */ }
+    try { sessionStorage.removeItem(uploadKeyStorageKey(pendingUploadFingerprint)); } catch { /* ignore */ }
     pendingUploadKey = null;
     pendingUploadFingerprint = null;
     fileInput.value = "";
-    $("#selectedFile").hidden = true;
+    const selEl = $("#selectedFile");
+    if (selEl) selEl.hidden = true;
     uploadButton.disabled = true;
-    setUploadMessage(`${response.name} stored · ${Number(response.chunks).toLocaleString()} chunks · ${formatBytes(response.new_bytes)} new bytes`, "success");
-    $("#simulationLink").href = "#simulation";
-    $("#uploadNextSteps").hidden = false;
-    window.dispatchEvent(new CustomEvent("chunkwise:file-uploaded", {
-      detail: { fileId: response.file_id },
-    }));
+    setUploadMessage(
+      `${response.name} stored · ${Number(response.chunks).toLocaleString()} chunks · ${formatBytes(response.new_bytes)} new bytes`,
+      "success"
+    );
+    const nextEl = $("#uploadNextSteps");
+    if (nextEl) {
+      const simLink = $("#simulationLink");
+      if (simLink) simLink.href = "#simulation";
+      nextEl.hidden = false;
+    }
+    window.dispatchEvent(new CustomEvent("chunkwise:file-uploaded", { detail: { fileId: response.file_id } }));
     await refreshAll();
   });
   request.addEventListener("error", () => {
     uploadButton.disabled = false;
-    progress.hidden = true;
-    setUploadMessage("Network error. Retry this file; the same request key prevents duplicate records.", "error");
+    if (progress) progress.hidden = true;
+    setUploadMessage("Network error. Retry; the same request key prevents duplicate records.", "error");
   });
   request.send(file);
 }
@@ -214,14 +407,11 @@ async function downloadFile(fileId, button) {
   try {
     const blob = await api(`/api/files/${encodeURIComponent(fileId)}/download`);
     const row = button.closest("tr");
-    const filename = row.querySelector(".file-name span:last-child").textContent;
+    const filename = row?.querySelector(".file-name span:last-child")?.textContent || fileId;
     const objectUrl = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.href = objectUrl;
-    link.download = filename;
-    document.body.append(link);
-    link.click();
-    link.remove();
+    link.href = objectUrl; link.download = filename;
+    document.body.append(link); link.click(); link.remove();
     window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
   } catch (error) { showGlobalError(`Restore failed: ${error.message}`); }
   finally { button.disabled = false; }
@@ -233,7 +423,7 @@ async function verifyFile(fileId, button) {
   button.textContent = "Checking…";
   try {
     const result = await api(`/api/files/${encodeURIComponent(fileId)}/verify`, { method: "POST" });
-    button.textContent = result.verified ? "Verified" : "Failed";
+    button.textContent = result.verified ? "Verified ✓" : "Failed";
     button.title = `${formatBytes(result.size)} verified`;
   } catch (error) {
     button.textContent = "Error";
@@ -243,24 +433,228 @@ async function verifyFile(fileId, button) {
   }
 }
 
-$("#chooseFile").addEventListener("click", () => fileInput.click());
-fileInput.addEventListener("change", () => selectFile(fileInput.files[0]));
-uploadButton.addEventListener("click", uploadSelectedFile);
-$("#refreshButton").addEventListener("click", refreshAll);
-$("#filesRefreshButton").addEventListener("click", refreshFiles);
-dropZone.addEventListener("click", (event) => { if (event.target === dropZone) fileInput.click(); });
-for (const eventName of ["dragenter", "dragover"]) {
-  dropZone.addEventListener(eventName, (event) => { event.preventDefault(); dropZone.classList.add("is-over"); });
+// ----------------------------------------------------------------
+// Pipeline simulation controls
+// ----------------------------------------------------------------
+const STAGE_COUNT = 10;
+let simCurrentStage = 0;    // 0 = not started, 1-10 = stage index, 11 = done
+let simPlaying = false;
+let simTimer = null;
+
+function getStageSeconds() {
+  const el = $("#stageSeconds");
+  return el ? parseInt(el.value, 10) * 1000 : 1500;
 }
-for (const eventName of ["dragleave", "drop"]) {
-  dropZone.addEventListener(eventName, (event) => { event.preventDefault(); dropZone.classList.remove("is-over"); });
+
+function getStageNode(i)   { return document.querySelector(`.pipeline-node[data-stage="${i}"]`); }
+function getArrow(i)        { return $(`#arrow-${i}`); }
+function getStagePill(i)    { return $(`#stage-status-${i}`); }
+
+function resetSimulation() {
+  clearInterval(simTimer);
+  simPlaying = false;
+  simCurrentStage = 0;
+  for (let i = 1; i <= STAGE_COUNT; i++) {
+    const node = getStageNode(i);
+    if (node) {
+      node.className = "pipeline-node is-pending";
+    }
+    const pill = getStagePill(i);
+    if (pill) { pill.textContent = "Pending"; pill.className = "node-status-pill pending"; }
+    const arrow = getArrow(i);
+    if (arrow) arrow.className = "pipeline-arrow-line";
+  }
+  updateSimButtons();
+  const badge1 = $("#branchDupBadge");
+  const badge2 = $("#branchCompBadge");
+  if (badge1) badge1.style.display = "none";
+  if (badge2) badge2.style.display = "none";
 }
-dropZone.addEventListener("drop", (event) => selectFile(event.dataTransfer.files[0]));
-$("#filesBody").addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-action]");
-  if (!button) return;
-  if (button.dataset.action === "download") downloadFile(button.dataset.id, button);
-  if (button.dataset.action === "verify") verifyFile(button.dataset.id, button);
+
+function activateStage(i) {
+  if (i < 1 || i > STAGE_COUNT) return;
+  const node = getStageNode(i);
+  const pill = getStagePill(i);
+  const arrow = getArrow(i - 1);  // arrow pointing INTO this node
+
+  // Mark previous stages done
+  for (let j = 1; j < i; j++) {
+    const prevNode = getStageNode(j);
+    if (prevNode) prevNode.className = "pipeline-node is-done";
+    const prevPill = getStagePill(j);
+    if (prevPill) { prevPill.textContent = "Done"; prevPill.className = "node-status-pill done"; }
+    const prevArrow = getArrow(j);
+    if (prevArrow) prevArrow.className = "pipeline-arrow-line is-done";
+  }
+
+  // Active node
+  if (node) node.className = "pipeline-node is-active";
+  if (pill) { pill.textContent = "Running…"; pill.className = "node-status-pill active"; }
+  if (arrow) arrow.className = "pipeline-arrow-line is-active";
+
+  // Show callout badges at appropriate stages
+  const badge1 = $("#branchDupBadge");
+  const badge2 = $("#branchCompBadge");
+  if (i === 6 && badge1) {
+    badge1.style.display = "flex";
+    badge1.style.display = "block";
+  }
+  if (i === 7 && badge2) {
+    badge2.style.display = "block";
+  }
+
+  updateSimButtons();
+}
+
+function completeAllStages() {
+  for (let i = 1; i <= STAGE_COUNT; i++) {
+    const node = getStageNode(i);
+    if (node) node.className = "pipeline-node is-done";
+    const pill = getStagePill(i);
+    if (pill) { pill.textContent = "Done"; pill.className = "node-status-pill done"; }
+    const arrow = getArrow(i);
+    if (arrow) arrow.className = "pipeline-arrow-line is-done";
+  }
+  simPlaying = false;
+  updateSimButtons();
+}
+
+function updateSimButtons() {
+  const playBtn  = $("#simPlayBtn");
+  const pauseBtn = $("#simPauseBtn");
+  const nextBtn  = $("#simNextBtn");
+  const prevBtn  = $("#simPrevBtn");
+  if (!playBtn) return;
+  const done = simCurrentStage > STAGE_COUNT;
+  playBtn.disabled  = simPlaying || done;
+  pauseBtn.disabled = !simPlaying;
+  nextBtn.disabled  = simPlaying || done;
+  prevBtn.disabled  = simPlaying || simCurrentStage <= 0;
+}
+
+function stepForward() {
+  if (simCurrentStage >= STAGE_COUNT) {
+    completeAllStages();
+    simCurrentStage = STAGE_COUNT + 1;
+    return;
+  }
+  simCurrentStage++;
+  activateStage(simCurrentStage);
+}
+
+function stepBack() {
+  if (simCurrentStage <= 0) return;
+  simCurrentStage = Math.max(0, simCurrentStage - 1);
+  if (simCurrentStage === 0) {
+    resetSimulation();
+  } else {
+    // Re-activate previous stage
+    for (let i = 1; i <= STAGE_COUNT; i++) {
+      const node = getStageNode(i);
+      const pill = getStagePill(i);
+      const arrow = getArrow(i);
+      if (i < simCurrentStage) {
+        if (node) node.className = "pipeline-node is-done";
+        if (pill) { pill.textContent = "Done"; pill.className = "node-status-pill done"; }
+        if (arrow) arrow.className = "pipeline-arrow-line is-done";
+      } else if (i === simCurrentStage) {
+        if (node) node.className = "pipeline-node is-active";
+        if (pill) { pill.textContent = "Running…"; pill.className = "node-status-pill active"; }
+      } else {
+        if (node) node.className = "pipeline-node is-pending";
+        if (pill) { pill.textContent = "Pending"; pill.className = "node-status-pill pending"; }
+        if (arrow) arrow.className = "pipeline-arrow-line";
+      }
+    }
+    updateSimButtons();
+  }
+}
+
+function startPlay() {
+  if (simPlaying) return;
+  simPlaying = true;
+  updateSimButtons();
+  simTimer = setInterval(() => {
+    if (simCurrentStage >= STAGE_COUNT) {
+      completeAllStages();
+      simCurrentStage = STAGE_COUNT + 1;
+      clearInterval(simTimer);
+      simPlaying = false;
+      updateSimButtons();
+      return;
+    }
+    stepForward();
+  }, getStageSeconds());
+}
+
+function pausePlay() {
+  clearInterval(simTimer);
+  simPlaying = false;
+  updateSimButtons();
+}
+
+// Wire simulation buttons
+["simPlayBtn",  "simPauseBtn", "simNextBtn",  "simPrevBtn",  "simResetBtn"].forEach((id, idx) => {
+  const el = $(`#${id}`);
+  if (!el) return;
+  el.addEventListener("click", [startPlay, pausePlay, stepForward, stepBack, resetSimulation][idx]);
 });
 
+// ----------------------------------------------------------------
+// File table actions (event delegation)
+// ----------------------------------------------------------------
+["filesBody", "filesBody2"].forEach(bodyId => {
+  const body = $(`#${bodyId}`);
+  if (!body) return;
+  body.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+    if (button.dataset.action === "download") downloadFile(button.dataset.id, button);
+    if (button.dataset.action === "verify")   verifyFile(button.dataset.id, button);
+  });
+});
+
+// ----------------------------------------------------------------
+// Upload event bindings
+// ----------------------------------------------------------------
+$("#chooseFile")?.addEventListener("click", () => fileInput.click());
+fileInput?.addEventListener("change", () => selectFile(fileInput.files[0]));
+uploadButton?.addEventListener("click", uploadSelectedFile);
+$("#refreshButton")?.addEventListener("click", refreshAll);
+["filesRefreshButton", "filesRefreshButton2"].forEach(id => {
+  $(`#${id}`)?.addEventListener("click", refreshFiles);
+});
+
+dropZone?.addEventListener("click", (event) => { if (event.target === dropZone) fileInput.click(); });
+["dragenter", "dragover"].forEach(ev => {
+  dropZone?.addEventListener(ev, (e) => { e.preventDefault(); dropZone.classList.add("is-over"); });
+});
+["dragleave", "drop"].forEach(ev => {
+  dropZone?.addEventListener(ev, (e) => { e.preventDefault(); dropZone.classList.remove("is-over"); });
+});
+dropZone?.addEventListener("drop", (event) => selectFile(event.dataTransfer.files[0]));
+
+// When a file is uploaded, link the simulation nav
+window.addEventListener("chunkwise:file-uploaded", () => {
+  const simLink = $("#simulationLink");
+  if (simLink) {
+    simLink.onclick = (e) => {
+      e.preventDefault();
+      activateSection("simulation");
+      resetSimulation();
+    };
+  }
+});
+
+// Simulation link in sidebar also resets
+$$(".sidebar-nav a").forEach(a => {
+  if (a.dataset.section === "simulation") {
+    a.addEventListener("click", () => { resetSimulation(); });
+  }
+});
+
+// ----------------------------------------------------------------
+// Boot
+// ----------------------------------------------------------------
+navigateFromHash();
 refreshAll();

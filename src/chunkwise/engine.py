@@ -1,4 +1,13 @@
-"""Write, restore, verify, and account for deduplicated files."""
+"""Write, restore, verify, and account for deduplicated files.
+
+Compression integration (plan.md, Section A -- Poorvaja):
+- SHA-256 is computed on raw chunk bytes BEFORE compression (chunk identity is
+  content-based, not format-based).
+- Compression is applied ONLY to new unique chunks, never to dedup hits.
+- Restore decompresses transparently via store.get_with_codec when available.
+- The active compression profile is read from CHUNKWISE_COMPRESSION_PROFILE
+  (default: 'balanced').  Set it to 'disabled' to turn off compression.
+"""
 from __future__ import annotations
 
 import hashlib
@@ -292,19 +301,40 @@ class UploadPipeline:
                         if hasattr(self.store, "exists") and not self.store.exists(digest):
                             chunks_to_upload.append((digest, data))
 
-                # Upload new chunks concurrently
+                # Upload new chunks concurrently, with optional compression
                 if chunks_to_upload:
-                    futures = [
-                        (digest, len(data), executor.submit(self.store.put, digest, data))
-                        for digest, data in chunks_to_upload
+                    compression_profile = os.environ.get(
+                        "CHUNKWISE_COMPRESSION_PROFILE", "balanced"
+                    ).strip().lower()
+
+                    def _upload_one(item: tuple) -> tuple:
+                        _digest, _data = item
+                        put_compressed = getattr(self.store, "put_compressed", None)
+                        if put_compressed is not None and compression_profile != "disabled":
+                            from .compression import compress_chunk
+                            comp = compress_chunk(_data, profile=compression_profile)
+                            _written = put_compressed(
+                                _digest,
+                                comp.data,
+                                comp.codec,
+                                comp.original_size,
+                                comp.level,
+                            )
+                        else:
+                            _written = self.store.put(_digest, _data)
+                        return _digest, len(_data), _written
+
+                    upload_futures = [
+                        executor.submit(_upload_one, item)
+                        for item in chunks_to_upload
                     ]
-                    for digest, length, future in futures:
-                        written = future.result()
+                    for uf in upload_futures:
+                        _digest, length, written = uf.result()
                         if written:
                             new_chunks += 1
                             new_bytes += length
                         if hasattr(self.index, "commit_chunk"):
-                            self.index.commit_chunk(digest, length)
+                            self.index.commit_chunk(_digest, length)
 
         row = FileRow(
             file_id=file_id,
@@ -516,14 +546,21 @@ class Engine:
         return self.put(io.BytesIO(data), name, chunker)
 
     def get(self, file_id: str, out: BinaryIO) -> int:
-        """Write a verified file to out; discard out if verification fails."""
+        """Write a verified file to out; decompresses chunks transparently."""
         metadata = self.index.get_file(file_id)
         whole_hash = hashlib.sha256()
         total = 0
         for sequence, entry in enumerate(self.index.manifest(file_id)):
             if entry.seq != sequence or entry.byte_offset != total:
                 raise IntegrityError(f"file {file_id} has an invalid manifest")
-            data = self.store.get(entry.chunk_hash)
+
+            # Use get_with_codec when available (decompresses transparently)
+            get_with_codec = getattr(self.store, "get_with_codec", None)
+            if get_with_codec is not None:
+                data, _codec = get_with_codec(entry.chunk_hash)
+            else:
+                data = self.store.get(entry.chunk_hash)
+
             if len(data) != entry.length or hashlib.sha256(data).hexdigest() != entry.chunk_hash:
                 raise IntegrityError(
                     f"chunk {entry.chunk_hash} (seq {entry.seq}) failed verification"
