@@ -455,9 +455,9 @@ async function verifyFile(fileId, button) {
 }
 
 // ----------------------------------------------------------------
-// Pipeline simulation controls
+// Pipeline simulation controls (Breakscale 5-Node Topology)
 // ----------------------------------------------------------------
-const STAGE_COUNT = 10;
+const STAGE_COUNT = 5;
 let simCurrentStage = 0;    // 0 = not started, 1-10 = stage index, 11 = done
 let simPlaying = false;
 let simTimer = null;

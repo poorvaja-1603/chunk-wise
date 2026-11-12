@@ -557,12 +557,177 @@
 
 /* Stage list items in breakscale simulation */
 .stage-list [data-stage].is-active {
-  background: var(--terracotta-l, #FAF0EE);
-  border-color: var(--terracotta, #D47D70) !important;
-  color: var(--terracotta-h, #C06A5D);
+  background: #EDEAFE;
+  border-color: #7C78E8 !important;
+  color: #6C63FF;
 }
 .stage-list [data-stage].is-done {
-  background: var(--sage-l, #EBF0ED);
-  border-color: var(--sage, #8FA69A) !important;
-  color: #2D5E4E;
+  background: #E6FBF5;
+  border-color: #10B981 !important;
+  color: #0D8259;
+}
+
+/* =============================================================
+   Breakscale Clean Architecture Nodes (No Emojis, Modern SaaS)
+   ============================================================= */
+.topology-canvas-scroll {
+  overflow-x: auto;
+  padding: 16px 4px 20px;
+}
+
+.topology-container {
+  min-width: 980px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.topo-node {
+  flex-shrink: 0;
+  width: 200px;
+  padding: 20px 18px 16px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(124, 120, 232, 0.16);
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(110, 115, 200, 0.05);
+  transition: all .2s ease;
+  position: relative;
+}
+.topo-node:hover {
+  transform: translateY(-2px);
+  border-color: #7C78E8;
+  box-shadow: 0 8px 24px rgba(124, 120, 232, 0.12);
+}
+.topo-node.is-active, .topology.is-running .topo-node {
+  border-color: #7C78E8;
+  box-shadow: 0 0 0 3px rgba(124, 120, 232, 0.2), 0 8px 24px rgba(124, 120, 232, 0.15);
+}
+.topo-node.is-done {
+  border-color: #10B981;
+  background: #F0FDF8;
+}
+
+.node-icon-box {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: #FAF9FE;
+  color: #6C63FF;
+  display: grid; place-items: center;
+  margin-bottom: 12px;
+  transition: all .2s;
+}
+.topo-node.is-active .node-icon-box {
+  background: #EDEAFE;
+  color: #6C63FF;
+  box-shadow: 0 0 12px rgba(108, 99, 255, 0.4);
+}
+.topo-node.is-done .node-icon-box {
+  background: #E6FBF5;
+  color: #10B981;
+}
+.node-icon-box svg { width: 18px; height: 18px; }
+
+.node-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink, #151738);
+  margin-bottom: 4px;
+}
+.node-desc {
+  font-size: 11.5px;
+  color: #74789A;
+  min-height: 28px;
+  line-height: 1.35;
+}
+.node-meta-chip {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #F4F5FD;
+  border: 1px solid rgba(124, 120, 232, 0.12);
+  color: #4C5078;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+/* Connectors */
+.topo-connector {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  width: 90px;
+}
+.connector-line {
+  width: 100%;
+  height: 2px;
+  background: #D8DAF0;
+  position: relative;
+  transition: background .3s;
+}
+.connector-line.is-active {
+  background: #7C78E8;
+}
+.connector-line.is-done {
+  background: #10B981;
+}
+.connector-arrowhead {
+  position: absolute;
+  right: -2px;
+  top: 1px;
+  width: 0; height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid #D8DAF0;
+}
+.connector-line.is-active + .connector-arrowhead {
+  border-left-color: #7C78E8;
+}
+.connector-line.is-done + .connector-arrowhead {
+  border-left-color: #10B981;
+}
+.connector-tag {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #8C8FA8;
+  white-space: nowrap;
+}
+
+/* Fork connector */
+.topo-fork {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+  position: relative;
+}
+.fork-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #7C78E8;
+  text-transform: uppercase;
+  margin-bottom: -10px;
+  z-index: 2;
+}
+.fork-svg {
+  width: 60px;
+  height: 160px;
+}
+
+/* Output stack */
+.topo-outputs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.topo-node-sub {
+  width: 220px;
+  min-height: auto;
+  padding: 16px 18px 14px;
 }

@@ -25,8 +25,10 @@ async function api(url, options = {}) {
 }
 
 function updateFileContext(files, config) {
-  $("#indexNodeName").textContent = config.index_label;
-  $("#storeNodeName").textContent = config.store_label;
+  const indexEl = $("#indexNodeName");
+  const storeEl = $("#storeNodeName");
+  if (indexEl) indexEl.textContent = config.index_label;
+  if (storeEl) storeEl.textContent = config.store_label;
   if (!fileId) {
     $("#fileContext").hidden = true;
     return;

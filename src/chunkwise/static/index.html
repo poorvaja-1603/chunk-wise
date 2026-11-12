@@ -517,145 +517,139 @@
         <!-- Real upload context -->
         <section id="fileContext" class="panel panel-pad" hidden style="margin-bottom:20px;">
           <div style="display:flex;align-items:center;gap:14px;">
-            <div style="width:40px;height:48px;border:1px solid var(--border);border-radius:6px;background:var(--ivory);display:grid;place-items:center;font-size:9px;font-weight:800;color:var(--terracotta);">FILE</div>
+            <div style="width:40px;height:48px;border:1px solid var(--card-border);border-radius:8px;background:#FAF9FE;display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--primary);">FILE</div>
             <div style="flex:1;">
               <p class="eyebrow" style="margin-bottom:2px;">YOUR REAL UPLOAD</p>
               <strong id="fileName" style="font-size:15px;color:var(--ink);">Loading file…</strong>
               <p id="fileDetails" class="subheading" style="margin-top:2px;font-size:12px;"></p>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#2D5E4E;font-weight:600;">
-              <span style="color:var(--sage);">✓</span> Stored in <strong id="backendName">storage</strong>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#0D8259;font-weight:600;">
+              <span>✓</span> Stored in <strong id="backendName">storage</strong>
             </div>
           </div>
         </section>
         <div id="fileNotice" class="inline-message error" hidden style="margin-bottom:16px;"></div>
 
-        <!-- Pipeline flow -->
-        <section class="panel panel-pad" aria-labelledby="pipelineHeading" style="margin-bottom:20px;">
+        <!-- Breakscale System Map / Component Topology -->
+        <section class="panel panel-pad topology-panel" aria-labelledby="pipelineHeading" style="margin-bottom:24px;">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">PIPELINE DIAGRAM</p>
-              <h3 id="pipelineHeading">Deduplication + Compression pipeline</h3>
+              <p class="eyebrow">BREAKSCALE TOPOLOGY · E1</p>
+              <h3 id="pipelineHeading" class="panel-title-text">ChunkWise System Components</h3>
             </div>
             <div class="pipeline-controls" style="margin-bottom:0;">
-              <button id="simPlayBtn"  class="button button-primary"   type="button">▶ Play</button>
-              <button id="simPauseBtn" class="button button-secondary" type="button" disabled>⏸ Pause</button>
+              <button id="simPlayBtn"  class="button button-primary"   type="button">Play ▶</button>
+              <button id="simPauseBtn" class="button button-secondary" type="button" disabled>Pause ⏸</button>
               <button id="simNextBtn"  class="button button-secondary" type="button">Step →</button>
               <button id="simPrevBtn"  class="button button-secondary" type="button">← Back</button>
               <button id="simResetBtn" class="button button-secondary" type="button">↺ Reset</button>
             </div>
           </div>
 
-          <div class="pipeline-scroll">
-            <div class="pipeline" id="pipeline" role="list" aria-label="Upload pipeline stages">
-              <!-- Stage 1 -->
-              <div class="pipeline-node is-pending" data-stage="1" role="listitem">
+          <div class="topology-canvas-scroll">
+            <div class="topology-container" id="topology" role="list" aria-label="Breakscale component architecture">
+              
+              <!-- Node 1: Browser UI / CLI Client -->
+              <div class="topo-node pipeline-node is-pending" data-stage="1" role="listitem">
                 <span class="node-index">01</span>
-                <div class="node-icon">📁</div>
-                <div class="node-label">File Selection</div>
-                <div class="node-detail">Pick file from disk or upload endpoint</div>
+                <div class="node-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <div class="node-title">Browser UI / CLI Client</div>
+                <div class="node-desc">Offers upload requests</div>
+                <div class="node-meta-chip">1 req/sec · 1 client</div>
                 <span class="node-status-pill pending" id="stage-status-1">Pending</span>
               </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-1"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">bytes</div></div>
 
-              <!-- Stage 2 -->
-              <div class="pipeline-node is-pending" data-stage="2" role="listitem">
+              <!-- Connector 1 -->
+              <div class="topo-connector">
+                <div class="connector-line" id="arrow-1"></div>
+                <div class="connector-arrowhead"></div>
+                <span class="connector-tag">upload request</span>
+              </div>
+
+              <!-- Node 2: HTTP API Server -->
+              <div class="topo-node pipeline-node is-pending" data-stage="2" role="listitem">
                 <span class="node-index">02</span>
-                <div class="node-icon">📖</div>
-                <div class="node-label">Stream Reading</div>
-                <div class="node-detail">Read file in a streaming fashion</div>
+                <div class="node-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                </div>
+                <div class="node-title">HTTP API Server</div>
+                <div class="node-desc">Validates &amp; accepts file stream</div>
+                <div class="node-meta-chip">5.1 ms · queue 64</div>
                 <span class="node-status-pill pending" id="stage-status-2">Pending</span>
               </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-2"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">stream</div></div>
 
-              <!-- Stage 3 -->
-              <div class="pipeline-node is-pending" data-stage="3" role="listitem">
+              <!-- Connector 2 -->
+              <div class="topo-connector">
+                <div class="connector-line" id="arrow-2"></div>
+                <div class="connector-arrowhead"></div>
+                <span class="connector-tag">stream</span>
+              </div>
+
+              <!-- Node 3: Chunking + Dedup Engine -->
+              <div class="topo-node pipeline-node is-pending" data-stage="3" role="listitem">
                 <span class="node-index">03</span>
-                <div class="node-icon">✂️</div>
-                <div class="node-label">Rabin CDC Chunking</div>
-                <div class="node-detail">min 2KB · avg 8KB · max 64KB</div>
+                <div class="node-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                </div>
+                <div class="node-title">Chunking + Dedup Engine</div>
+                <div class="node-desc">Chunks, hashes &amp; checks duplicates</div>
+                <div class="node-meta-chip">500 ms · queue 64</div>
                 <span class="node-status-pill pending" id="stage-status-3">Pending</span>
               </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-3"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">chunks</div></div>
 
-              <!-- Stage 4 -->
-              <div class="pipeline-node is-pending" data-stage="4" role="listitem">
-                <span class="node-index">04</span>
-                <div class="node-icon">🔍</div>
-                <div class="node-label">Boundary Detection</div>
-                <div class="node-detail">Rolling window · mask 0x1FFF</div>
-                <span class="node-status-pill pending" id="stage-status-4">Pending</span>
+              <!-- Fork Connector -->
+              <div class="topo-fork">
+                <div class="fork-label">Fan-out</div>
+                <svg class="fork-svg" viewBox="0 0 60 160" fill="none">
+                  <path d="M0 80H25C35 80 40 40 60 40" stroke="#C4C6F0" stroke-width="2" stroke-linecap="round" id="arrow-3"/>
+                  <path d="M0 80H25C35 80 40 120 60 120" stroke="#C4C6F0" stroke-width="2" stroke-linecap="round" id="arrow-4"/>
+                  <!-- Arrow heads -->
+                  <polygon points="56,36 60,40 56,44" fill="#C4C6F0"/>
+                  <polygon points="56,116 60,120 56,124" fill="#C4C6F0"/>
+                </svg>
               </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-4"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">chunk bytes</div></div>
 
-              <!-- Stage 5 -->
-              <div class="pipeline-node is-pending" data-stage="5" role="listitem">
-                <span class="node-index">05</span>
-                <div class="node-icon">#️⃣</div>
-                <div class="node-label">SHA-256 Hashing</div>
-                <div class="node-detail">Hash raw bytes → chunk identity</div>
-                <span class="node-status-pill pending" id="stage-status-5">Pending</span>
-              </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-5"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">hash</div></div>
+              <!-- Storage & Index Fan-Out Output Stack -->
+              <div class="topo-outputs-column">
+                <!-- Node 4: SQLite / DynamoDB Metadata Index -->
+                <div class="topo-node topo-node-sub pipeline-node is-pending" data-stage="4" role="listitem">
+                  <span class="node-index">04</span>
+                  <div class="node-icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                  </div>
+                  <div class="node-title" id="indexNodeName">SQLite Metadata Index</div>
+                  <div class="node-desc">Looks up chunks &amp; commits manifest</div>
+                  <div class="node-meta-chip">3 ms · queue 48 · lock 15 ms</div>
+                  <span class="node-status-pill pending" id="stage-status-4">Pending</span>
+                </div>
 
-              <!-- Stage 6 -->
-              <div class="pipeline-node is-pending" data-stage="6" role="listitem">
-                <span class="node-index">06</span>
-                <div class="node-icon">🔎</div>
-                <div class="node-label">Dedup Lookup</div>
-                <div class="node-detail">Query DynamoDB index by hash</div>
-                <span class="node-status-pill pending" id="stage-status-6">Pending</span>
+                <!-- Node 5: Content-Addressed Chunk Store -->
+                <div class="topo-node topo-node-sub pipeline-node is-pending" data-stage="5" role="listitem">
+                  <span class="node-index">05</span>
+                  <div class="node-icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  </div>
+                  <div class="node-title" id="storeNodeName">Content-Addressed Chunk Store</div>
+                  <div class="node-desc">Writes new unique chunk bytes</div>
+                  <div class="node-meta-chip">2 ms · 64 cap · queue 1,024</div>
+                  <span class="node-status-pill pending" id="stage-status-5">Pending</span>
+                </div>
               </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-6"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">decision</div></div>
 
-              <!-- Stage 7 -->
-              <div class="pipeline-node is-pending" data-stage="7" role="listitem">
-                <span class="node-index">07</span>
-                <div class="node-icon">🗜️</div>
-                <div class="node-label">Compression</div>
-                <div class="node-detail">zlib · only new chunks · if savings ≥5%</div>
-                <span class="node-status-pill pending" id="stage-status-7">Pending</span>
-              </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-7"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">bytes</div></div>
-
-              <!-- Stage 8 -->
-              <div class="pipeline-node is-pending" data-stage="8" role="listitem">
-                <span class="node-index">08</span>
-                <div class="node-icon">☁️</div>
-                <div class="node-label">Amazon S3 Upload</div>
-                <div class="node-detail">PUT object · key = objects/{hash}</div>
-                <span class="node-status-pill pending" id="stage-status-8">Pending</span>
-              </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-8"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">metadata</div></div>
-
-              <!-- Stage 9 -->
-              <div class="pipeline-node is-pending" data-stage="9" role="listitem">
-                <span class="node-index">09</span>
-                <div class="node-icon">🗄️</div>
-                <div class="node-label">DynamoDB Metadata</div>
-                <div class="node-detail">Write manifest · ref count · codec</div>
-                <span class="node-status-pill pending" id="stage-status-9">Pending</span>
-              </div>
-              <div class="pipeline-arrow"><div class="pipeline-arrow-line" id="arrow-9"></div><div class="pipeline-arrow-head"></div><div class="pipeline-arrow-label">result</div></div>
-
-              <!-- Stage 10 -->
-              <div class="pipeline-node is-pending" data-stage="10" role="listitem">
-                <span class="node-index">10</span>
-                <div class="node-icon">✅</div>
-                <div class="node-label">Storage Summary</div>
-                <div class="node-detail">Report savings · verify SHA-256</div>
-                <span class="node-status-pill pending" id="stage-status-10">Pending</span>
-              </div>
             </div>
           </div>
 
-          <!-- Dedup / compression branch callout -->
-          <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
-            <div id="branchDupBadge" class="inline-message" style="margin:0;display:none;flex:1;min-width:200px;">
-              ✔ <strong>Duplicate detected</strong> — chunk already in S3. No upload needed. Ref count incremented.
-            </div>
-            <div id="branchCompBadge" class="inline-message success" style="margin:0;display:none;flex:1;min-width:200px;">
-              🗜️ <strong>Compressed</strong> — <span id="branchCompDetail">zlib level 6 · 54% saved</span>
+          <div style="margin-top:16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--card-border);padding-top:12px;">
+            <p class="topology-caption" style="margin:0;">Components mirror the <code>chunk_wise.breakscale</code> architecture. Active backend updates dynamically between Local and AWS.</p>
+            <div style="display:flex;gap:12px;">
+              <span id="branchDupBadge" class="inline-message" style="margin:0;display:none;padding:6px 12px;font-size:11.5px;">
+                ✔ Duplicate detected · Index ref-count incremented
+              </span>
+              <span id="branchCompBadge" class="inline-message success" style="margin:0;display:none;padding:6px 12px;font-size:11.5px;">
+                Compressed with zlib · Stored in chunk store
+              </span>
             </div>
           </div>
         </section>
