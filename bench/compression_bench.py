@@ -113,3 +113,4 @@ def run_benchmark() -> dict:
 
 if __name__ == "__main__":
     run_benchmark()
+

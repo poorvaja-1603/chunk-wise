@@ -29,6 +29,7 @@ const SECTION_TITLES = {
   activity:     "Activity",
   analytics:    "Storage Analytics",
   settings:     "Settings",
+  cookbook:     "Cookbook & Recipes",
 };
 
 function activateSection(name) {
