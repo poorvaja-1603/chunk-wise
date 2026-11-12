@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: chunkwise
+    env: python
+    buildCommand: "pip install -e ."
+    startCommand: "chunkwise-web"
+    plan: free
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: CHUNKWISE_HOST
+        value: 0.0.0.0
+      - key: CHUNKWISE_BACKEND
+        value: local
+      - key: CHUNKWISE_HOME
+        value: ./.chunkwise
