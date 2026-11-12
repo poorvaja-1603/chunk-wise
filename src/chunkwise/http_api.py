@@ -175,6 +175,51 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
             self._send_json(200, {"files": files})
             return
 
+        match = re.fullmatch(r"/api/files/([^/]+)/chunks", path)
+        if match:
+            file_id = unquote(match.group(1))
+            if not FILE_ID_PATTERN.fullmatch(file_id):
+                self._send_error_json(404, "File not found")
+                return
+            try:
+                with Engine(self.server.home) as engine:
+                    row = engine.index.get_file(file_id)
+                    entries = engine.index.manifest(file_id)
+                    chunks = []
+                    for e in entries:
+                        ref = engine.index.refcount(e.chunk_hash) or 1
+                        codec = "none"
+                        # Check local sidecar or S3 metadata if available
+                        meta_fn = getattr(engine.store, "_meta_path", None)
+                        if meta_fn and meta_fn(e.chunk_hash).exists():
+                            try:
+                                meta_data = json.loads(meta_fn(e.chunk_hash).read_text(encoding="utf-8"))
+                                codec = meta_data.get("codec", "none")
+                            except Exception:
+                                pass
+                        chunks.append({
+                            "seq": e.seq,
+                            "hash": e.chunk_hash,
+                            "offset": e.byte_offset,
+                            "length": e.length,
+                            "ref_count": ref,
+                            "codec": codec,
+                            "is_duplicate": ref > 1,
+                        })
+                self._send_json(200, {
+                    "file_id": file_id,
+                    "name": row.name,
+                    "size": row.size,
+                    "total_chunks": len(chunks),
+                    "chunks": chunks,
+                })
+            except ChunkWiseError as error:
+                self._send_error_json(404, str(error))
+            except (BotoCoreError, ClientError, sqlite3.Error, OSError, ValueError) as error:
+                self._log_backend_error(error)
+                self._send_error_json(503, "Storage backend unavailable")
+            return
+
         match = re.fullmatch(r"/api/files/([^/]+)/download", path)
         if match:
             file_id = unquote(match.group(1))

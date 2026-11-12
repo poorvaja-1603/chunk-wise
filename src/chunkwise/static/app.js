@@ -49,6 +49,13 @@ function activateSection(name) {
   // Update topbar title
   const titleEl = $("#topbarTitle");
   if (titleEl) titleEl.textContent = SECTION_TITLES[name] || name;
+
+  if (name === "analytics") {
+    renderAnalytics();
+  }
+  if (name === "chunks" && cachedFilesList.length) {
+    populateChunkFileSelect(cachedFilesList);
+  }
 }
 
 // Sidebar link clicks
@@ -195,11 +202,15 @@ function renderFiles(files, bodyId = "filesBody", emptyId = "filesEmpty", tableI
       <td>${escapeHtml(dateLabel(file.created_at))}</td>
       <td><span class="file-id">${escapeHtml(file.file_id)}</span></td>
       <td><div class="row-actions">
+        <button class="action-button" data-action="inspect"  data-id="${escapeHtml(file.file_id)}">Inspect</button>
         <button class="action-button" data-action="verify"   data-id="${escapeHtml(file.file_id)}">Verify</button>
         <button class="action-button" data-action="download" data-id="${escapeHtml(file.file_id)}">Restore</button>
       </div></td>`;
     body.append(row);
   }
+
+  // Populate chunk selector dropdown
+  populateChunkFileSelect(files);
 
   // Populate files section too
   if (bodyId === "filesBody") {
@@ -601,6 +612,156 @@ function pausePlay() {
 });
 
 // ----------------------------------------------------------------
+// Chunk Explorer
+// ----------------------------------------------------------------
+let cachedFilesList = [];
+
+function populateChunkFileSelect(files) {
+  cachedFilesList = files;
+  const select = $("#chunkFileSelect");
+  if (!select) return;
+  const currentVal = select.value;
+  select.innerHTML = '<option value="">-- Choose a committed file --</option>';
+  for (const f of files) {
+    const opt = document.createElement("option");
+    opt.value = f.file_id;
+    opt.textContent = `${f.name} (${formatBytes(f.size)})`;
+    if (f.file_id === currentVal) opt.selected = true;
+    select.append(opt);
+  }
+}
+
+async function loadChunkExplorer(fileId) {
+  if (!fileId) {
+    $("#chunkExplorerMeta").style.display = "none";
+    $("#chunkEmpty").hidden = false;
+    $("#chunkTableWrap").hidden = true;
+    $("#chunkCountPill").textContent = "-";
+    return;
+  }
+  $("#chunkLoading").hidden = false;
+  $("#chunkEmpty").hidden = true;
+  $("#chunkTableWrap").hidden = true;
+
+  try {
+    const data = await api(`/api/files/${encodeURIComponent(fileId)}/chunks`);
+    $("#chunkLoading").hidden = true;
+    $("#chunkExplorerMeta").style.display = "flex";
+    $("#chunkFileTotalSize").textContent = formatBytes(data.size);
+    $("#chunkFileTotalChunks").textContent = Number(data.total_chunks).toLocaleString();
+    $("#chunkCountPill").textContent = data.total_chunks.toLocaleString();
+
+    const tbody = $("#chunkTableBody");
+    tbody.replaceChildren();
+
+    if (!data.chunks || !data.chunks.length) {
+      $("#chunkEmpty").hidden = false;
+      return;
+    }
+
+    $("#chunkTableWrap").hidden = false;
+
+    data.chunks.forEach((chunk, idx) => {
+      const row = document.createElement("tr");
+      const shortHash = `${chunk.hash.slice(0, 10)}…${chunk.hash.slice(-8)}`;
+      const isDup = chunk.is_duplicate;
+      const isComp = chunk.codec && chunk.codec !== "none";
+      
+      let statusBadge = "";
+      if (isDup) {
+        statusBadge = `<span class="method-tag" style="background:var(--dusty-blue-l);color:#2D5E7A;">Reused (Ref: ${chunk.ref_count})</span>`;
+      } else if (isComp) {
+        statusBadge = `<span class="method-tag" style="background:var(--sage-l);color:#2D5E4E;">New · ${escapeHtml(chunk.codec)}</span>`;
+      } else {
+        statusBadge = `<span class="method-tag" style="background:var(--ivory);color:var(--ink-muted);">New · Raw</span>`;
+      }
+
+      const storageAction = isDup
+        ? `<span style="color:var(--dusty-blue);font-weight:600;font-size:11.5px;">✓ Deduplicated (Zero S3 I/O)</span>`
+        : `<span style="color:var(--terracotta);font-weight:600;font-size:11.5px;">☁ Stored in S3</span>`;
+
+      row.innerHTML = `
+        <td style="font-weight:700;color:var(--ink-muted);font-size:11px;">#${chunk.seq + 1}</td>
+        <td><code style="font-size:11px;background:var(--ivory);padding:2px 6px;border-radius:4px;border:1px solid var(--border);" title="${escapeHtml(chunk.hash)}">${escapeHtml(shortHash)}</code></td>
+        <td style="font-size:12px;color:var(--ink-muted);">${Number(chunk.offset).toLocaleString()} – ${Number(chunk.offset + chunk.length).toLocaleString()}</td>
+        <td style="font-weight:600;">${formatBytes(chunk.length)}</td>
+        <td><span style="font-size:11px;font-family:monospace;text-transform:uppercase;">${escapeHtml(chunk.codec || "none")}</span></td>
+        <td>${statusBadge}</td>
+        <td>${storageAction}</td>
+      `;
+      tbody.append(row);
+    });
+  } catch (err) {
+    $("#chunkLoading").hidden = true;
+    showGlobalError(`Failed to load chunks: ${err.message}`);
+  }
+}
+
+$("#chunkFileSelect")?.addEventListener("change", (e) => {
+  loadChunkExplorer(e.target.value);
+});
+
+// ----------------------------------------------------------------
+// Storage Analytics Chart
+// ----------------------------------------------------------------
+let analyticsChartInstance = null;
+
+async function renderAnalytics() {
+  try {
+    const stats = await api("/api/stats");
+    const logical = Number(stats.logical_bytes) || 0;
+    const physical = Number(stats.physical_bytes) || 0;
+    const saved = Math.max(0, logical - physical);
+    const ratio = Number(stats.dedup_ratio) || 1.0;
+    const pct = Number(stats.storage_saved_pct) || 0.0;
+
+    $("#analyticsEfficiency").textContent = `${pct.toFixed(1)}%`;
+    $("#analyticsRatio").textContent = `${ratio.toFixed(2)}×`;
+    $("#analyticsLogical").textContent = formatBytes(logical);
+    $("#analyticsPhysical").textContent = formatBytes(physical);
+
+    const canvas = $("#analyticsDoughnut");
+    if (!canvas || typeof Chart === "undefined") return;
+
+    if (analyticsChartInstance) {
+      analyticsChartInstance.destroy();
+    }
+
+    analyticsChartInstance = new Chart(canvas, {
+      type: "doughnut",
+      data: {
+        labels: ["Physical Storage Used", "Storage Space Saved"],
+        datasets: [{
+          data: [physical || 1, saved],
+          backgroundColor: ["#263746", "#8FA69A"],
+          borderColor: ["#FFFFFF", "#FFFFFF"],
+          borderWidth: 2,
+          hoverOffset: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { font: { family: "Inter", size: 12 }, padding: 16 }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => ` ${context.label}: ${formatBytes(context.raw)}`
+            }
+          }
+        },
+        cutout: "68%"
+      }
+    });
+  } catch (err) {
+    console.error("Failed to render analytics", err);
+  }
+}
+
+// ----------------------------------------------------------------
 // File table actions (event delegation)
 // ----------------------------------------------------------------
 ["filesBody", "filesBody2"].forEach(bodyId => {
@@ -609,8 +770,15 @@ function pausePlay() {
   body.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-action]");
     if (!button) return;
-    if (button.dataset.action === "download") downloadFile(button.dataset.id, button);
-    if (button.dataset.action === "verify")   verifyFile(button.dataset.id, button);
+    const action = button.dataset.action;
+    const fileId = button.dataset.id;
+    if (action === "download") downloadFile(fileId, button);
+    if (action === "verify")   verifyFile(fileId, button);
+    if (action === "inspect") {
+      activateSection("chunks");
+      const sel = $("#chunkFileSelect");
+      if (sel) { sel.value = fileId; loadChunkExplorer(fileId); }
+    }
   });
 });
 

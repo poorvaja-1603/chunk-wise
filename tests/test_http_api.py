@@ -76,6 +76,13 @@ def test_http_dashboard_upload_list_download_verify_and_stats(tmp_path):
         assert files[0]["file_id"] == file_id
         assert files[0]["chunker"] == "cdc"
 
+        status, body, _ = request(server, "GET", f"/api/files/{file_id}/chunks")
+        assert status == 200
+        chunks_data = json.loads(body)
+        assert chunks_data["file_id"] == file_id
+        assert chunks_data["total_chunks"] > 0
+        assert "hash" in chunks_data["chunks"][0]
+
         status, body, _ = request(server, "GET", "/api/stats")
         stats = json.loads(body)
         assert status == 200

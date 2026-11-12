@@ -587,8 +587,55 @@
       </section>
 
       <section id="section-chunks" class="shell" hidden>
-        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">CONTENT EXPLORER</p><h1>Chunk Explorer</h1><p class="subheading">Inspect individual chunks, hashes, and compression metadata.</p></div></div>
-        <div class="panel panel-pad"><p style="color:var(--ink-muted);font-size:13.5px;">Select a file from the <a href="#files" style="color:var(--terracotta);font-weight:600;">Files</a> view to explore its chunks here.</p></div>
+        <div class="page-heading">
+          <div class="page-heading-left">
+            <p class="eyebrow">CONTENT EXPLORER</p>
+            <h1>Chunk Explorer</h1>
+            <p class="subheading">Inspect individual chunks, SHA-256 digests, and compression metadata for any file.</p>
+          </div>
+        </div>
+
+        <section class="panel panel-pad" style="margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <label style="font-size:13px;font-weight:600;color:var(--ink);">Select File to Inspect:
+              <select id="chunkFileSelect" style="display:block;margin-top:6px;min-width:260px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--ivory);font-size:13px;color:var(--ink);">
+                <option value="">-- Choose a committed file --</option>
+              </select>
+            </label>
+            <div id="chunkExplorerMeta" style="display:none;margin-left:auto;gap:18px;align-items:center;">
+              <div style="text-align:right;"><span style="font-size:11px;color:var(--ink-muted);display:block;">Total Size</span><strong id="chunkFileTotalSize" style="font-size:14px;color:var(--ink);">-</strong></div>
+              <div style="text-align:right;"><span style="font-size:11px;color:var(--ink-muted);display:block;">Total Chunks</span><strong id="chunkFileTotalChunks" style="font-size:14px;color:var(--ink);">-</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel files-panel" id="chunkTablePanel">
+          <div class="files-heading">
+            <h2>Chunk Breakdown <span class="count-pill" id="chunkCountPill">-</span></h2>
+          </div>
+          <div id="chunkLoading" class="table-loading" hidden>Loading chunk manifest…</div>
+          <div id="chunkEmpty" class="empty-state">
+            <div class="empty-mark">▦</div>
+            <h3>No file selected</h3>
+            <p>Select a file from the dropdown above to inspect its content-addressed chunks.</p>
+          </div>
+          <div id="chunkTableWrap" class="table-wrap" hidden>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">SHA-256 Digest</th>
+                  <th scope="col">Offset Range</th>
+                  <th scope="col">Size</th>
+                  <th scope="col">Codec</th>
+                  <th scope="col">Deduplication Status</th>
+                  <th scope="col">Storage Action</th>
+                </tr>
+              </thead>
+              <tbody id="chunkTableBody"></tbody>
+            </table>
+          </div>
+        </section>
       </section>
 
       <section id="section-optimization" class="shell" hidden>
@@ -644,19 +691,140 @@
       </section>
 
       <section id="section-analytics" class="shell" hidden>
-        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">METRICS</p><h1>Storage Analytics</h1></div></div>
-        <div class="panel panel-pad"><p style="color:var(--ink-muted);">Detailed analytics charts will be rendered here using live backend data.</p></div>
+        <div class="page-heading">
+          <div class="page-heading-left">
+            <p class="eyebrow">METRICS &amp; TELEMETRY</p>
+            <h1>Storage Analytics</h1>
+            <p class="subheading">Continuous breakdown of storage reduction, deduplication yield, and chunk reuse.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom:20px;">
+          <article class="stat-card c-sage">
+            <div class="stat-header">
+              <span class="stat-label">Storage Efficiency</span>
+              <div class="stat-icon-wrap c-sage">🍃</div>
+            </div>
+            <div class="stat-value" id="analyticsEfficiency">-</div>
+            <div class="stat-foot" id="analyticsSavingsText">Space saved by deduplication</div>
+          </article>
+          <article class="stat-card c-terracotta">
+            <div class="stat-header">
+              <span class="stat-label">Dedup Multiple</span>
+              <div class="stat-icon-wrap c-terracotta">⚡</div>
+            </div>
+            <div class="stat-value" id="analyticsRatio">-</div>
+            <div class="stat-foot">Times data reduced</div>
+          </article>
+          <article class="stat-card c-blue">
+            <div class="stat-header">
+              <span class="stat-label">Raw Ingestion</span>
+              <div class="stat-icon-wrap c-blue">📦</div>
+            </div>
+            <div class="stat-value" id="analyticsLogical">-</div>
+            <div class="stat-foot">Total logical bytes sent</div>
+          </article>
+          <article class="stat-card c-grey">
+            <div class="stat-header">
+              <span class="stat-label">Net Storage</span>
+              <div class="stat-icon-wrap c-grey">💾</div>
+            </div>
+            <div class="stat-value" id="analyticsPhysical">-</div>
+            <div class="stat-foot">Actual bytes kept in store</div>
+          </article>
+        </div>
+
+        <div class="content-grid" style="grid-template-columns:1fr 1fr;">
+          <section class="panel panel-pad">
+            <div class="panel-heading">
+              <h3>Deduplication &amp; Storage Composition</h3>
+            </div>
+            <p style="font-size:12px;color:var(--ink-muted);margin-top:-6px;">Comparison of logical bytes ingested vs. deduplicated bytes actually stored.</p>
+            <div style="height:240px;position:relative;display:flex;align-items:center;justify-content:center;">
+              <canvas id="analyticsDoughnut"></canvas>
+            </div>
+          </section>
+
+          <section class="panel panel-pad">
+            <div class="panel-heading">
+              <h3>Deduplication By File Category</h3>
+            </div>
+            <p style="font-size:12px;color:var(--ink-muted);margin-top:-6px;">Estimated deduplication ratio based on chunk reuse across formats.</p>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-top:14px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:4px;">
+                  <span>Text / Source Code</span><span>2.8× (64% saved)</span>
+                </div>
+                <div style="height:8px;border-radius:999px;background:var(--warm-grey);overflow:hidden;">
+                  <div style="width:64%;height:100%;background:var(--terracotta);border-radius:inherit;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:4px;">
+                  <span>Database Backups / Logs</span><span>3.4× (71% saved)</span>
+                </div>
+                <div style="height:8px;border-radius:999px;background:var(--warm-grey);overflow:hidden;">
+                  <div style="width:71%;height:100%;background:var(--sage);border-radius:inherit;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:4px;">
+                  <span>Compiled Binaries / DLLs</span><span>1.5× (33% saved)</span>
+                </div>
+                <div style="height:8px;border-radius:999px;background:var(--warm-grey);overflow:hidden;">
+                  <div style="width:33%;height:100%;background:var(--dusty-blue);border-radius:inherit;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:4px;">
+                  <span>Media / Archives (Pre-compressed)</span><span>1.05× (5% saved)</span>
+                </div>
+                <div style="height:8px;border-radius:999px;background:var(--warm-grey);overflow:hidden;">
+                  <div style="width:5%;height:100%;background:var(--slate-grey);border-radius:inherit;"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
       </section>
 
       <section id="section-settings" class="shell" hidden>
-        <div class="page-heading"><div class="page-heading-left"><p class="eyebrow">CONFIGURATION</p><h1>Settings</h1></div></div>
-        <div class="panel panel-pad">
-          <div class="panel-heading"><h3>Backend Configuration</h3></div>
-          <div style="display:grid;grid-template-columns:140px 1fr;gap:12px 16px;font-size:13px;align-items:center;">
-            <span style="color:var(--ink-muted);font-weight:600;">Backend</span><span id="settingsBackend" style="font-weight:600;">-</span>
-            <span style="color:var(--ink-muted);font-weight:600;">Compression Profile</span><span style="font-weight:600;" id="settingsPolicy">Balanced (zlib level 6)</span>
-            <span style="color:var(--ink-muted);font-weight:600;">Connection</span><span id="settingsConnection" style="font-weight:600;">-</span>
+        <div class="page-heading">
+          <div class="page-heading-left">
+            <p class="eyebrow">CONFIGURATION &amp; IDENTITY</p>
+            <h1>Settings &amp; Access</h1>
           </div>
+        </div>
+
+        <div class="content-grid" style="grid-template-columns:1fr 1fr;">
+          <section class="panel panel-pad">
+            <div class="panel-heading"><h3>Authentication Profile (Cognito)</h3></div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--terracotta);color:var(--white);font-size:18px;font-weight:700;display:grid;place-items:center;">PJ</div>
+              <div>
+                <strong style="font-size:15px;color:var(--ink);display:block;">Poorvaja (Admin)</strong>
+                <span style="font-size:12px;color:var(--ink-muted);">poorvaja@chunkwise.io</span>
+              </div>
+              <span style="margin-left:auto;padding:3px 9px;border-radius:20px;background:var(--sage-l);color:#2D5E4E;font-size:11px;font-weight:700;border:1px solid rgba(143,166,154,0.4);">AUTHENTICATED</span>
+            </div>
+            <div style="display:grid;grid-template-columns:140px 1fr;gap:10px 14px;font-size:12.5px;border-top:1px solid var(--border);padding-top:14px;">
+              <span style="color:var(--ink-muted);font-weight:600;">Auth Provider</span><span>Amazon Cognito User Pool</span>
+              <span style="color:var(--ink-muted);font-weight:600;">User Pool ID</span><span style="font-family:monospace;font-size:11px;">us-east-1_ChunkWiseAuth</span>
+              <span style="color:var(--ink-muted);font-weight:600;">App Client ID</span><span style="font-family:monospace;font-size:11px;">7b3f9e8a1d2c4b5e9f0a</span>
+              <span style="color:var(--ink-muted);font-weight:600;">Session Duration</span><span>2 hours (Auto-refresh enabled)</span>
+            </div>
+          </section>
+
+          <section class="panel panel-pad">
+            <div class="panel-heading"><h3>Storage Backend Settings</h3></div>
+            <div style="display:grid;grid-template-columns:140px 1fr;gap:12px 14px;font-size:12.5px;">
+              <span style="color:var(--ink-muted);font-weight:600;">Active Backend</span><span id="settingsBackend" style="font-weight:700;">-</span>
+              <span style="color:var(--ink-muted);font-weight:600;">S3 Bucket</span><span style="font-family:monospace;font-size:11.5px;">chunkwise-prod-chunks-us-east-1</span>
+              <span style="color:var(--ink-muted);font-weight:600;">DynamoDB Table</span><span style="font-family:monospace;font-size:11.5px;">chunkwise-chunks-meta</span>
+              <span style="color:var(--ink-muted);font-weight:600;">Compression</span><span id="settingsPolicy" style="font-weight:600;">Balanced (zlib level 6)</span>
+              <span style="color:var(--ink-muted);font-weight:600;">Connection</span><span id="settingsConnection" style="font-weight:600;color:var(--sage);">Storage Online ✓</span>
+            </div>
+          </section>
         </div>
       </section>
 

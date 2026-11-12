@@ -1,0 +1,122 @@
+[
+  {
+    "workload": "Text Document",
+    "profile": "balanced",
+    "original_bytes": 5242880,
+    "stored_bytes": 914890,
+    "saved_pct": 82.55,
+    "compress_mb_s": 18.17,
+    "restore_mb_s": 275.46,
+    "verified": true
+  },
+  {
+    "workload": "Text Document",
+    "profile": "space_saver",
+    "original_bytes": 5242880,
+    "stored_bytes": 886105,
+    "saved_pct": 83.1,
+    "compress_mb_s": 4.93,
+    "restore_mb_s": 210.06,
+    "verified": true
+  },
+  {
+    "workload": "Text Document",
+    "profile": "fast_restore",
+    "original_bytes": 5242880,
+    "stored_bytes": 1277734,
+    "saved_pct": 75.63,
+    "compress_mb_s": 94.25,
+    "restore_mb_s": 188.76,
+    "verified": true
+  },
+  {
+    "workload": "Text Document",
+    "profile": "disabled",
+    "original_bytes": 5242880,
+    "stored_bytes": 5242880,
+    "saved_pct": 0.0,
+    "compress_mb_s": 48875.86,
+    "restore_mb_s": 948.69,
+    "verified": true
+  },
+  {
+    "workload": "Server Logs",
+    "profile": "balanced",
+    "original_bytes": 5242880,
+    "stored_bytes": 20479,
+    "saved_pct": 99.61,
+    "compress_mb_s": 169.01,
+    "restore_mb_s": 409.13,
+    "verified": true
+  },
+  {
+    "workload": "Server Logs",
+    "profile": "space_saver",
+    "original_bytes": 5242880,
+    "stored_bytes": 20479,
+    "saved_pct": 99.61,
+    "compress_mb_s": 164.8,
+    "restore_mb_s": 470.72,
+    "verified": true
+  },
+  {
+    "workload": "Server Logs",
+    "profile": "fast_restore",
+    "original_bytes": 5242880,
+    "stored_bytes": 39437,
+    "saved_pct": 99.25,
+    "compress_mb_s": 558.17,
+    "restore_mb_s": 520.81,
+    "verified": true
+  },
+  {
+    "workload": "Server Logs",
+    "profile": "disabled",
+    "original_bytes": 5242880,
+    "stored_bytes": 5242880,
+    "saved_pct": 0.0,
+    "compress_mb_s": 265957.45,
+    "restore_mb_s": 1340.59,
+    "verified": true
+  },
+  {
+    "workload": "Binary/Random",
+    "profile": "balanced",
+    "original_bytes": 5242880,
+    "stored_bytes": 5242880,
+    "saved_pct": 0.0,
+    "compress_mb_s": 31.17,
+    "restore_mb_s": 1384.62,
+    "verified": true
+  },
+  {
+    "workload": "Binary/Random",
+    "profile": "space_saver",
+    "original_bytes": 5242880,
+    "stored_bytes": 5242880,
+    "saved_pct": 0.0,
+    "compress_mb_s": 29.57,
+    "restore_mb_s": 817.82,
+    "verified": true
+  },
+  {
+    "workload": "Binary/Random",
+    "profile": "fast_restore",
+    "original_bytes": 5242880,
+    "stored_bytes": 5242880,
+    "saved_pct": 0.0,
+    "compress_mb_s": 30.93,
+    "restore_mb_s": 1419.2,
+    "verified": true
+  },
+  {
+    "workload": "Binary/Random",
+    "profile": "disabled",
+    "original_bytes": 5242880,
+    "stored_bytes": 5242880,
+    "saved_pct": 0.0,
+    "compress_mb_s": 649350.77,
+    "restore_mb_s": 1429.06,
+    "verified": true
+  }
+]

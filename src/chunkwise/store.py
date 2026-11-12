@@ -158,14 +158,16 @@ class LocalChunkStore:
                 for t in (tmp_data, tmp_meta):
                     with t.open("rb") as f:
                         os.fsync(f.fileno())
-            os.replace(tmp_data, path)
-            # On Windows, os.replace to an existing destination can raise
-            # PermissionError when another thread just created it concurrently.
-            # Treat that as a benign dedup hit.
+            # Replace metadata sidecar first so it is available before chunk data
             try:
                 os.replace(tmp_meta, self._meta_path(digest))
             except (PermissionError, FileExistsError):
                 pass  # Another concurrent writer already wrote the sidecar
+            try:
+                os.replace(tmp_data, path)
+            except (PermissionError, FileExistsError):
+                # Another concurrent writer already stored this chunk; treat as dedup hit.
+                return False
             return True
         finally:
             tmp_data.unlink(missing_ok=True)
@@ -182,14 +184,25 @@ class LocalChunkStore:
 
         stored = self.get(digest)  # may be compressed bytes
         meta_path = self._meta_path(digest)
-        if not meta_path.exists():
-            return stored, CODEC_NONE
-        try:
-            meta = json.loads(meta_path.read_text(encoding="utf-8"))
-        except Exception:
-            return stored, CODEC_NONE
+        codec = CODEC_NONE
+        if meta_path.exists():
+            try:
+                meta = json.loads(meta_path.read_text(encoding="utf-8"))
+                codec = meta.get("codec", CODEC_NONE)
+            except Exception:
+                codec = CODEC_NONE
 
-        codec = meta.get("codec", CODEC_NONE)
+        # If codec is recorded as none, verify if stored bytes match digest directly.
+        # If not, attempt zlib recovery (handles concurrent writes where meta was in-flight).
+        if codec == CODEC_NONE and hashlib.sha256(stored).hexdigest() != digest:
+            import zlib
+            try:
+                raw_candidate = zlib.decompress(stored)
+                if hashlib.sha256(raw_candidate).hexdigest() == digest:
+                    return raw_candidate, "zlib"
+            except Exception:
+                pass
+
         try:
             raw = decompress_chunk(stored, codec, expected_hash=digest)
         except Exception as exc:
