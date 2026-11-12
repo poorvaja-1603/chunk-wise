@@ -161,7 +161,16 @@ async function refreshStats() {
     $("#compositionSaved").textContent    = formatBytes(Math.max(0, stats.logical_bytes - stats.physical_bytes));
     const storedShare = stats.logical_bytes > 0
       ? Math.min(100, (stats.physical_bytes / stats.logical_bytes) * 100) : 0;
-    $("#compositionBar").style.width = `${storedShare}%`;
+    const bar = $("#compositionBar");
+    if (bar) bar.style.width = `${storedShare}%`;
+    const donut = $("#compositionDonutRing");
+    const pctText = $("#compositionPercentText");
+    if (donut && pctText) {
+      const circum = 251.2;
+      const strokeVal = (storedShare / 100) * circum;
+      donut.setAttribute("stroke-dasharray", `${strokeVal} ${circum}`);
+      pctText.textContent = `${Math.round(storedShare)}%`;
+    }
     const noteEl = $("#compositionNote");
     if (noteEl) {
       noteEl.textContent = stats.files

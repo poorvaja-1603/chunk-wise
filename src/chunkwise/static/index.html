@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#F5F3EE">
+    <meta name="theme-color" content="#12132A">
     <link rel="icon" href="data:,">
     <title>ChunkWise | Storage Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/app.css">
     <link rel="stylesheet" href="/static/simulation.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
@@ -21,7 +21,21 @@
     <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
       <div class="sidebar-brand">
         <div class="sidebar-brand-mark" aria-hidden="true">
-          <i></i><i></i><i></i>
+          <svg viewBox="0 0 28 28" fill="none" class="brand-svg">
+            <path d="M14 3L3 9L14 15L25 9L14 3Z" fill="url(#brandG1)" />
+            <path d="M3 13.5L14 19.5L25 13.5" stroke="url(#brandG2)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 18L14 24L25 18" stroke="url(#brandG2)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+            <defs>
+              <linearGradient id="brandG1" x1="3" y1="3" x2="25" y2="15" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#9E9BFF"/>
+                <stop offset="1" stop-color="#6F68F4"/>
+              </linearGradient>
+              <linearGradient id="brandG2" x1="3" y1="13.5" x2="25" y2="24" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#A8A5FF"/>
+                <stop offset="1" stop-color="#7C78E8"/>
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
         <span class="sidebar-brand-name">ChunkWise</span>
       </div>
@@ -29,7 +43,7 @@
       <nav class="sidebar-nav">
         <div class="sidebar-section-label">Main</div>
         <a href="#overview" class="is-active" data-section="overview">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           Overview
         </a>
         <a href="#upload" data-section="upload">
@@ -43,7 +57,7 @@
 
         <div class="sidebar-section-label">Explore</div>
         <a href="#chunks" data-section="chunks">
-          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           Chunk Explorer
         </a>
         <a href="#simulation" data-section="simulation">
@@ -53,7 +67,7 @@
 
         <div class="sidebar-section-label">Manage</div>
         <a href="#optimization" data-section="optimization">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           Optimization
         </a>
         <a href="#activity" data-section="activity">
@@ -77,7 +91,28 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="sidebar-health">
+        <div class="sidebar-system-card">
+          <div class="sys-status-row">
+            <span class="sys-dot"></span>
+            <span class="sys-label">All Systems Operational</span>
+            <svg class="sys-spark" viewBox="0 0 32 14" fill="none"><path d="M1 9L7 9L11 3L16 12L20 6L25 9L31 9" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="sys-usage-row">
+            <div class="sys-donut-mini">
+              <svg viewBox="0 0 36 36" class="mini-donut">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3.5" />
+                <path class="circle-fill" stroke-dasharray="24, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#7C78E8" stroke-width="3.5" stroke-linecap="round" />
+              </svg>
+              <span class="mini-donut-txt">24%</span>
+            </div>
+            <div class="sys-usage-text">
+              <div class="sys-usage-lbl">Storage Usage</div>
+              <div class="sys-usage-val">12.4 GB / 50 GB</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-health" style="margin-top:10px;">
           <div class="sidebar-health-dot" id="sidebarHealthDot"></div>
           <span id="sidebarHealthLabel">Checking…</span>
         </div>
@@ -93,12 +128,18 @@
 
       <!-- Top bar -->
       <header class="topbar">
-        <span class="topbar-title" id="topbarTitle">Overview</span>
+        <div class="topbar-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search anything... (⌘ + K)" aria-label="Search" readonly>
+        </div>
         <div class="topbar-right">
-          <span class="connection" id="connectionStatus" aria-live="polite">
-            <span class="connection-dot"></span>
-            <span id="connectionLabel">Connecting</span>
+          <span class="status-pill-online" id="connectionStatus" aria-live="polite">
+            <span class="status-dot-green"></span>
+            <span id="connectionLabel">Storage Online</span>
           </span>
+          <button class="theme-toggle-btn" id="themeToggleButton" type="button" title="Toggle Theme" aria-label="Toggle Theme">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </button>
           <button class="icon-button" id="refreshButton" type="button" title="Refresh" aria-label="Refresh data">
             <svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
           </button>
@@ -111,57 +152,106 @@
       <!-- ========== OVERVIEW SECTION ========== -->
       <section id="section-overview" class="shell">
         <div class="welcome-banner">
-          <div class="welcome-text">
-            <h2>Welcome back, Poorvaja!</h2>
-            <p>Your storage is optimized and running smoothly.</p>
+          <div class="welcome-banner-content">
+            <div class="welcome-accent-bar"></div>
+            <div class="welcome-text">
+              <h2>Welcome back, Poorvaja!</h2>
+              <p>Your storage is optimized and running smoothly.</p>
+            </div>
           </div>
-          <span class="welcome-badge">
-            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M13.5 4.5L6.5 11.5 3 8"/></svg>
-            All Systems Operational
-          </span>
+          <div class="welcome-illustration" aria-hidden="true">
+            <svg viewBox="0 0 260 110" fill="none" class="welcome-svg">
+              <path d="M0 65C50 35 110 85 170 50C210 25 240 40 260 30V110H0V65Z" fill="url(#waveGrad1)" opacity="0.6"/>
+              <path d="M30 75C80 55 130 90 190 60C230 40 250 55 260 50V110H30V75Z" fill="url(#waveGrad2)" opacity="0.8"/>
+              <!-- Isometric 3D Blocks -->
+              <g transform="translate(175, 12)">
+                <!-- Cube 1 (Back Dark Indigo) -->
+                <path d="M30 12L52 24L30 36L8 24L30 12Z" fill="#5F5BD0"/>
+                <path d="M8 24L30 36V62L8 50V24Z" fill="#443EB5"/>
+                <path d="M30 36L52 24V50L30 62V36Z" fill="#363198"/>
+                <!-- Cube 2 (Front Left Purple) -->
+                <path d="M2 38L24 50L2 62L-20 50L2 38Z" fill="#8B86FA"/>
+                <path d="M-20 50L2 62V82L-20 70V50Z" fill="#6A63E8"/>
+                <path d="M2 62L24 50V70L2 82V62Z" fill="#524BC8"/>
+                <!-- Cube 3 (Right Light Periwinkle) -->
+                <path d="M52 34L70 44L52 54L34 44L52 34Z" fill="#B2AFFF"/>
+                <path d="M34 44L52 54V72L34 62V44Z" fill="#8E89F8"/>
+                <path d="M52 54L70 44V62L52 72V54Z" fill="#756FE6"/>
+              </g>
+              <defs>
+                <linearGradient id="waveGrad1" x1="0" y1="30" x2="260" y2="110" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#C5CBFE"/>
+                  <stop offset="1" stop-color="#6F68F4" stop-opacity="0.3"/>
+                </linearGradient>
+                <linearGradient id="waveGrad2" x1="30" y1="40" x2="260" y2="110" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#8F8BF9"/>
+                  <stop offset="1" stop-color="#4A43B2" stop-opacity="0.4"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
         </div>
 
         <!-- Stat cards -->
         <div class="stats-grid" id="statsGrid" aria-label="Storage statistics" aria-busy="true">
-          <article class="stat-card c-terracotta">
+          <!-- Card 1: Logical Storage -->
+          <article class="stat-card card-logical">
             <div class="stat-header">
-              <span class="stat-label">Logical Storage</span>
-              <div class="stat-icon-wrap c-terracotta">
-                <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              <div class="stat-title-wrap">
+                <div class="stat-icon-wrap icon-purple">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <span class="stat-label">Logical Storage</span>
               </div>
+              <span class="stat-arrow">→</span>
             </div>
             <div class="stat-value" id="statLogical">-</div>
             <div class="stat-foot">Total original file bytes</div>
           </article>
-          <article class="stat-card c-blue">
+
+          <!-- Card 2: Physical Storage -->
+          <article class="stat-card card-physical">
             <div class="stat-header">
-              <span class="stat-label">Physical Storage</span>
-              <div class="stat-icon-wrap c-blue">
-                <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              <div class="stat-title-wrap">
+                <div class="stat-icon-wrap icon-blue">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span class="stat-label">Physical Storage</span>
               </div>
+              <span class="stat-arrow">→</span>
             </div>
             <div class="stat-value" id="statPhysical">-</div>
             <div class="stat-foot">Unique chunk bytes in S3</div>
           </article>
-          <article class="stat-card c-sage">
+
+          <!-- Card 3: Deduplication Ratio -->
+          <article class="stat-card card-dedup">
             <div class="stat-header">
-              <span class="stat-label">Deduplication Ratio</span>
-              <div class="stat-icon-wrap c-sage">
-                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <div class="stat-title-wrap">
+                <div class="stat-icon-wrap icon-mint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M12 3v18M6 6l-3 6h6l-3-6zM18 6l-3 6h6l-3-6z"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/></svg>
+                </div>
+                <span class="stat-label">Deduplication Ratio</span>
               </div>
+              <span class="stat-arrow">→</span>
             </div>
             <div class="stat-value" id="statRatio">-</div>
             <div class="stat-foot" id="statRatioDesc">Logical bytes per stored byte</div>
           </article>
-          <article class="stat-card c-grey">
+
+          <!-- Card 4: Storage Savings -->
+          <article class="stat-card card-savings">
             <div class="stat-header">
-              <span class="stat-label">Storage Savings</span>
-              <div class="stat-icon-wrap c-grey">
-                <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              <div class="stat-title-wrap">
+                <div class="stat-icon-wrap icon-peach">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                </div>
+                <span class="stat-label">Storage Savings</span>
               </div>
+              <span class="stat-arrow">→</span>
             </div>
             <div class="stat-value" id="statSaved">-</div>
-            <div class="stat-foot" id="statSavedDetail">Loading storage totals</div>
+            <div class="stat-foot" id="statSavedDetail">0 B less stored than original</div>
           </article>
         </div>
 
@@ -170,32 +260,62 @@
           <!-- Left: upload panel -->
           <section class="panel upload-panel" aria-labelledby="uploadHeading">
             <div class="panel-heading">
-              <div>
-                <p class="eyebrow">ADD DATA</p>
-                <h2 id="uploadHeading">Upload a file</h2>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="panel-heading-icon upload-circle-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><polyline points="12 12 12 17"/><polyline points="9 14 12 11 15 14"/></svg>
+                </div>
+                <div>
+                  <h2 id="uploadHeading" class="panel-title-text">Add Data</h2>
+                  <p class="panel-subtitle-text">Upload a file or drag and drop it here</p>
+                </div>
               </div>
-              <span class="step-number" style="font-size:11px;font-weight:700;color:var(--ink-muted)">01</span>
             </div>
             <div id="dropZone" class="drop-zone">
               <input id="fileInput" type="file" hidden>
               <div class="upload-glyph" aria-hidden="true">
-                <svg viewBox="0 0 32 32"><path d="M16 21V5m0 0L9.5 11.5M16 5l6.5 6.5M6 20v6h20v-6"/></svg>
+                <svg viewBox="0 0 48 48" fill="none" class="drop-svg-doc">
+                  <path d="M14 6H28L38 16V40C38 41.1046 37.1046 42 36 42H14C12.8954 42 12 41.1046 12 40V8C12 6.89543 12.8954 6 14 6Z" stroke="#7C78E8" stroke-width="2.5" stroke-linejoin="round"/>
+                  <path d="M28 6V16H38" stroke="#7C78E8" stroke-width="2.5" stroke-linejoin="round"/>
+                  <path d="M24 33V22M24 22L19 27M24 22L29 27" stroke="#7C78E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="8" cy="20" r="1.5" fill="#B3B0FF"/>
+                  <circle cx="40" cy="24" r="1.5" fill="#B3B0FF"/>
+                  <line x1="6" y1="14" x2="9" y2="17" stroke="#B3B0FF" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="39" y1="34" x2="42" y2="37" stroke="#B3B0FF" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
               </div>
-              <p class="drop-title">Drop a file here</p>
-              <p class="drop-copy">or <button class="text-button" id="chooseFile" type="button">browse files</button></p>
-              <p class="drop-limit" id="uploadLimit">Maximum upload size: loading</p>
+              <button class="browse-files-pill" id="chooseFile" type="button">
+                Browse Files <span aria-hidden="true">→</span>
+              </button>
+              <p class="drop-limit" id="uploadLimit">Maximum upload size: 100 MB</p>
               <div id="selectedFile" class="selected-file" hidden></div>
             </div>
-            <div class="upload-controls">
-              <fieldset class="chunker-choice">
-                <legend>Chunking method</legend>
-                <label><input type="radio" name="chunker" value="cdc" checked><span>Content-defined <small>CDC</small></span></label>
-                <label><input type="radio" name="chunker" value="fixed"><span>Fixed-size <small>FIXED</small></span></label>
-              </fieldset>
-              <button class="button button-primary" id="uploadButton" type="button" disabled>
-                Upload file <span aria-hidden="true">↗</span>
+
+            <!-- Upload Controls Bar -->
+            <div class="upload-controls-bar">
+              <div class="chunker-controls-group">
+                <span class="chunker-group-label">
+                  <svg viewBox="0 0 20 20" fill="none" style="width:16px;height:16px;stroke:#7C78E8;stroke-width:1.8;"><path d="M10 2L2 6l8 4 8-4-8-4zM2 10l8 4 8-4M2 14l8 4 8-4"/></svg>
+                  Chunking Method
+                </span>
+                <div class="chunker-radio-pills">
+                  <label class="custom-radio-pill">
+                    <input type="radio" name="chunker" value="cdc" checked>
+                    <span class="radio-indicator"></span>
+                    <span class="radio-txt">Content-defined CDC</span>
+                  </label>
+                  <label class="custom-radio-pill">
+                    <input type="radio" name="chunker" value="fixed">
+                    <span class="radio-indicator"></span>
+                    <span class="radio-txt">Fixed-size TIKD</span>
+                  </label>
+                </div>
+              </div>
+
+              <button class="button-upload-gradient" id="uploadButton" type="button" disabled>
+                Upload File <span aria-hidden="true">→</span>
               </button>
             </div>
+
             <div id="uploadProgress" class="progress-block" hidden aria-live="polite">
               <div class="progress-meta"><span id="progressLabel">Uploading</span><span id="progressPercent">0%</span></div>
               <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
@@ -212,42 +332,103 @@
           </section>
 
           <!-- Right: storage composition + policy -->
-          <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;flex-direction:column;gap:18px;">
             <!-- Storage composition -->
-            <section class="panel panel-pad" aria-labelledby="storageHeading">
+            <section class="panel panel-pad composition-panel" aria-labelledby="storageHeading">
               <div class="panel-heading">
-                <div>
-                  <p class="eyebrow">AT A GLANCE</p>
-                  <h3 id="storageHeading">Storage composition</h3>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="panel-icon-circle icon-circle-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10h-10z"/></svg>
+                  </div>
+                  <h3 id="storageHeading" class="panel-title-text">Storage Composition</h3>
+                </div>
+                <a href="#analytics" class="link-arrow">View Details →</a>
+              </div>
+
+              <div class="composition-body-layout">
+                <div class="composition-left">
+                  <div class="composition-total-big">
+                    <span id="compositionLogical" class="comp-big-val">0 B</span>
+                    <span class="comp-big-lbl">Logical</span>
+                  </div>
+                  <div class="composition-legend-list">
+                    <div class="comp-legend-row">
+                      <span class="legend-dot dot-purple"></span>
+                      <span class="comp-leg-lbl">Stored</span>
+                      <strong id="compositionPhysical" class="comp-leg-val">0 B</strong>
+                    </div>
+                    <div class="comp-legend-row">
+                      <span class="legend-dot dot-green"></span>
+                      <span class="comp-leg-lbl">Recovered</span>
+                      <strong id="compositionSaved" class="comp-leg-val">0 B</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="composition-right-donut">
+                  <div class="donut-chart-wrap">
+                    <svg viewBox="0 0 100 100" class="comp-donut-svg">
+                      <circle cx="50" cy="50" r="40" class="donut-ring-track" stroke-width="10" fill="none"/>
+                      <circle id="compositionDonutRing" cx="50" cy="50" r="40" class="donut-ring-fill" stroke-width="10" stroke-dasharray="0 251.2" stroke-linecap="round" fill="none"/>
+                    </svg>
+                    <div class="donut-center-text">
+                      <span id="compositionPercentText" class="donut-pct">0%</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="composition-total"><span id="compositionLogical">-</span><span>logical</span></div>
-              <div class="composition-track" role="img" aria-label="Physical storage as proportion of logical data">
-                <div id="compositionBar" class="composition-physical"></div>
+              <div class="composition-note" id="compositionNote">
+                <span class="note-info-icon">ℹ</span> Storage totals will appear when data is available.
               </div>
-              <div class="composition-legend">
-                <div><span class="legend-mark legend-stored"></span><span>Stored</span><strong id="compositionPhysical">-</strong></div>
-                <div><span class="legend-mark legend-recovered"></span><span>Recovered</span><strong id="compositionSaved">-</strong></div>
-              </div>
-              <div class="composition-note" id="compositionNote">Storage totals will appear when data is available.</div>
             </section>
 
             <!-- Optimization Policy widget -->
-            <section class="panel panel-pad" aria-labelledby="policyHeading">
+            <section class="panel panel-pad policy-panel" aria-labelledby="policyHeading">
               <div class="panel-heading">
-                <div>
-                  <p class="eyebrow">ACTIVE POLICY</p>
-                  <h3 id="policyHeading">Optimization Policy</h3>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="panel-icon-circle icon-circle-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  </div>
+                  <div>
+                    <h3 id="policyHeading" class="panel-title-text">Active Policy</h3>
+                    <p class="panel-subtitle-text">Optimization Policy</p>
+                  </div>
                 </div>
-                <a href="#optimization" class="section-link">Configure →</a>
+                <a href="#optimization" class="link-arrow">Configure →</a>
               </div>
-              <div class="policy-cards">
+
+              <div class="policy-status-pill">
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3.5 8.5 6.5 11.5 12.5 4.5"/></svg>
+                <span>Policy is active</span>
+              </div>
+
+              <div class="policy-cards" style="margin-top:14px;">
                 <div class="policy-card is-active" data-policy="balanced">
                   <div class="policy-card-icon">⚖️</div>
                   <div class="policy-card-info">
                     <div class="policy-card-name">Balanced</div>
                     <div class="policy-card-desc">Balanced compression and performance</div>
                   </div>
+                  <span class="policy-active-badge">Active</span>
+                </div>
+                <div class="policy-card" data-policy="space_saver">
+                  <div class="policy-card-icon">🍃</div>
+                  <div class="policy-card-info">
+                    <div class="policy-card-name">Space Saver</div>
+                    <div class="policy-card-desc">Maximum storage reduction</div>
+                  </div>
+                </div>
+                <div class="policy-card" data-policy="fast_restore">
+                  <div class="policy-card-icon">⚡</div>
+                  <div class="policy-card-info">
+                    <div class="policy-card-name">Fast Restore</div>
+                    <div class="policy-card-desc">Prioritize speed</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
                   <span class="policy-active-badge">Active</span>
                 </div>
                 <div class="policy-card" data-policy="space_saver">
