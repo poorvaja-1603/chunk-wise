@@ -51,6 +51,65 @@ The configured S3 bucket must already exist. The DynamoDB table is created
 on demand with `PAY_PER_REQUEST` billing and `pk` / `sk` string keys, plus a
 `status-index` global secondary index for committed file queries.
 
+### ECS Fargate deployment blueprint
+
+For a production-style deployment, run the same FastAPI service behind Amazon
+Elastic Container Service (ECS) Fargate with an Application Load Balancer and a
+security group that exposes only the ALB to the public internet.
+
+Recommended architecture:
+
+- Client Browser -> ALB -> ECS Fargate task (ChunkWise HTTP API)
+- ECS task mounts a small writable EFS volume or uses ephemeral storage for the
+  local working directory when a local backend is temporarily needed.
+- Amazon S3 stores chunk bytes.
+- Amazon DynamoDB stores metadata, file manifests, and chunk refs.
+- Amazon CloudWatch records operational metrics and integrity alarms.
+- Amazon Cognito is the auth layer if the service is exposed to users.
+
+Minimal task definition variables:
+
+```yaml
+environment:
+  - name: CHUNKWISE_BACKEND
+    value: aws
+  - name: CHUNKWISE_S3_BUCKET
+    value: your-bucket-name
+  - name: CHUNKWISE_DYNAMODB_TABLE
+    value: chunkwise-index
+  - name: CHUNKWISE_AWS_REGION
+    value: us-east-1
+  - name: CHUNKWISE_HOME
+    value: /tmp/chunkwise
+  - name: PORT
+    value: "8080"
+  - name: CHUNKWISE_CLOUDWATCH
+    value: "1"
+```
+
+Container settings:
+
+- Use the Dockerfile already in the repository root.
+- Start command: `chunkwise-web`
+- port mapping: `8080:8080`
+- health check: request `/api/health` over the ALB
+- set `CHUNKWISE_HOST=0.0.0.0` so the service listens on the container port
+- keep the S3 bucket and DynamoDB table names in ECS task parameters or a
+  Secrets Manager / Systems Manager parameter store reference, not in source
+  control.
+
+Security posture:
+
+- ALB: public-facing entry point
+- ECS task: private subnet, no direct public IP
+- allow only ALB -> ECS on port 8080
+- allow ECS task -> S3 and DynamoDB via IAM task role
+- enable CloudWatch logging and structured JSON error logging
+
+This follows the project plan's backend architecture: the API remains stateless,
+all durable state lives in S3/DynamoDB, and the web app is a thin, authenticated
+front-end layer on top of the storage engine.
+
 ### Required IAM Actions
 
 The active AWS credentials or Learner Lab LabRole must permit:

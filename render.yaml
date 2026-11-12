@@ -14,4 +14,8 @@ services:
         value: local
       - key: CHUNKWISE_HOME
         value: ./.chunkwise
+      - key: CHUNKWISE_MAX_UPLOAD_BYTES
+        value: "104857600"
+      - key: CHUNKWISE_CLOUDWATCH
+        value: "0"
 

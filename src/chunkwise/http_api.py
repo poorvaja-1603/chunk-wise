@@ -21,6 +21,7 @@ except ImportError:
 
 from . import Engine
 from .errors import ChunkWiseError, IdempotencyConflictError
+from .policy import get_active_policy, list_policies, select_policy
 from .simulation import HybridRunner
 from .ui import STATIC_FILES, STATIC_DIR
 
@@ -130,7 +131,30 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
                 "backend": backend,
                 "index_label": "DynamoDB Metadata Index" if backend == "aws" else "SQLite Metadata Index",
                 "store_label": "S3 Chunk Store" if backend == "aws" else "Content-Addressed Chunk Store",
+                "active_policy": get_active_policy(),
+                "policies": list_policies(),
             })
+            return
+        if path == "/api/v1/policies":
+            self._send_json(200, {"policies": list_policies(), "active": get_active_policy()})
+            return
+        if path == "/api/v1/policies/active":
+            self._send_json(200, {"active": get_active_policy()})
+            return
+        if path == "/api/v1/policies/select":
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                if length <= 0:
+                    self._send_error_json(400, "Selection payload is required")
+                    return
+                payload = json.loads(self.rfile.read(length))
+                policy_name = payload.get("policy") if isinstance(payload, dict) else None
+                if policy_name is None:
+                    self._send_error_json(400, "Policy selection requires a 'policy' field")
+                    return
+                self._send_json(200, {"active": select_policy(policy_name)})
+            except (json.JSONDecodeError, ValueError, TypeError):
+                self._send_error_json(400, "Invalid policy payload")
             return
         match = re.fullmatch(r"/api/simulations/([a-f0-9]{12})", path)
         if match:
