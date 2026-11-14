@@ -154,6 +154,9 @@ def select_policy(name: str | None = None) -> dict[str, Any]:
     global _ACTIVE_POLICY
     key = normalize_policy_name(name)
     _ACTIVE_POLICY = key
+    import os
+
+    os.environ["CHUNKWISE_COMPRESSION_PROFILE"] = key
     return PROFILES[key].to_dict()
 
 

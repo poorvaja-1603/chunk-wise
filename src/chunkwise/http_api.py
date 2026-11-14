@@ -273,6 +273,21 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         path = urlsplit(self.path).path
+        if path == "/api/v1/policies/select":
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                if length <= 0:
+                    self._send_error_json(400, "Selection payload is required")
+                    return
+                payload = json.loads(self.rfile.read(length))
+                policy_name = payload.get("policy") if isinstance(payload, dict) else None
+                if policy_name is None:
+                    self._send_error_json(400, "Policy selection requires a 'policy' field")
+                    return
+                self._send_json(200, {"active": select_policy(policy_name)})
+            except (json.JSONDecodeError, ValueError, TypeError):
+                self._send_error_json(400, "Invalid policy payload")
+            return
         if path == "/api/simulations":
             self._start_simulation()
             return

@@ -1286,13 +1286,32 @@ with Engine("./.chunkwise") as engine:
     </div><!-- /main-wrap -->
 
     <script>
-    // Minimal policy selector for Optimization page
-    function selectPolicy(profile, el) {
+    // Dynamic policy selector for Optimization page
+    async function selectPolicy(profile, el) {
       document.querySelectorAll(".policy-card").forEach(c => c.classList.remove("is-active"));
       document.querySelectorAll("[id^='opt-badge-']").forEach(b => b.hidden = true);
-      el.classList.add("is-active");
+      if (el) el.classList.add("is-active");
       const badge = document.getElementById("opt-badge-" + profile);
       if (badge) badge.hidden = false;
+      const settingsPolicy = document.getElementById("settingsPolicy");
+      if (settingsPolicy) {
+        const labels = {
+          balanced: "Balanced (zlib level 6)",
+          space_saver: "Space Saver (zlib level 9)",
+          fast_restore: "Fast Restore (zlib level 1)",
+          disabled: "Disabled (uncompressed)",
+        };
+        settingsPolicy.textContent = labels[profile] || profile;
+      }
+      try {
+        await fetch("/api/v1/policies/select", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ policy: profile }),
+        });
+      } catch (err) {
+        console.warn("Could not persist active policy:", err);
+      }
     }
     </script>
 
