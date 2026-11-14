@@ -138,7 +138,7 @@
           <button class="icon-button" id="refreshButton" type="button" title="Refresh" aria-label="Refresh data">
             <svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
           </button>
-          <div class="topbar-avatar" id="topbarAvatar" title="Poorvaja">P</div>
+          <div class="topbar-avatar" id="topbarAvatar" title="Storage Node" aria-label="Storage Node"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         </div>
       </header>
 
@@ -150,8 +150,8 @@
           <div class="welcome-banner-content">
             <div class="welcome-accent-bar"></div>
             <div class="welcome-text">
-              <h2>Welcome back, Poorvaja!</h2>
-              <p>Your storage is optimized and running smoothly.</p>
+              <h2>Welcome to ChunkWise</h2>
+              <p>Your storage deduplication and compression engine is running smoothly.</p>
             </div>
           </div>
           <div class="welcome-illustration" aria-hidden="true">
@@ -399,7 +399,9 @@
 
               <div class="policy-cards" style="margin-top:14px;">
                 <div class="policy-card is-active" data-policy="balanced">
-                  <div class="policy-card-icon">⚖️</div>
+                  <div class="policy-card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+                  </div>
                   <div class="policy-card-info">
                     <div class="policy-card-name">Balanced</div>
                     <div class="policy-card-desc">Balanced compression and performance</div>
@@ -407,14 +409,18 @@
                   <span class="policy-active-badge">Active</span>
                 </div>
                 <div class="policy-card" data-policy="space_saver">
-                  <div class="policy-card-icon">🍃</div>
+                  <div class="policy-card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                  </div>
                   <div class="policy-card-info">
                     <div class="policy-card-name">Space Saver</div>
                     <div class="policy-card-desc">Maximum storage reduction</div>
                   </div>
                 </div>
                 <div class="policy-card" data-policy="fast_restore">
-                  <div class="policy-card-icon">⚡</div>
+                  <div class="policy-card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
                   <div class="policy-card-info">
                     <div class="policy-card-name">Fast Restore</div>
                     <div class="policy-card-desc">Prioritize speed</div>
@@ -801,22 +807,30 @@
             <div class="panel-heading"><h3>Policy Profiles</h3></div>
             <div class="policy-cards" style="margin-top:0;">
               <div class="policy-card is-active" data-policy="balanced" style="cursor:pointer;" onclick="selectPolicy('balanced',this)">
-                <div class="policy-card-icon">⚖️</div>
+                <div class="policy-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+                </div>
                 <div class="policy-card-info"><div class="policy-card-name">Balanced</div><div class="policy-card-desc">zlib level 6 · 5% min savings</div></div>
                 <span class="policy-active-badge" id="opt-badge-balanced">Active</span>
               </div>
               <div class="policy-card" data-policy="space_saver" style="cursor:pointer;" onclick="selectPolicy('space_saver',this)">
-                <div class="policy-card-icon">🍃</div>
+                <div class="policy-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                </div>
                 <div class="policy-card-info"><div class="policy-card-name">Space Saver</div><div class="policy-card-desc">zlib level 9 · 2% min savings</div></div>
                 <span class="policy-active-badge" id="opt-badge-space_saver" hidden>Active</span>
               </div>
               <div class="policy-card" data-policy="fast_restore" style="cursor:pointer;" onclick="selectPolicy('fast_restore',this)">
-                <div class="policy-card-icon">⚡</div>
+                <div class="policy-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
                 <div class="policy-card-info"><div class="policy-card-name">Fast Restore</div><div class="policy-card-desc">zlib level 1 · 10% min savings</div></div>
                 <span class="policy-active-badge" id="opt-badge-fast_restore" hidden>Active</span>
               </div>
               <div class="policy-card" data-policy="disabled" style="cursor:pointer;" onclick="selectPolicy('disabled',this)">
-                <div class="policy-card-icon">🚫</div>
+                <div class="policy-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                </div>
                 <div class="policy-card-info"><div class="policy-card-name">No Compression</div><div class="policy-card-desc">Store all chunks uncompressed</div></div>
                 <span class="policy-active-badge" id="opt-badge-disabled" hidden>Active</span>
               </div>
@@ -945,7 +959,9 @@
           <article class="stat-card c-sage">
             <div class="stat-header">
               <span class="stat-label">Storage Efficiency</span>
-              <div class="stat-icon-wrap c-sage">🍃</div>
+              <div class="stat-icon-wrap c-sage">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </div>
             </div>
             <div class="stat-value" id="analyticsEfficiency">-</div>
             <div class="stat-foot" id="analyticsSavingsText">Space saved by deduplication</div>
@@ -953,7 +969,9 @@
           <article class="stat-card c-terracotta">
             <div class="stat-header">
               <span class="stat-label">Dedup Multiple</span>
-              <div class="stat-icon-wrap c-terracotta">⚡</div>
+              <div class="stat-icon-wrap c-terracotta">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
             </div>
             <div class="stat-value" id="analyticsRatio">-</div>
             <div class="stat-foot">Times data reduced</div>
@@ -961,7 +979,9 @@
           <article class="stat-card c-blue">
             <div class="stat-header">
               <span class="stat-label">Raw Ingestion</span>
-              <div class="stat-icon-wrap c-blue">📦</div>
+              <div class="stat-icon-wrap c-blue">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+              </div>
             </div>
             <div class="stat-value" id="analyticsLogical">-</div>
             <div class="stat-foot">Total logical bytes sent</div>
@@ -969,7 +989,9 @@
           <article class="stat-card c-grey">
             <div class="stat-header">
               <span class="stat-label">Net Storage</span>
-              <div class="stat-icon-wrap c-grey">💾</div>
+              <div class="stat-icon-wrap c-grey">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              </div>
             </div>
             <div class="stat-value" id="analyticsPhysical">-</div>
             <div class="stat-foot">Actual bytes kept in store</div>
@@ -1067,27 +1089,27 @@
       <section id="section-settings" class="shell" hidden>
         <div class="page-heading">
           <div class="page-heading-left">
-            <p class="eyebrow">CONFIGURATION &amp; IDENTITY</p>
-            <h1>Settings &amp; Access</h1>
+            <p class="eyebrow">SYSTEM CONFIGURATION</p>
+            <h1>System Settings</h1>
           </div>
         </div>
 
         <div class="content-grid" style="grid-template-columns:1fr 1fr;">
           <section class="panel panel-pad">
-            <div class="panel-heading"><h3>Authentication Profile (Cognito)</h3></div>
+            <div class="panel-heading"><h3>Workspace Node Environment</h3></div>
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
-              <div style="width:48px;height:48px;border-radius:50%;background:var(--terracotta);color:var(--white);font-size:18px;font-weight:700;display:grid;place-items:center;">PJ</div>
+              <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg, #7C3AED, #6366F1);color:#FFFFFF;font-size:16px;font-weight:800;display:grid;place-items:center;box-shadow:0 4px 12px rgba(124,58,237,0.25);">CW</div>
               <div>
-                <strong style="font-size:15px;color:var(--ink);display:block;">Poorvaja (Admin)</strong>
-                <span style="font-size:12px;color:var(--ink-muted);">poorvaja@chunkwise.io</span>
+                <strong style="font-size:15px;color:var(--ink);display:block;">ChunkWise Production Node</strong>
+                <span style="font-size:12px;color:var(--ink-muted);">Open Access (Authentication Disabled)</span>
               </div>
-              <span style="margin-left:auto;padding:3px 9px;border-radius:20px;background:var(--sage-l);color:#2D5E4E;font-size:11px;font-weight:700;border:1px solid rgba(143,166,154,0.4);">AUTHENTICATED</span>
+              <span style="margin-left:auto;padding:3px 9px;border-radius:20px;background:var(--sage-l);color:#2D5E4E;font-size:11px;font-weight:700;border:1px solid rgba(143,166,154,0.4);">ONLINE</span>
             </div>
             <div style="display:grid;grid-template-columns:140px 1fr;gap:10px 14px;font-size:12.5px;border-top:1px solid var(--border);padding-top:14px;">
-              <span style="color:var(--ink-muted);font-weight:600;">Auth Provider</span><span>Amazon Cognito User Pool</span>
-              <span style="color:var(--ink-muted);font-weight:600;">User Pool ID</span><span style="font-family:monospace;font-size:11px;">us-east-1_ChunkWiseAuth</span>
-              <span style="color:var(--ink-muted);font-weight:600;">App Client ID</span><span style="font-family:monospace;font-size:11px;">7b3f9e8a1d2c4b5e9f0a</span>
-              <span style="color:var(--ink-muted);font-weight:600;">Session Duration</span><span>2 hours (Auto-refresh enabled)</span>
+              <span style="color:var(--ink-muted);font-weight:600;">Access Mode</span><span>Direct Public (No Authentication Required)</span>
+              <span style="color:var(--ink-muted);font-weight:600;">Engine Architecture</span><span>Content-Defined Chunking (CDC)</span>
+              <span style="color:var(--ink-muted);font-weight:600;">API Protocol</span><span style="font-family:monospace;font-size:11px;">HTTP/1.1 REST JSON</span>
+              <span style="color:var(--ink-muted);font-weight:600;">Health Status</span><span>All Systems Operational</span>
             </div>
           </section>
 
@@ -1112,7 +1134,7 @@
             <h1>ChunkWise Cookbook</h1>
             <p class="subheading">Step-by-step recipes, architecture formulas, code samples, and operational playbooks.</p>
           </div>
-          <span class="welcome-badge">📚 Interactive Docs</span>
+          <span class="welcome-badge">Manual &amp; Specs</span>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:20px;">
@@ -1121,7 +1143,7 @@
           <article class="panel panel-pad">
             <div class="panel-heading">
               <div style="display:flex;align-items:center;gap:10px;">
-                <span style="font-size:18px;">📐</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
                 <h3 style="margin:0;font-size:16px;">Core Recipe: Rabin Content-Defined Chunking (CDC) Formula</h3>
               </div>
               <span class="count-pill">Algorithm</span>
@@ -1161,7 +1183,7 @@
           <article class="panel panel-pad">
             <div class="panel-heading">
               <div style="display:flex;align-items:center;gap:10px;">
-                <span style="font-size:18px;">🗜️</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
                 <h3 style="margin:0;font-size:16px;">Recipe: Post-Deduplication Compression Pipeline</h3>
               </div>
               <span class="count-pill">Architecture</span>
@@ -1185,7 +1207,7 @@
           <article class="panel panel-pad">
             <div class="panel-heading">
               <div style="display:flex;align-items:center;gap:10px;">
-                <span style="font-size:18px;">🌐</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 <h3 style="margin:0;font-size:16px;">Recipe: Using the ChunkWise REST API</h3>
               </div>
               <span class="count-pill">REST API</span>
@@ -1225,7 +1247,7 @@
           <article class="panel panel-pad">
             <div class="panel-heading">
               <div style="display:flex;align-items:center;gap:10px;">
-                <span style="font-size:18px;">🐍</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                 <h3 style="margin:0;font-size:16px;">Recipe: Python SDK Integration</h3>
               </div>
               <span class="count-pill">Python SDK</span>
@@ -1259,7 +1281,7 @@ with Engine("./.chunkwise") as engine:
           <article class="panel panel-pad">
             <div class="panel-heading">
               <div style="display:flex;align-items:center;gap:10px;">
-                <span style="font-size:18px;">🛡️</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 <h3 style="margin:0;font-size:16px;">Recipe: Windows Reparse Points &amp; Symlink Safety</h3>
               </div>
               <span class="count-pill">Security</span>
@@ -1280,7 +1302,7 @@ with Engine("./.chunkwise") as engine:
 
       <footer class="page-footer">
         <span>ChunkWise · Content verified on restore</span>
-        <span>Built by Poorvaja &amp; Bhoomi</span>
+        <span>Storage Engine Node v0.1.0</span>
       </footer>
 
     </div><!-- /main-wrap -->

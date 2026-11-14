@@ -825,7 +825,7 @@ async function loadChunkExplorer(fileId) {
 
       const storageAction = isDup
         ? `<span style="color:var(--dusty-blue);font-weight:600;font-size:11.5px;">✓ Deduplicated (Zero S3 I/O)</span>`
-        : `<span style="color:var(--terracotta);font-weight:600;font-size:11.5px;">☁ Stored in S3</span>`;
+        : `<span style="color:var(--terracotta);font-weight:600;font-size:11.5px;">S3 Object</span>`;
 
       row.innerHTML = `
         <td style="font-weight:700;color:var(--ink-muted);font-size:11px;">#${chunk.seq + 1}</td>
