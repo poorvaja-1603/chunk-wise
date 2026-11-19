@@ -751,10 +751,6 @@ function resetSimulation() {
     if (arrow) arrow.className = "pipeline-arrow-line";
   }
   updateSimButtons();
-  const badge1 = $("#branchDupBadge");
-  const badge2 = $("#branchCompBadge");
-  if (badge1) badge1.style.display = "none";
-  if (badge2) badge2.style.display = "none";
 }
 
 function activateStage(i) {
@@ -777,17 +773,6 @@ function activateStage(i) {
   if (node) node.className = "pipeline-node is-active";
   if (pill) { pill.textContent = "Running…"; pill.className = "node-status-pill active"; }
   if (arrow) arrow.className = "pipeline-arrow-line is-active";
-
-  // Show callout badges at appropriate stages
-  const badge1 = $("#branchDupBadge");
-  const badge2 = $("#branchCompBadge");
-  if (i === 6 && badge1) {
-    badge1.style.display = "flex";
-    badge1.style.display = "block";
-  }
-  if (i === 7 && badge2) {
-    badge2.style.display = "block";
-  }
 
   updateSimButtons();
 }
