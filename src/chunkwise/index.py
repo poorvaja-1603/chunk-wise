@@ -780,14 +780,24 @@ class DynamoIndex:
         try:
             import boto3
             from boto3.dynamodb.types import TypeSerializer
+            from botocore.exceptions import ProfileNotFound
         except ImportError as error:
             raise RuntimeError("boto3 is required for the DynamoDB backend") from error
+        profile = os.environ.get("AWS_PROFILE")
+        session = None
+        if profile:
+            try:
+                session = boto3.Session(profile_name=profile, region_name=region)
+            except ProfileNotFound:
+                session = None
+        if session is None:
+            session = boto3.Session(region_name=region)
         self._serializer = TypeSerializer()
-        self._resource = boto3.resource("dynamodb", region_name=region)
+        self._resource = session.resource("dynamodb")
         self.table_name = table_name
         self._ensure_table()
         self.table = self._resource.Table(table_name)
-        self.client = boto3.client("dynamodb", region_name=region)
+        self.client = session.client("dynamodb")
         self.dynamo_reads = 0
         self.dynamo_writes = 0
 

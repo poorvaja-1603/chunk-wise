@@ -126,9 +126,15 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
             return
         if path == "/api/config":
             backend = os.environ.get("CHUNKWISE_BACKEND", "local").strip().lower()
+            bucket = os.environ.get("CHUNKWISE_S3_BUCKET", "chunkwise-chunks")
+            table = os.environ.get("CHUNKWISE_DYNAMODB_TABLE", "chunkwise-index")
+            region = os.environ.get("CHUNKWISE_AWS_REGION", "ap-southeast-2")
             self._send_json(200, {
                 "max_upload_bytes": self.server.max_upload_bytes,
                 "backend": backend,
+                "s3_bucket": bucket,
+                "dynamodb_table": table,
+                "aws_region": region,
                 "index_label": "DynamoDB Metadata Index" if backend == "aws" else "SQLite Metadata Index",
                 "store_label": "S3 Chunk Store" if backend == "aws" else "Content-Addressed Chunk Store",
                 "active_policy": get_active_policy(),

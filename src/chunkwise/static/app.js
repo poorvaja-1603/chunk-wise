@@ -429,11 +429,11 @@ async function refreshAll() {
     if (uploadLimit) uploadLimit.textContent = `Maximum upload size: ${formatBytes(config.max_upload_bytes)}`;
 
     const isAWS = config.backend === "aws";
-    const backendText = isAWS ? "AWS vault" : "Local vault";
+    const backendText = isAWS ? "AWS (S3 + DynamoDB)" : "Local storage (SQLite)";
 
     // Topbar
     const connLabel = $("#connectionLabel");
-    if (connLabel) connLabel.textContent = "Storage online";
+    if (connLabel) connLabel.textContent = isAWS ? "AWS Cloud Online" : "Storage Online";
     const connStatus = $("#connectionStatus");
     if (connStatus) connStatus.classList.remove("is-offline");
 
@@ -443,13 +443,19 @@ async function refreshAll() {
     const sidebarDot = $("#sidebarHealthDot");
     if (sidebarDot) sidebarDot.classList.remove("is-offline");
     const sidebarBackend = $("#sidebarBackendLabel");
-    if (sidebarBackend) sidebarBackend.textContent = backendText;
+    if (sidebarBackend) sidebarBackend.textContent = isAWS ? "AWS S3 + DynamoDB" : "Local storage";
+    const sidebarLogo = $("#sidebarBackendLogo");
+    if (sidebarLogo) sidebarLogo.textContent = isAWS ? "AWS" : "VAULT";
 
     // Settings
     const settingsBackend = $("#settingsBackend");
     if (settingsBackend) settingsBackend.textContent = backendText;
+    const settingsBucket = $("#settingsBucket");
+    if (settingsBucket && config.s3_bucket) settingsBucket.textContent = config.s3_bucket;
+    const settingsTable = $("#settingsTable");
+    if (settingsTable && config.dynamodb_table) settingsTable.textContent = config.dynamodb_table;
     const settingsConn = $("#settingsConnection");
-    if (settingsConn) settingsConn.textContent = "Online";
+    if (settingsConn) settingsConn.textContent = "Online ✓";
 
   } catch (error) {
     $("#statsGrid")?.setAttribute("aria-busy", "false");

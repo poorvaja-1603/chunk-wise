@@ -225,10 +225,20 @@ class S3ChunkStore:
             raise ValueError("an S3 bucket name is required")
         try:
             import boto3
+            from botocore.exceptions import ProfileNotFound
         except ImportError as error:
             raise RuntimeError("boto3 is required for the S3 backend") from error
         self.bucket = bucket
-        self.client = boto3.client("s3", region_name=region)
+        profile = os.environ.get("AWS_PROFILE")
+        session = None
+        if profile:
+            try:
+                session = boto3.Session(profile_name=profile, region_name=region)
+            except ProfileNotFound:
+                session = None
+        if session is None:
+            session = boto3.Session(region_name=region)
+        self.client = session.client("s3")
         self.s3_gets = 0
         self.s3_puts = 0
         self.s3_heads = 0

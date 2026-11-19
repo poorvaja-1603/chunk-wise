@@ -101,7 +101,18 @@ class ObservabilityTracker:
         if self._client is None and is_enabled():
             try:
                 import boto3
-                self._client = boto3.client("cloudwatch", region_name=get_region())
+                from botocore.exceptions import ProfileNotFound
+
+                profile = os.environ.get("AWS_PROFILE")
+                session = None
+                if profile:
+                    try:
+                        session = boto3.Session(profile_name=profile, region_name=get_region())
+                    except ProfileNotFound:
+                        session = None
+                if session is None:
+                    session = boto3.Session(region_name=get_region())
+                self._client = session.client("cloudwatch")
             except Exception as error:
                 print(f"Failed to initialize CloudWatch client: {error}", file=sys.stderr)
         return self._client
