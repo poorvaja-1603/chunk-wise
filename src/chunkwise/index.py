@@ -1,6 +1,7 @@
 """Chunk metadata backends for local, AWS, and virtual runs."""
 from __future__ import annotations
 
+import os
 import sqlite3
 import time
 from collections import defaultdict
