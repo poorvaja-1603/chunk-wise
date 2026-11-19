@@ -196,12 +196,22 @@ async function refreshStats() {
   const sidebarDonutPct  = $("#sidebarDonutPct");
   const sidebarDonutVal  = $("#sidebarDonutVal");
   if (sidebarDonutVal) {
-    const quotaBytes = 5 * 1024 * 1024 * 1024; // 5 GB baseline
     const physBytes = Number(stats.physical_bytes) || 0;
-    const usagePct = quotaBytes > 0 ? Math.min(100, (physBytes / quotaBytes) * 100) : 0;
-    if (sidebarDonutPct) sidebarDonutPct.textContent = `${Math.round(usagePct)}%`;
-    if (sidebarDonutFill) sidebarDonutFill.setAttribute("stroke-dasharray", `${usagePct.toFixed(1)}, 100`);
-    sidebarDonutVal.textContent = `${formatBytes(physBytes)} / 5 GB`;
+    const logBytes  = Number(stats.logical_bytes) || 0;
+    const footprintPct = logBytes > 0 ? Math.min(100, Math.round((physBytes / logBytes) * 100)) : 0;
+    if (sidebarDonutPct) sidebarDonutPct.textContent = `${footprintPct}%`;
+    if (sidebarDonutFill) sidebarDonutFill.setAttribute("stroke-dasharray", `${footprintPct}, 100`);
+    sidebarDonutVal.textContent = logBytes > 0
+      ? `${formatBytes(physBytes)} / ${formatBytes(logBytes)}`
+      : "0 B / 0 B";
+    const usageLbl = document.querySelector(".sys-usage-lbl");
+    if (usageLbl) usageLbl.textContent = "Storage Footprint";
+    const card = document.querySelector(".sidebar-system-card");
+    if (card) {
+      card.title = logBytes > 0
+        ? `Storage Footprint: ${formatBytes(physBytes)} stored out of ${formatBytes(logBytes)} logical (${(stats.storage_saved_pct || 0).toFixed(1)}% saved)`
+        : "Storage Online · Ready for ingest";
+    }
   }
 
   $("#statsGrid")?.setAttribute("aria-busy", "false");
