@@ -234,7 +234,8 @@ class S3ChunkStore:
         if profile:
             try:
                 session = boto3.Session(profile_name=profile, region_name=region)
-            except ProfileNotFound:
+            except Exception:
+                os.environ.pop("AWS_PROFILE", None)
                 session = None
         if session is None:
             session = boto3.Session(region_name=region)

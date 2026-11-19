@@ -108,7 +108,8 @@ class ObservabilityTracker:
                 if profile:
                     try:
                         session = boto3.Session(profile_name=profile, region_name=get_region())
-                    except ProfileNotFound:
+                    except Exception:
+                        os.environ.pop("AWS_PROFILE", None)
                         session = None
                 if session is None:
                     session = boto3.Session(region_name=get_region())
