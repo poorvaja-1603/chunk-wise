@@ -33,6 +33,18 @@ const SECTION_TITLES = {
 };
 
 function activateSection(name) {
+  if (name === "upload") {
+    name = "overview";
+    setTimeout(() => {
+      const drop = $("#dropZone");
+      if (drop) {
+        drop.scrollIntoView({ behavior: "smooth", block: "center" });
+        drop.classList.add("is-over");
+        setTimeout(() => drop.classList.remove("is-over"), 800);
+      }
+    }, 50);
+  }
+
   // Hide all sections
   for (const key of Object.keys(SECTION_TITLES)) {
     const el = $(`#section-${key}`);
@@ -489,7 +501,10 @@ function selectFile(file) {
   }
   const selEl = $("#selectedFile");
   if (selEl) { selEl.textContent = `${file.name} · ${formatBytes(file.size)}`; selEl.hidden = false; }
-  uploadButton.disabled = false;
+  if (uploadButton) {
+    uploadButton.disabled = false;
+    uploadButton.innerHTML = `Upload ${escapeHtml(file.name)} <span aria-hidden="true">→</span>`;
+  }
   const msgEl = $("#uploadMessage");
   if (msgEl) msgEl.hidden = true;
   const nextEl = $("#uploadNextSteps");
@@ -497,16 +512,22 @@ function selectFile(file) {
 }
 
 function uploadSelectedFile() {
-  if (!selectedFile) return;
+  if (!selectedFile) {
+    fileInput?.click();
+    return;
+  }
   const file = selectedFile;
   pendingUploadKey ||= crypto.randomUUID();
   try { sessionStorage.setItem(uploadKeyStorageKey(pendingUploadFingerprint), pendingUploadKey); }
   catch { /* ignore */ }
 
-  const chunker = document.querySelector('input[name="chunker"]:checked').value;
+  const chunker = (document.querySelector('input[name="chunker"]:checked') || {}).value || "cdc";
   const progress = $("#uploadProgress");
   if (progress) progress.hidden = false;
-  uploadButton.disabled = true;
+  if (uploadButton) {
+    uploadButton.disabled = true;
+    uploadButton.innerHTML = `Uploading ${escapeHtml(file.name)}... <span aria-hidden="true">⏳</span>`;
+  }
   const msgEl = $("#uploadMessage");
   if (msgEl) msgEl.hidden = true;
   const labelEl = $("#progressLabel");
@@ -529,11 +550,16 @@ function uploadSelectedFile() {
     if (barEl) barEl.style.width = `${percent}%`;
   });
   request.addEventListener("load", async () => {
-    uploadButton.disabled = false;
     if (progress) progress.hidden = true;
     let response;
     try { response = JSON.parse(request.responseText); } catch { response = {}; }
     if (request.status < 200 || request.status >= 300) {
+      if (uploadButton) {
+        uploadButton.disabled = false;
+        uploadButton.innerHTML = selectedFile
+          ? `Upload ${escapeHtml(selectedFile.name)} <span aria-hidden="true">→</span>`
+          : `Upload File <span aria-hidden="true">→</span>`;
+      }
       setUploadMessage(response.error || `Upload failed (${request.status})`, "error");
       return;
     }
@@ -544,7 +570,10 @@ function uploadSelectedFile() {
     fileInput.value = "";
     const selEl = $("#selectedFile");
     if (selEl) selEl.hidden = true;
-    uploadButton.disabled = true;
+    if (uploadButton) {
+      uploadButton.disabled = false;
+      uploadButton.innerHTML = `Upload File <span aria-hidden="true">→</span>`;
+    }
     setUploadMessage(
       `${response.name} stored · ${Number(response.chunks).toLocaleString()} chunks · ${formatBytes(response.new_bytes)} new bytes`,
       "success"
@@ -559,7 +588,12 @@ function uploadSelectedFile() {
     await refreshAll();
   });
   request.addEventListener("error", () => {
-    uploadButton.disabled = false;
+    if (uploadButton) {
+      uploadButton.disabled = false;
+      uploadButton.innerHTML = selectedFile
+        ? `Upload ${escapeHtml(selectedFile.name)} <span aria-hidden="true">→</span>`
+        : `Upload File <span aria-hidden="true">→</span>`;
+    }
     if (progress) progress.hidden = true;
     setUploadMessage("Network error. Retry; the same request key prevents duplicate records.", "error");
   });
@@ -956,22 +990,44 @@ $("#activityRefreshBtn")?.addEventListener("click", () => {
 // ----------------------------------------------------------------
 // Upload event bindings
 // ----------------------------------------------------------------
-$("#chooseFile")?.addEventListener("click", () => fileInput.click());
-fileInput?.addEventListener("change", () => selectFile(fileInput.files[0]));
-uploadButton?.addEventListener("click", uploadSelectedFile);
+$("#chooseFile")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  fileInput.click();
+});
+fileInput?.addEventListener("change", () => {
+  if (fileInput.files && fileInput.files.length) {
+    selectFile(fileInput.files[0]);
+  }
+});
+uploadButton?.addEventListener("click", () => {
+  if (!selectedFile) {
+    fileInput.click();
+  } else {
+    uploadSelectedFile();
+  }
+});
 $("#refreshButton")?.addEventListener("click", refreshAll);
 ["filesRefreshButton", "filesRefreshButton2"].forEach(id => {
   $(`#${id}`)?.addEventListener("click", refreshFiles);
 });
 
-dropZone?.addEventListener("click", (event) => { if (event.target === dropZone) fileInput.click(); });
+dropZone?.addEventListener("click", (event) => {
+  if (!event.target.closest("#chooseFile")) {
+    fileInput.click();
+  }
+});
 ["dragenter", "dragover"].forEach(ev => {
   dropZone?.addEventListener(ev, (e) => { e.preventDefault(); dropZone.classList.add("is-over"); });
 });
 ["dragleave", "drop"].forEach(ev => {
   dropZone?.addEventListener(ev, (e) => { e.preventDefault(); dropZone.classList.remove("is-over"); });
 });
-dropZone?.addEventListener("drop", (event) => selectFile(event.dataTransfer.files[0]));
+dropZone?.addEventListener("drop", (event) => {
+  event.preventDefault();
+  if (event.dataTransfer?.files?.length) {
+    selectFile(event.dataTransfer.files[0]);
+  }
+});
 
 // When a file is uploaded, link the simulation nav
 window.addEventListener("chunkwise:file-uploaded", () => {
