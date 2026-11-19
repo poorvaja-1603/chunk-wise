@@ -211,6 +211,15 @@ class LocalChunkStore:
             raise IntegrityError(f"chunk {digest} failed verification: {exc}") from exc
         return raw, codec
 
+    def get_metadata(self, digest: str) -> dict[str, Any]:
+        meta_path = self._meta_path(digest)
+        if meta_path.exists():
+            try:
+                return json.loads(meta_path.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        return {}
+
     def close(self) -> None:
         return None
 
@@ -399,6 +408,14 @@ class S3ChunkStore:
             # existing tests (and the HTTP API) can match it uniformly.
             raise IntegrityError(f"chunk {digest} failed verification: {exc}") from exc
         return raw, codec
+
+    def get_metadata(self, digest: str) -> dict[str, str]:
+        _validate_digest(digest)
+        try:
+            res = self.client.head_object(Bucket=self.bucket, Key=self.key_for(digest))
+            return {k.lower(): v for k, v in res.get("Metadata", {}).items()}
+        except Exception:
+            return {}
 
     def delete(self, digest: str) -> None:
         key = self.key_for(digest)

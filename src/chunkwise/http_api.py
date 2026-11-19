@@ -222,13 +222,18 @@ class ChunkWiseRequestHandler(BaseHTTPRequestHandler):
                         ref = engine.index.refcount(e.chunk_hash) or 1
                         codec = "none"
                         # Check local sidecar or S3 metadata if available
-                        meta_fn = getattr(engine.store, "_meta_path", None)
-                        if meta_fn and meta_fn(e.chunk_hash).exists():
-                            try:
-                                meta_data = json.loads(meta_fn(e.chunk_hash).read_text(encoding="utf-8"))
-                                codec = meta_data.get("codec", "none")
-                            except Exception:
-                                pass
+                        get_meta = getattr(engine.store, "get_metadata", None)
+                        if get_meta is not None:
+                            meta_data = get_meta(e.chunk_hash)
+                            codec = meta_data.get("codec", "none")
+                        else:
+                            meta_fn = getattr(engine.store, "_meta_path", None)
+                            if meta_fn and meta_fn(e.chunk_hash).exists():
+                                try:
+                                    meta_data = json.loads(meta_fn(e.chunk_hash).read_text(encoding="utf-8"))
+                                    codec = meta_data.get("codec", "none")
+                                except Exception:
+                                    pass
                         chunks.append({
                             "seq": e.seq,
                             "hash": e.chunk_hash,
