@@ -441,6 +441,80 @@ async function refreshFiles() {
   }
 }
 
+// ----------------------------------------------------------------
+// Optimization Policies
+// ----------------------------------------------------------------
+function getPolicyKey(policy) {
+  if (!policy) return "balanced";
+  if (typeof policy === "string") return policy.toLowerCase();
+  const id = (policy.policy_id || "").toLowerCase();
+  if (id.includes("space_saver")) return "space_saver";
+  if (id.includes("fast_restore")) return "fast_restore";
+  if (id.includes("disabled")) return "disabled";
+  if (id.includes("balanced")) return "balanced";
+  const name = (policy.name || "").toLowerCase();
+  if (name.includes("space")) return "space_saver";
+  if (name.includes("fast")) return "fast_restore";
+  if (name.includes("no") || name.includes("disabled")) return "disabled";
+  return "balanced";
+}
+
+function updatePolicyUI(policy) {
+  const key = getPolicyKey(policy);
+  const labels = {
+    balanced: "Balanced (zlib level 6)",
+    space_saver: "Space Saver (zlib level 9)",
+    fast_restore: "Fast Restore (zlib level 1)",
+    disabled: "Disabled (uncompressed)",
+  };
+
+  // 1. Update all policy cards (both Overview and Optimization sections)
+  document.querySelectorAll(".policy-card").forEach(c => {
+    const isTarget = c.dataset.policy === key;
+    c.classList.toggle("is-active", isTarget);
+    let badge = c.querySelector(".policy-active-badge");
+    if (badge) {
+      badge.hidden = !isTarget;
+      badge.style.display = isTarget ? "" : "none";
+    }
+  });
+
+  // Also handle any specific opt-badge- elements
+  document.querySelectorAll("[id^='opt-badge-']").forEach(b => {
+    const isTarget = (b.id === "opt-badge-" + key);
+    b.hidden = !isTarget;
+    b.style.display = isTarget ? "" : "none";
+  });
+
+  // 2. Update Settings page policy display
+  const settingsPolicy = $("#settingsPolicy");
+  if (settingsPolicy) {
+    settingsPolicy.textContent = labels[key] || key;
+  }
+}
+
+async function selectPolicy(profile, el) {
+  const key = getPolicyKey(profile);
+  updatePolicyUI(key);
+  try {
+    await fetch("/api/v1/policies/select", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ policy: key }),
+    });
+    const labels = {
+      balanced: "Balanced",
+      space_saver: "Space Saver",
+      fast_restore: "Fast Restore",
+      disabled: "No Compression",
+    };
+    logAuditEvent("CONFIG", `Policy: ${key}`, `Optimization policy set to ${labels[key] || key}`, "APPLIED");
+  } catch (err) {
+    console.warn("Could not persist active policy:", err);
+  }
+}
+window.selectPolicy = selectPolicy;
+
 async function refreshAll() {
   $("#globalError").hidden = true;
   try {
@@ -478,6 +552,10 @@ async function refreshAll() {
     if (settingsTable && config.dynamodb_table) settingsTable.textContent = config.dynamodb_table;
     const settingsConn = $("#settingsConnection");
     if (settingsConn) settingsConn.textContent = "Online ✓";
+
+    if (config.active_policy) {
+      updatePolicyUI(config.active_policy);
+    }
 
   } catch (error) {
     $("#statsGrid")?.setAttribute("aria-busy", "false");
@@ -1055,6 +1133,14 @@ window.addEventListener("chunkwise:file-uploaded", () => {
 $$(".sidebar-nav a").forEach(a => {
   if (a.dataset.section === "simulation") {
     a.addEventListener("click", () => { resetSimulation(); });
+  }
+});
+
+// Policy card selection event delegation (works anywhere .policy-card is rendered)
+document.addEventListener("click", (event) => {
+  const card = event.target.closest(".policy-card");
+  if (card && card.dataset.policy) {
+    selectPolicy(card.dataset.policy, card);
   }
 });
 
